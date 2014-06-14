@@ -2,3 +2,4 @@ site.o
 site.hi
 site.exe
 *.sw*
+_cache
