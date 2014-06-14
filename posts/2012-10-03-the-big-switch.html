@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Codice et circenses - The big switch</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Codice et circenses</a>
+            </div>
+            <div id="navigation">
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../archive.html">Archive</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>The big switch</h1>
+
+            <div class="info">
+    Posted on October  3, 2012
+    
+</div>
+
+<p>Pattern matching is often put forward as a first feature example when we introduce functional programming. And there is maybe a first misunderstanding there. Actually, when we talked about pattern matching, we <em>don’t</em> talk about regular expressions. No, pattern matching in functional programming is closer to a <code>switch case</code>… on steroid. The kind of steroids that gives to Suzanne Boyle the opportunity to be faster than Usain Bolt.</p>
+<p>Java programmers have started to love it with primitive types, then with <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/language/enums.html" title="Java includes switch for enum in java1.5">enumeration</a> and more recently with <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/language/strings-switch.html" title="Java includes switch for string in Java 7"><code>String</code></a>. In many situations, it allowed them to refactor their code in a more comprehensive way. Do you think we can go further? The short answer is: Yes.</p>
+<h2 id="say-hi">Say “Hi!”</h2>
+<p>It’s our first example. In this blog, I will use most of the time toy examples. The goal is to add as few noise as possible around the concept I will try to introduce.</p>
+<p>Here is the scenario. We deal with people. A person has a first name, a last name and an age. Yes, welcome back to CS 101. Yes, it is stupid to store the age as an integer and not as a date, I never said my examples would be clever. At this stage neither the Haskell nor the Java version are complex. Here is the Java version:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
+
+    <span class="kw">private</span> <span class="dt">final</span> String firstname;
+    <span class="kw">private</span> <span class="dt">final</span> String lastname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span>    age;
+
+    <span class="kw">public</span> <span class="fu">Person</span>(String myFirstname, String myLastname, <span class="dt">int</span> myAge) {
+        <span class="kw">this</span>.<span class="fu">firstname</span> = myFirstname;
+        <span class="kw">this</span>.<span class="fu">lastname</span>  = myLastname;
+        <span class="kw">this</span>.<span class="fu">age</span>       = myAge;
+    }
+
+    <span class="co">/* Forgive me, I won't write getters/setters.</span>
+<span class="co">     * I'm a poor lazy functional programmer.</span>
+<span class="co">     */</span>
+}</code></pre>
+<p>And there is the Haskell one:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
+                     ,<span class="ot"> lastname  ::</span> <span class="dt">String</span>
+                     ,<span class="ot"> age       ::</span> <span class="dt">Int</span>
+                     }</code></pre>
+<p>May be I should explain a few things here. Haskell is definitely not object oriented. As a consequence, the field names given in the <code>Person</code> definition are actually function names to access these fields. For example, if you have a value <code>tom</code> that contains a <code>Person</code>, you can write <code>age tom</code> to access <code>tom</code>’s age. I know,</p>
+<p>Ok, so far, so good. Haskell is more concise, but who cares? Everybody loves typing, right? And if you don’t, you have these lovely code generation features. Actually, I don’t like them but it’s a matter of taste.</p>
+<p>Suppose now that we want to greet a person. The function <code>greet</code> should return “Hi,” followed by the person full name. Unfortunately we work in a naughty environment and we want to protect young people (below 18). To them we’ll answer “Thou shall not pass”. Except for this little guy, <a href="http://en.wikipedia.org/wiki/The_Binding_of_Isaac_%28video_game%29" title="The main character of the wonderful game &quot;Binding of Isaac &quot;">Isaac McMillen</a>, because we don’t really care if he gets hurt. For him we have a special message: “Welcome home, Isaac”.</p>
+<h2 id="check-fields-write-too-many-things">Check fields, write too many things</h2>
+<p>Let’s build our Java greeting class (we can as well add a <code>greet</code> function to the <code>Person</code> class but it doesn’t really match the single responsibility principle)! To do so I assume that you’ve added a <code>getFullname</code> function to the person class. I can leave it to you as an exercise, you’re allowed to find it insulting.</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Greetings {
+    <span class="kw">public</span> <span class="dt">static</span> String <span class="fu">greets</span>(Person myPerson) {
+        <span class="kw">if</span> (<span class="fu">isIsaac</span>(myPerson) 
+             <span class="kw">return</span> <span class="st">&quot;welcome home, Isaac&quot;</span>;
+        <span class="kw">else</span> <span class="kw">if</span> (<span class="fu">isOverEighteen</span>(myPerson))
+             <span class="kw">return</span> <span class="st">&quot;Hi, &quot;</span> + myPerson.<span class="fu">getFullname</span>();
+        <span class="kw">else</span>
+             <span class="kw">return</span> <span class="st">&quot;Thou shall not pass&quot;</span>;
+    }
+
+    <span class="co">/* Helper functions */</span>
+
+    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">boolean</span> <span class="fu">isIsaac</span>(Person myPerson) {
+        <span class="kw">return</span> myPerson.<span class="fu">getFirstname</span>().<span class="fu">equals</span>(<span class="st">&quot;Isaac&quot;</span>)
+            &amp;&amp; myPerson.<span class="fu">getLastname</span>().<span class="fu">equals</span>(<span class="st">&quot;McMillen&quot;</span>);
+    }
+
+    <span class="kw">private</span> <span class="dt">static</span> <span class="dt">boolean</span> <span class="fu">isOverEighteen</span>(Person myPerson) {
+        <span class="kw">return</span> myPerson.<span class="fu">getAge</span> &gt;= <span class="dv">18</span>;
+    }
+}</code></pre>
+<p>I know you, sweet little troll! You wanna talk about multiple returns, string concatenation, parenthesis and code convention. It’s not the point here! We don’t want to talk about it at the moment. So relax and stay focus on the algorithmic part. We have an <code>if … else if</code> construct, and we have a lot of access to the fields. Look especially at the <code>isIsaac</code> function. It’s so cumbersome! And we just want to test two fields! Let’s compare it to the Haskell version:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">greet ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+greet p <span class="fu">=</span> 
+  <span class="kw">case</span> p <span class="kw">of</span> 
+    (<span class="dt">Person</span> <span class="st">&quot;Isaac&quot;</span> <span class="st">&quot;McMillen&quot;</span> _) <span class="ot">-&gt;</span> <span class="st">&quot;Welcome home, Isaac&quot;</span>
+    (<span class="dt">Person</span> _ _ age)
+      <span class="fu">|</span> age <span class="fu">&lt;</span> <span class="dv">18</span>                  <span class="ot">-&gt;</span> <span class="st">&quot;Thou shall not pass&quot;</span>
+      <span class="fu">|</span> otherwise                 <span class="ot">-&gt;</span> <span class="st">&quot;Hello &quot;</span> <span class="fu">++</span> (fullname p)</code></pre>
+<p>It’s denser, yes. The first line give us the type of the function (it takes a person, it returns a string). We can as well omit it, since Haskell is able to work out the type on its own. But look how we have separated the three cases. This is pattern matching in action. Instead of the painful <code>isIsaac</code> function, we have a clean pattern matching, that inspect the fields of our person. Similarly we use the same trick to extract the age field. It’s a minor improvement, but most of the functional programmers find it quite interesting.</p>
+<p>How many time did you extract some fields of a variable to inspect them? Pattern matching let you to do it in an efficient way, without having to struggle with accessors.</p>
+<p>I know it might seem a minor improvement. You can even think it’s not an improvement at all. As I claimed in my previous post, you don’t have to be convince that functional programming is better. But, for us, it’s full of those kind of minor change that simplify our work as developers, and I hope it helps you get into it.</p>
+<h2 id="haskell-bonus-point">Haskell bonus point</h2>
+<p>Haskell folks love pattern matching so much that they allow you to use it directly in the function definition. Like so:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">greet ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+greet (<span class="dt">Person</span> <span class="st">&quot;Isaac&quot;</span> <span class="st">&quot;McMillen&quot;</span> _) <span class="fu">=</span> <span class="st">&quot;Welcome home, Isaac&quot;</span>
+greet (<span class="dt">Person</span> f l age) <span class="fu">|</span> age <span class="fu">&lt;</span> <span class="dv">18</span>   <span class="fu">=</span> <span class="st">&quot;Thou shall not pass&quot;</span>
+                       <span class="fu">|</span> otherwise  <span class="fu">=</span> <span class="st">&quot;Hello &quot;</span> <span class="fu">++</span> (fullname (<span class="dt">Person</span> f l age))</code></pre>
+<p>If you compare it to the first version, you can notice that the last case is more verbose. With this version, we had to rebuild a Person to obtain its fullname. How stupid is this?! Well Actually, the stupid one isn’t Haskell in this case, it’s me, since pattern matching can do better than the previous version:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">greet ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+greet (<span class="dt">Person</span> <span class="st">&quot;Isaac&quot;</span> <span class="st">&quot;McMillen&quot;</span> _)   <span class="fu">=</span> <span class="st">&quot;Welcome home, Isaac&quot;</span>
+greet p<span class="fu">@</span>(<span class="dt">Person</span> _ _ age) <span class="fu">|</span> age <span class="fu">&lt;</span> <span class="dv">18</span>   <span class="fu">=</span> <span class="st">&quot;Thou shall not pass&quot;</span>
+                         <span class="fu">|</span> otherwise  <span class="fu">=</span> <span class="st">&quot;Hello &quot;</span> <span class="fu">++</span> (fullname p)</code></pre>
+<p>The part <code>p@(Person _ _ age)</code> means that we’re looking for a person, we assign this person to the <code>p</code> value and we assign the person age to the <code>age</code> value. Concise, efficient, functional.</p>
+<p>Pattern matching is so useful in functional programming that we often don’t use accessors present in our datatype. A straightforward consequence is that we often omit the accessors wen we define types. For example, another possible definition of <code>Person</code> might be: <code>data Person = Person String String Int</code>. Short enough?</p>
+
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </div>
+    </body>
+</html>

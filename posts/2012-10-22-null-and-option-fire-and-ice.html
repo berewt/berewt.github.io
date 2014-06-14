@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Codice et circenses - Null and Option, fire and ice</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Codice et circenses</a>
+            </div>
+            <div id="navigation">
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../archive.html">Archive</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Null and Option, fire and ice</h1>
+
+            <div class="info">
+    Posted on October 22, 2012
+    
+</div>
+
+<p>ML, Haskell or Erlang, does not have <code>null</code> and they <a href="../English/Make%20it%20functional/2012/10/10/nothing-just-call-me-maybe/" title="Nothing, Just, call me Maybe (on this blog)">don’t miss it</a>. Tony Hoare himself consider the introduction of null as an error. A billion dollar error more precisely. As a consequence, many languages try to work around <code>null</code>. Groovy has its <em>safe navigation operator</em> (<code>.?</code>), Scala has its <em>Option</em> and Java has… well Java has <code>if (x != null) … else …</code>. As this last solution is neither concise nor elegant, some programmers support the introduction of an equivalent to <code>Option</code> in Java. In the Java 8 perspective, <a href="http://java.dzone.com/articles/no-more-excuses-use-null" title="No more excuses to use null references in Java 8, on DZone">Mario Fusco’s article</a> is certainly one of the most interesting on this subject. The idea is simple and straightforward: as it seems cool to avoid using <code>null</code>, let’s provide a way to avoid it more often.</p>
+<p>A few words about the Groovy solution. <code>x?.foo</code> is basically a shortcut for: <code>x == null? null : x.foo</code> you can achieve almost the same with a macro in your text editor. It is useful because it saves a lot of typing and makes code denser but it doesn’t provide any type safety.</p>
+<p>We should agree that the main goal of avoiding <code>null</code> is to be sure that we handle the lack of information properly. <em>Properly</em> means that if there is an uncertainty, I <strong>have to</strong> deal with it either by propagating it (as the <code>.?</code> groovy operator or the <a href="http://en.wikipedia.org/wiki/Null_Object_pattern" title="The null object pattern in Wikipedia">null object pattern</a> does), but also by providing a default value or by doing a different process depending on the case. <code>Option</code>/<code>Maybe</code> comes with a lot of handy function to do it.</p>
+<p>So far, so good. Except that Scala and Java do have <code>null</code>. Let’s come back to what happen in a null-free world. Suppose that you’re writing a function and you’re not sure you can provide the expected result. In this case, you only have two options:</p>
+<ul>
+<li>Use an <code>Option</code>/<code>Maybe</code> and claim explicitly that your function doesn’t know if it can provide a result.</li>
+<li>Throw an exception, saying that something was not expected at all directly.</li>
+</ul>
+<p>It’s clear. I’m not sure it can be clearer. Let’s come back to the world of null and look how we deal with the same situation, without taking into account the <code>Option</code> alternative:</p>
+<ul>
+<li>Return null if your function can compute a result. In the best case, you will say it explicitly… in the documentation. The compiler isn’t aware of it. Other devs will know about it only if they read the doc. But the program continues.</li>
+<li>Throw an exception, exactly like in the previous case.</li>
+</ul>
+<p>Adding Option to the second case, people expect to get back to the first one. Ahem… <strong>No!</strong> Here is what you get instead:</p>
+<ul>
+<li>Return null if your function can compute a result. In the best case, you will say it explicitly… in the documentation. The compiler isn’t aware of it. Other devs will know about it only if they read the doc. But the program continues.</li>
+<li>Use an <code>Option</code>/<code>Maybe</code> and claim explicitly that your function doesn’t know if it can provides a result.</li>
+<li>Throw an exception, saying that something was not expected at all directly.</li>
+</ul>
+<p>Yes, it’s almost an automatic merge. Do you see where I’m going with that? When I call a function, I can’t know if the programmer hasn’t decide to use <code>null</code> if the function don’t have a result. Worse, even if I see an Option, I can’t tell if this guy isn’t bad enough to return a <code>null</code> instead of a real <code>Option</code>. Yes you can expect that other programmers respect a kind of best practice and stick to the Option/exception alternatives. But best practices aren’t statically typed.</p>
+<p>It leads us to a difficult choice. Shall we add this third solution or not. Due to the feedbacks I’ve read about Mario’s article about <code>Option</code> in Java, I tend to understand that the community thinks so. After a long discussion between myself and I, I tend to agree with them. But I keep it mind that it doesn’t resolve at all the <code>null</code> issue. It’s just a patch.</p>
+
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </div>
+    </body>
+</html>
