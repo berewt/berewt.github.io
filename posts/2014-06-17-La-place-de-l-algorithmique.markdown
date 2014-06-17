@@ -24,9 +24,9 @@ l'école.
 Commençons par une bonne nouvelle. Avant même le début du commencement d'une
 réforme du _numérique_ vos enfants (ou ceux de vos voisins, amis, parents)
 utilisent des algorithmes. Rappeler vous comment on vous a appris à additionner
-des nombres: Tu additionnes le chiffre le plus à gauche de chaque nombres, tu
-écris le chiffre des unités, tu retiens la retenue, tu l'ajoutes aux chiffres
-les plus à gauche suivants, et tu continues comme cela jusqu'à ce que tu aies
+des nombres: Tu additionnes le chiffre le plus à droite de chaque nombre, tu
+écris le chiffre des unités, tu poses la retenue, tu l'ajoutes aux chiffres
+les plus à droite suivants, et tu continues comme cela jusqu'à ce que tu aies
 traité tous les chiffres (à peu près, vous avez le droit d'utiliser votre propre
 variation tant que vous obtenez le bon résultat). Cette mécanique *est* un
 algorithme. La méthode pour identifier un groupe nominal en français est aussi
