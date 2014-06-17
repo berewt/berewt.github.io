@@ -11,9 +11,9 @@ importance dans la vie quotidienne. Ces fantasmes ont renforcé l'idée qu'un
 apprentissage du numérique, de l'informatique ou du code devait être centrale
 pour aider les futures générations à appréhender le monde. S'il est évident que
 l'informatique a une place grandissante dans les usages quotidiens, il ne faut
-pas surestimer son rôle et surtout la place quîl doit avoir dans l'éducation.
+pas surestimer son rôle et surtout la place qu'elle doit avoir dans l'éducation.
 
-Il y a quelques jours, j'apprenais que des députés avait rédigé une proposition
+Il y a quelques jours, j'apprenais que des députés avaient rédigé une proposition
 de loi visant à rendre obligatoire [l'enseignement du _codage_ à
 l'école](http://www.assemblee-nationale.fr/14/propositions/pion2022.asp).
 L'intitulé m'avait interpellé et j'en avais fait une [relecture
@@ -49,7 +49,7 @@ incitation à développer, comme le français n'est pas une incitation à deveni
 La familiarisation avec du matériel informatique, quel qu'il soit (ordinateur,
 tablette) est un premier pas qui n'est pas inutile pour certains élèves. Donc
 pour commencer, oui, il est utile qu'ils aient une idée de l'interaction qu'on
-peut avoir avec un ordiateur. Il s'agit là du même apprentissage que l'on a avec
+peut avoir avec un ordinateur. Il s'agit là du même apprentissage que l'on a avec
 tout nouvel outil. Ce n'est pas autre chose qu'apprendre à se servir d'une règle
 graduée, en un peu plus complexe. Il est important de ne pas le sacraliser.
 Cette sacralisation est d'ailleurs la source de nombreuses stupidités énoncées
@@ -86,7 +86,7 @@ technologiques des élèves pour les technologies du numérique.
 # Rien d'autre ?
 
 Non. Tout est déjà là. Le *codage*, tellement sacralisé, ne doit pas être un
-fondement cental de l'éducation. Une simple initiation, pour comprendre comment
+fondement central de l'éducation. Une simple initiation, pour comprendre comment
 on "donne des ordres" à un ordinateur peut suffire. Il s'agit dès lors d'un
 simple atelier, ou projet scolaire, comme il y en a déjà.
 
@@ -100,7 +100,7 @@ premiers parents sont philosophes et logiciens (oui, c'est parfois les mêmes).
 Elle nécessite des capacités de raisonnement, d'abstraction, de
 conceptualisation, d'analyse. L'apprentissage de ses fondements pourrait être
 utile et aider certains à raisonner, elle pourrait en perdre d'autres.
-Systématiser son apprentissage est à mon avis à double trenchant. Dans un
+Systématiser son apprentissage est à mon avis à double tranchant. Dans un
 système centralisé comme celui de l'école française, c'est un risque énorme.
 
 Je crois en un apprentissage théorique de l'informatique, en son utilité pour
