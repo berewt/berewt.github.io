@@ -4,7 +4,7 @@ branches:
     - source
 env:
   global:
-    - secure: "U/z8JHsmUndYrsm/frEdAD0yFelqm0NSEDB5liS6v/q4zGNeZ0vna0hiW5nN4eknvYP0la+fsmF05maAtLja+PnLn+2/OmgCF5xifUqsYSttHSelkoKm4jXR42H44XmNmLDMJC7zx1sTkqyxImAdRtpERvirHheoSp3rz7tTRfk="
+    - secure: "eqnEuhunk5Xok1NUE8HB1YGtwn04ejzdAZAAjBuvsoC50nCyFbOZQsBjLyhMTkbtIyw8qm2sX0mzPf9O3siluSQup1f3QI23rY+TjNOlcDjQ0ATCtgpAzXDboa1iA08qOC5oP5mzqnq0U5T6kwkLh8pA36SQGkK+o9jlrRhJG4g="
 install:
   - cabal install hakyll
   - ghc --make site.hs
