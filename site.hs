@@ -59,7 +59,7 @@ main = hakyll $ do
 
     match "templates/*" $ compile templateCompiler
 
-    match "CNAME" $ do
+    match (fromList ["CNAME", ".travis.yml"]) $ do
         route idRoute
         compile copyFileCompiler
 
