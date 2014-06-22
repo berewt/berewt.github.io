@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid (mappend)
+import           Data.Monoid (mconcat, mappend)
 import           Hakyll
 
 
@@ -25,6 +25,7 @@ main = hakyll $ do
         route $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
 
@@ -57,12 +58,29 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
 
+    create ["feed.rss"] $ do
+      route idRoute
+      compile $ do
+        let feedCtx = mappend postCtx $ bodyField "description"
+        posts <- fmap (take 5) . recentFirst =<< loadAllSnapshots "posts/*" "content"
+        renderRss feedConfig feedCtx posts
+        
+
     match "templates/*" $ compile templateCompiler
 
     match (fromList ["CNAME", ".travis.yml"]) $ do
         route idRoute
         compile copyFileCompiler
 
+
+feedConfig :: FeedConfiguration
+feedConfig = FeedConfiguration
+  { feedTitle = "Codice and Circenses"
+  , feedDescription = "IT, Programming, boardgames and random thoughts"
+  , feedAuthorName = "Nicolas Biri"
+  , feedAuthorEmail = "nicolas@biri.name"
+  , feedRoot = "http://nicolas.biri.name/"
+  }
 
 --------------------------------------------------------------------------------
 postCtx :: Context String
