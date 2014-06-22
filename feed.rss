@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Codice and Circenses</title>
+        <link>http://nicolas.biri.name/</link>
+        <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
+        <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
+                   type="application/rss+xml" />
+        <lastBuildDate>Tue, 17 Jun 2014 00:00:00 UT</lastBuildDate>
+        <item>
+    <title>La place de l'algorithmique</title>
+    <link>http://nicolas.biri.name//posts/2014-06-17-La-place-de-l-algorithmique.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on June 17, 2014
+    
+</div>
+
+<p><img src="/images/hamster.jpg" alt="Une image de hamster, pour le plaisir d'embruns" /></p>
+<blockquote>
+<p>Algorithme: Mécanisme réglant le fonctionnement de la pensée organisée et s’explicitant par des représentations analogues à celles des mathématiciens.</p>
+<p>Source : <a href="http://www.cnrtl.fr/lexicographie/algorithme">Centre National des Ressources Textuelles et Lexicales</a></p>
+</blockquote>
+<p>L’algorithmique est souvent présentée comme la discipline centrale de l’informatique. Ainsi, si l’on parle d’enseignement de l’informatique, rapidement se pose la question de la maîtrise de l’algorithmique par les élèves. Aujourd’hui, je vais essayer de poser quelques éléments de réflexion concernant son apprentissage dans le contexte d’un enseignement de l’informatique à l’école.</p>
+<h1 id="lalgorithme-insidieux">L’algorithme insidieux</h1>
+<p>Commençons par une bonne nouvelle. Avant même le début du commencement d’une réforme du <em>numérique</em> vos enfants (ou ceux de vos voisins, amis, parents) utilisent des algorithmes. Rappeler vous comment on vous a appris à additionner des nombres: Tu additionnes le chiffre le plus à droite de chaque nombre, tu écris le chiffre des unités, tu poses la retenue, tu l’ajoutes aux chiffres les plus à droite suivants, et tu continues comme cela jusqu’à ce que tu aies traité tous les chiffres (à peu près, vous avez le droit d’utiliser votre propre variation tant que vous obtenez le bon résultat). Cette mécanique <em>est</em> un algorithme. La méthode pour identifier un groupe nominal en français est aussi un algorithme. Pire, c’est un algorithme utilisé également dans certaines branche de l’informatique. L’école, insidieusement, apprend des algorithmes à vos enfants.</p>
+<p>S’il n’y avait que l’école. Faites un gâteau avec votre enfant : vous regroupez les ingrédients selon la recette, vous les intégrés selon les étapes décrites et vous faites cuire selon les instructions. Un algorithme. Vous vous souvenez comment on vous a appris à lacer vos chaussures ? Algorithme. Vous êtes, nous sommes tous les monsieur Jourdain de l’algorithmique.</p>
+<h1 id="de-lusage-à-la-formalisation">De l’usage à la formalisation</h1>
+<p>De plus en plus, des enseignants essaient de guider les élèves vers la création de certains de ces algorithmes. De les mettre par exemple face à deux nombres et de les faire formaliser leur démarche pour les additionner. En cela, ils font plus pour faire apprendre l’informatique aux enfants que l’ensemble des gesticulations autour du <em>code à l’école</em>.</p>
+<p>Cette capacité à créer un algorithme, qui peut se réduire en primaire à une verbalisation des différentes étapes de l’algorithme ou la création d’une fiche technique avec l’aide de l’enseignant peut être une activité centrale pour réussir à développer son raisonnement. En donner les clés à l’apprenant, ce n’est pas construire un savoir spécifique mais un outil pour apprendre et comprendre.</p>
+<h1 id="le-rôle-de-linformatique">Le rôle de l’informatique</h1>
+<p>L’algorithmique est une des matières clés de l’informatique. Réussir à “coder” un algorithme, le retranscrire dans un langage de programmation, est souvent présenter comme le premier obstacle pour un étudiant en informatique. C’est faux. Le premier obstacle est de réussir à décomposer ce qu’on souhaite faire pour comprendre l’algorithme, la retranscription vient ensuite. Tenter d’apprendre simultanément l’algorithmique et un nouveau langage, c’est augmenter la taille de l’obstacle.</p>
+<p>L’avantage de l’informatique est de fournir un terrain de jeux immense pour apprendre cette formalisation. Avec des notions d’arithmétique de base et des tableaux de nombres, on peut fournir un tas d’exercice simple pour apprendre à construire des algorithmes.</p>
+<p>Toutefois, ce savoir est totalement inutile si on ne réussit pas à faire passer un message épisthémologique simple: ce sont les mêmes mécanismes de base qui sont à l’oeuvre pour construire les algorithmes en mathématiques, en français ou en informatique.</p>
+<h1 id="mais-alors-tu-es-pour-linformatique-à-lécole">Mais alors tu es pour l’informatique à l’école ?</h1>
+<p>C’est plus compliqué que cela. Je suis pour une école qui aide les enfants à se construire. Je ne parle pas de cette idée louable mais à l’intérêt discutable à mon sens de “former des citoyens” (apprenons le tri sélectif et les dangers des réseaux sociaux). Je parle de fournir les clés pour pouvoir raisonner. L’informatique, en tant que science, peut aider. Cela n’est pas étonnant quand on sait d’où elle vient. L’informatique, en tant que technique, non. Elle peut être utiliser avec parcimonie et à condition de ne pas jouer un rôle central comme support à la science, pas plus.</p>
+<p>Il y a u véritable problème avec ce que j’espère: cela ne se formalise pas sur une grille d’apprentissage. C’est fournir une aide au raisonnement, simplifier l’acquisition du savoir.</p>
+<p>Ce discours, est très dangereux. Les informaticiens qui ont l’impression de détenir un savoir qui leur donne une toute puissance sur le reste des mortels. Il n’en est rien. Ils n’ont à la disposition qu’un outil que beaucoup d’autres possèdent inconsciemment et qu’eux même utilisent parfois très mal hors de leur domaine.</p>
+<p>Image: source Wikipedia, en hommage à <a href="http://embruns.net/">Laurent</a>.</p>
+]]></description>
+    <pubDate>Tue, 17 Jun 2014 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2014-06-17-La-place-de-l-algorithmique.html</guid>
+</item>
+<item>
+    <title>L'éducation et l'informatique</title>
+    <link>http://nicolas.biri.name//posts/2014-06-16-l-education-et-l-informatique.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on June 16, 2014
+    
+</div>
+
+<h1 id="préambule">Préambule</h1>
+<p>L’air du temps est chargé d’idées fantasmées sur le numérique, son rôle et son importance dans la vie quotidienne. Ces fantasmes ont renforcé l’idée qu’un apprentissage du numérique, de l’informatique ou du code devait être centrale pour aider les futures générations à appréhender le monde. S’il est évident que l’informatique a une place grandissante dans les usages quotidiens, il ne faut pas surestimer son rôle et surtout la place qu’elle doit avoir dans l’éducation.</p>
+<p>Il y a quelques jours, j’apprenais que des députés avaient rédigé une proposition de loi visant à rendre obligatoire <a href="http://www.assemblee-nationale.fr/14/propositions/pion2022.asp">l’enseignement du <em>codage</em> à l’école</a>. L’intitulé m’avait interpellé et j’en avais fait une <a href="https://storify.com/Serianox_/loi-codage">relecture détaillée</a> sur twitter. Il s’agit d’une critique plutôt destructive car le texte est terriblement mauvais.</p>
+<p>Cette relecture m’a laissé un goût d’inachevé. S’il est facile de s’accorder sur ce qu’il ne faut pas faire, il est bien plus intéressant de donner des éléments sur ce que pourrait être un enseignement de l’informatique. Dans cette optique, cet article est je l’espère le premier d’une série sur l’apprentissage de l’informatique, tentant d’expliquer ce qui fait le coeur d’un apprentissage dans ce domaine.</p>
+<iframe
+  width="560" height="315" src="//www.youtube.com/embed/Ia55clAtdMs"
+  frameborder="0" allowfullscreen />
+
+<p>Pour bien commencer, si vous comprenez l’anglais, il peut être utile d’écouter cette vidéo de Simon Peyton Jones. Elle pose une distinction importante, celle entre l’utilisation des technologies numériques, peu utile à long terme, et la compréhension de l’informatique, qui peut être un vrai savoir de base. Le soucis est qu’il est facile de mal comprendre ce message et de lui substituer celui d’une opposition consommateur ou acteur de l’informatique. Il s’agit plutôt de dire que comme beaucoup d’autre sciences, les fondements de l’informatique peuvent être enseignés et aider à la compréhension. Cela n’est pas une incitation à développer, comme le français n’est pas une incitation à devenir écrivain.</p>
+<h1 id="quel-enseignement">Quel enseignement ?</h1>
+<h2 id="les-outils-matériels">Les outils matériels</h2>
+<p>La familiarisation avec du matériel informatique, quel qu’il soit (ordinateur, tablette) est un premier pas qui n’est pas inutile pour certains élèves. Donc pour commencer, oui, il est utile qu’ils aient une idée de l’interaction qu’on peut avoir avec un ordinateur. Il s’agit là du même apprentissage que l’on a avec tout nouvel outil. Ce n’est pas autre chose qu’apprendre à se servir d’une règle graduée, en un peu plus complexe. Il est important de ne pas le sacraliser. Cette sacralisation est d’ailleurs la source de nombreuses stupidités énoncées sur l’enseignement de l’informatique par nos politiciens. Il n’y a ici aucune révolution, juste la simple adaptation des outils proposés aux élèves au monde “moderne”.</p>
+<h2 id="lusage">L’usage</h2>
+<p>Comprendre en quoi l’ordinateur peut être utile dans la vie quotidienne est également important. Là aussi, il n’y a rien d’extraordinaire. Utiliser l’ordinateur pour se documenter, comme on le faisait avec des dictionnaires ou des encyclopédies avant. L’utiliser comme support pour soutenir les autres matières (publication sur internet, mise en page, vérification de calculs, etc.). Il n’y a là rien, absolument rien qui change les priorités de l’école. Il peut effectivement important de tenter d’imposer l’utilisation de l’outil mais cela ne change rien à ce qu’on espère des compétences des élèves. Encore une fois, l’ordinateur doit être vu comme un outil. Je sais que cette vue utilitariste de l’informatique gêne parfois. C’est pourtant la plus répandue dans les usages quotidiens.</p>
+<h2 id="la-compréhension-technologique-matérielle-et-logicielle">La compréhension technologique (matérielle et logicielle)</h2>
+<p>L’école a depuis longtemps, l’objectif d’aider les enfants à apréhender le monde. Cet objectif peut inclure sans aucun problème la compréhension générale du monde numérique (ordinateur, logiciel et réseau notamment). Cela est indispensable pour voir l’informatique comme une création humaine dirigée par l’homme, et non comme un objet ésothérique qui répond à sa seule volonté. Avec cette compréhension, on placerait les élèves au dessus de la majorité des journalistes technologiques, ce qui serait déjà une réussite. Là aussi, il s’agit d’un ajustement mineur : faire de la place dans les apprentissages technologiques des élèves pour les technologies du numérique.</p>
+<h1 id="rien-dautre">Rien d’autre ?</h1>
+<p>Non. Tout est déjà là. Le <em>codage</em>, tellement sacralisé, ne doit pas être un fondement central de l’éducation. Une simple initiation, pour comprendre comment on “donne des ordres” à un ordinateur peut suffire. Il s’agit dès lors d’un simple atelier, ou projet scolaire, comme il y en a déjà.</p>
+<p>L’idée de considérer le <em>code</em> (concept ridicule) au même niveau que le français ou les mathématiques est une absurdité sans nom. Ne pas savoir lire ou faire des calculs simples est un réel handicap. Ne pas savoir programmer est embêtant en de très rares occasions.</p>
+<p>L’informatique est une science à la croisée des chemins de plein d’autres. Ses premiers parents sont philosophes et logiciens (oui, c’est parfois les mêmes). Elle nécessite des capacités de raisonnement, d’abstraction, de conceptualisation, d’analyse. L’apprentissage de ses fondements pourrait être utile et aider certains à raisonner, elle pourrait en perdre d’autres. Systématiser son apprentissage est à mon avis à double tranchant. Dans un système centralisé comme celui de l’école française, c’est un risque énorme.</p>
+<p>Je crois en un apprentissage théorique de l’informatique, en son utilité pour certains. Et hors université, cet apprentissage est à construire. Il mérite mieux que des idées lancées à l’emporte pièce.</p>
+]]></description>
+    <pubDate>Mon, 16 Jun 2014 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2014-06-16-l-education-et-l-informatique.html</guid>
+</item>
+<item>
+    <title>Douce France</title>
+    <link>http://nicolas.biri.name//posts/2014-05-26-Douce-France.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on May 26, 2014
+    
+</div>
+
+<p>J’ai voté hier. À reculons. Plus que pour tout autre scrutins, les personnes, les idées, ou les deux ne me convenaient pas. Et pourtant, je savais que certains me convenaient encore moins que d’autres, alors j’ai voté. Bien sûr le résultat m’a attrister. Je vis dans une région qui vit sous perfusion internationale, dont l’économie est boostée par la présence des voisins allemands et Luxembourgeois, alors vous comprenez, un parti qui prône la fermeture des frontières…</p>
+<p>Il doit y en avoir des milliers par ici, qui travaillent à l’étranger et qui fantasment sur un retour des frontières pour une meilleure vie, ou un truc du genre. Ça me dépasse mais il est dur de les raisonner. Les fantasmes, ça se combat difficilement avec des faits.</p>
+<p>Alors j’ai voté. Et j’ai regardé les réactions. J’ai vu plein des gens que j’apprécie en vouloir à des tas de gens. À ceux qui votaient pour la haine, à ceux qui ne votaient pas, aux autres. Comme si c’était le bon soir pour en vouloir aux autres. de mon coté, j’étais juste triste. J’étais triste parce que non content d’avoir perdu, non content de voir l’obscurantisme faire le plein de voix, je pouvais trouver plein d’excuses qui semblaient légitime à mes yeux à ceux qui avaient décidé de ne pas voter, voir de voter pour ce que je rejette.</p>
+<p>Voilà des mois, des années, que je vois le même personnel politique, m’expliquer que la France va mal, qu’il faut changer. Et comme les mêmes me l’expliquent encore des mois et des années après, je comprends qu’on doute de leur parole et de leurs capacités. J’en doute aussi. Comment ne pas comprendre alors que certains décident de ne pas donner leur voix à ce qui peut sembler être une mascarade ? Face à ce manque de résultats, comment ne pas comprendre que d’autres se tournent vers ceux qui leur promettent monts et merveilles, avec des solutions simples que personne n’ose ?</p>
+<p>Voilà des années que tous, moi le premier, on relaie des doutes sur notre pays. Somme nous cons ! On vit bien en France. On y vit bien quand on a la chance de travailler à temps plein, souvent mieux qu’ailleurs pour les plus bas salaires. On vit bien en France quand on a la chance d’avoir un bon salaire. Peut-être un peu moins bien qu’ailleurs mais merde, c’est si mal que ça de sacrifier un peu de confort superflu par solidarité ? On vit pas très bien en France sans travail. On vit pas trop bien dans n’importe quel pays sans travail. De ce point de vue, j’ai vu des misères chez certains de nos voisins qui ne sont pas vraiment enviables.</p>
+<p>Amis frontistes. Avant de vouloir tout changer, pensez à ce que vous avez à perdre. Songez un instant, malgré tout, à ce que vous avec encore.</p>
+<p>Amis abstentionnistes, j’aimerais vous redonner espoir dans la démocratie, et pourtant je ne trouve pas d’argument. Pas avec les politiques qui font la promotion de leurs idées dans les médias, pas avec ces discours. Et pourtant, il est de notre devoir d’y croire. Car il y a tant à perdre.</p>
+]]></description>
+    <pubDate>Mon, 26 May 2014 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2014-05-26-Douce-France.html</guid>
+</item>
+<item>
+    <title>Some languages are more equals than others</title>
+    <link>http://nicolas.biri.name//posts/2012-10-27-some-languages-are-more-equals-than-others.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on October 27, 2012
+    
+</div>
+
+<p>In my last three posts, I’ve ended my Java example with a comment to indicate that I won’t write extra methods. <code>equals</code> is one of them. Today, we’re going to write what we need to test equality of two people.</p>
+<h2 id="fill-in-the-blank">Fill in the blank</h2>
+<p>Today’s scenario is really basic, so we can dive directly into the code. We start with the Person class in Java from the previous post:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
+
+    <span class="kw">private</span> <span class="dt">final</span> String  firstname;
+    <span class="kw">private</span> <span class="dt">final</span> String  lastname;
+    <span class="kw">private</span> <span class="dt">final</span> Integer age;
+    <span class="kw">private</span> <span class="dt">final</span> Person  father;
+
+    <span class="kw">public</span> <span class="fu">Person</span>(String  myFirstname,
+                  String  myLastname, 
+                  Integer myAge,
+                  Person  myFather) {
+        <span class="kw">this</span>.<span class="fu">firstname</span> = myFirstname;
+        <span class="kw">this</span>.<span class="fu">lastname</span>  = myLastname;
+        <span class="kw">this</span>.<span class="fu">age</span>       = myAge;
+        <span class="kw">this</span>.<span class="fu">father</span>    = myFather;
+    }
+
+    <span class="co">/* Feed it with any expected extra-methods */</span>
+}</code></pre>
+<p>And the Haskel version:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
+                     ,<span class="ot"> lastname  ::</span> <span class="dt">String</span>
+                     ,<span class="ot"> age       ::</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+                     ,<span class="ot"> father    ::</span> <span class="dt">Maybe</span> <span class="dt">Person</span>
+                     }</code></pre>
+<h2 id="painfull-equality-and-useful-shortcuts">Painfull equality and useful shortcuts</h2>
+<p>It is so boring to build equality that most Java IDE have a shortcut for it. Fortunately we have only one <code>equals</code> method to write and the class is quite short. Of course, we also have to provide an appropriate <code>hashCode</code> method, but as it doesn’t change anything to this example, its code is left to the reader. In general, there is no need to bind the implementation of <code>equals</code> and <code>hashCode</code>. It is often seen as mandatory for Java developer because both function are implemented in <code>Object</code>. But you may need to test equality without providing an hashing function, or the converse. So let’s continue with Java <code>equals</code> function:</p>
+<pre class="sourceCode java"><code class="sourceCode java"> <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(Object o) {
+     <span class="kw">if</span> (<span class="kw">this</span> == o) <span class="kw">return</span> <span class="kw">true</span>;
+     <span class="kw">if</span> (! (o instanceOf Person)) <span class="kw">return</span> <span class="kw">false</span>;
+     Person other = (Person) other;
+     <span class="kw">return</span> Objects.<span class="fu">equal</span>(firstname, other.<span class="fu">firstname</span>) &amp;&amp;
+            Objects.<span class="fu">equal</span>(lastname, other.<span class="fu">lastname</span>) &amp;&amp; 
+            Objects.<span class="fu">equal</span>(age, other.<span class="fu">age</span>) &amp;&amp; 
+            Objects.<span class="fu">equal</span>(father, other.<span class="fu">father</span>); 
+}</code></pre>
+<p><code>Objects</code> class was introduced in Java 7 and is very very incomplete at the moment (in my opinion) but that’s out of scope. At least, its introduction allow us to avoid the use of ternary operators to check nullity. If you use an older version of Java, you should use stuff like <code>father == null ? other.father == null : other.father.equals(father)</code> in your code but verbose code is easier to maintain, right?</p>
+<p>Lets do it in Haskell. It’s also painful. Aside the type declaration, you have to claim that you have an <em>instance</em> of equal for your Person type:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Person</span> <span class="kw">where</span>
+  (<span class="dt">Person</span> fn1 ln2 age1 father1) <span class="fu">==</span> (<span class="dt">Person</span> fn2 ln2 age2 father2) <span class="fu">=</span>
+    fn1     <span class="fu">==</span> fn2    <span class="fu">&amp;&amp;</span>
+    ln1     <span class="fu">==</span> ln2    <span class="fu">&amp;&amp;</span>
+    age1    <span class="fu">==</span> age2   <span class="fu">&amp;&amp;</span>
+    father1 <span class="fu">==</span> father2
+  _ <span class="fu">==</span> _ <span class="fu">=</span> <span class="dt">False</span></code></pre>
+<p>Yes, its only a bit shorter. The test of different “fields” is a bit easier. The main reason is that we don’t have the differentiation of pointer equality and object equality. The only kind of equality that can be defined in Haskell is object equality. Another reason is that we don’t have to bother with <code>null</code> but we have already talked about it. There is a third reason. Try to guess what it could be, the answer is in the next part of this post.</p>
+<p>Haskell could have stick to this solution and wait for solutions provided by IDE to simplify the life of the developers. Instead, they propose a keyword, <code>deriving</code>. With this keyword, we can add equality (and other typeclasses) to a type quite easily. In our specific case, we have to add the following line right below the definition of the Person type: <code>deriving (Eq)</code>. This time, it’s shorter:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
+                     ,<span class="ot"> lastname  ::</span> <span class="dt">String</span>
+                     ,<span class="ot"> age       ::</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+                     ,<span class="ot"> father    ::</span> <span class="dt">Maybe</span> <span class="dt">Person</span>
+                     }
+              <span class="kw">deriving</span> (<span class="dt">Eq</span>)</code></pre>
+<h2 id="type-safety-everywhere">Type safety everywhere</h2>
+<p>So, what is the third difference between the “long implementation of equality in Haskell and its Java counterpart? The short answer is there is no explicit type check in the Haskell version. The complete answer is there is no type check <strong>at runtime</strong> in the Haskell version. In Haskell, when you use equal, the compiler requires that both arguments have the same type. It’s not better or worse, it’s different. The motivation for this choice is as follow: Haskell ask you to know which are the exact types of the values you manipulate. So, if you come with two values of different types and compare them, it considers it as an error. Most of the time, it works similarly in Java. Most of the time… We will see what happens in the other case in a next post.</p>
+<h2 id="haskell-bonus-point">Haskell Bonus Point</h2>
+<p>In the Haskell snippets, where does this <code>Eq</code> comes from and what means this <code>instance</code> keyword? <code>Eq</code> is what we called a <a href="http://en.wikipedia.org/wiki/Type_class" title="Yes, a wikipedia link, the article is quite complete and comprehensive">typeclass</a>. For any type, you can provide an instance of a typeclass, providing the function required by it. In the <code>Eq</code> cases two function are defined: <code>(==)</code> and <code>(/=)</code>. The complete definition is the following:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span>  <span class="dt">Eq</span> a  <span class="kw">where</span>
+<span class="ot">    (/=)             ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+    x <span class="fu">/=</span> y           <span class="fu">=</span>  not (x <span class="fu">==</span> y)
+<span class="ot">    (==)             ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>
+    x <span class="fu">==</span> y           <span class="fu">=</span>  not (x <span class="fu">/=</span> y)</code></pre>
+<p>As you can see, there is already a minimal definition of <code>(==)</code> and <code>(/=)</code>, which allows you to define only one of the two functions when you create an instance. A first remark about type signature (<code>(/=) :: a -&gt; a -&gt; Bool</code> and <code>(==) :: a -&gt; a -&gt; Bool</code>). As often in Haskell, the signature is here for documentation purpose. It can be read as: function <code>(==)</code> (and respectively <code>(/=)</code>) takes an <code>a</code> to produce a function that takes an <code>a</code> to produce a boolean. Its a bit different than a function that takes two <code>a</code> to produce a boolean, but we will focus on it another day. Actually, it can be used as if it was a two <code>a</code> argument function. <code>a</code> is a type variable, which must be replace by the correct type when you declare your instance. In our example, it was replaced by <code>Person</code> in our declaration. Some other little Haskell things. The use of parenthesis around a function with two parameters indicates that you can use the function without the parenthesis in an infix manner. To test equality of two values <code>a</code> and <code>b</code>, you can either write <code>a == b</code> or <code>(==) a b</code>.</p>
+<p>Typclasses can be seen from a Java developer point of view as interfaces. It’s not totally accurate since you can’t build a one-to-one mapping between the two approach. There are some analogies between the imperative and the functional paradigm, but they fail at some point. I’m giving you two major differences (there are certainly more of them):</p>
+<ul>
+<li>You can define a default implementation for some method in a typeclass, not in an interface.</li>
+<li>You can add instance to a type whenever you want. Not only when you introduce it in your code. If my type doesn’t have an instance of <code>Eq</code>, I can add it when I need to.</li>
+</ul>
+]]></description>
+    <pubDate>Sat, 27 Oct 2012 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2012-10-27-some-languages-are-more-equals-than-others.html</guid>
+</item>
+<item>
+    <title>Null and Option, fire and ice</title>
+    <link>http://nicolas.biri.name//posts/2012-10-22-null-and-option-fire-and-ice.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on October 22, 2012
+    
+</div>
+
+<p>ML, Haskell or Erlang, does not have <code>null</code> and they <a href="/English/Make%20it%20functional/2012/10/10/nothing-just-call-me-maybe/" title="Nothing, Just, call me Maybe (on this blog)">don’t miss it</a>. Tony Hoare himself consider the introduction of null as an error. A billion dollar error more precisely. As a consequence, many languages try to work around <code>null</code>. Groovy has its <em>safe navigation operator</em> (<code>.?</code>), Scala has its <em>Option</em> and Java has… well Java has <code>if (x != null) … else …</code>. As this last solution is neither concise nor elegant, some programmers support the introduction of an equivalent to <code>Option</code> in Java. In the Java 8 perspective, <a href="http://java.dzone.com/articles/no-more-excuses-use-null" title="No more excuses to use null references in Java 8, on DZone">Mario Fusco’s article</a> is certainly one of the most interesting on this subject. The idea is simple and straightforward: as it seems cool to avoid using <code>null</code>, let’s provide a way to avoid it more often.</p>
+<p>A few words about the Groovy solution. <code>x?.foo</code> is basically a shortcut for: <code>x == null? null : x.foo</code> you can achieve almost the same with a macro in your text editor. It is useful because it saves a lot of typing and makes code denser but it doesn’t provide any type safety.</p>
+<p>We should agree that the main goal of avoiding <code>null</code> is to be sure that we handle the lack of information properly. <em>Properly</em> means that if there is an uncertainty, I <strong>have to</strong> deal with it either by propagating it (as the <code>.?</code> groovy operator or the <a href="http://en.wikipedia.org/wiki/Null_Object_pattern" title="The null object pattern in Wikipedia">null object pattern</a> does), but also by providing a default value or by doing a different process depending on the case. <code>Option</code>/<code>Maybe</code> comes with a lot of handy function to do it.</p>
+<p>So far, so good. Except that Scala and Java do have <code>null</code>. Let’s come back to what happen in a null-free world. Suppose that you’re writing a function and you’re not sure you can provide the expected result. In this case, you only have two options:</p>
+<ul>
+<li>Use an <code>Option</code>/<code>Maybe</code> and claim explicitly that your function doesn’t know if it can provide a result.</li>
+<li>Throw an exception, saying that something was not expected at all directly.</li>
+</ul>
+<p>It’s clear. I’m not sure it can be clearer. Let’s come back to the world of null and look how we deal with the same situation, without taking into account the <code>Option</code> alternative:</p>
+<ul>
+<li>Return null if your function can compute a result. In the best case, you will say it explicitly… in the documentation. The compiler isn’t aware of it. Other devs will know about it only if they read the doc. But the program continues.</li>
+<li>Throw an exception, exactly like in the previous case.</li>
+</ul>
+<p>Adding Option to the second case, people expect to get back to the first one. Ahem… <strong>No!</strong> Here is what you get instead:</p>
+<ul>
+<li>Return null if your function can compute a result. In the best case, you will say it explicitly… in the documentation. The compiler isn’t aware of it. Other devs will know about it only if they read the doc. But the program continues.</li>
+<li>Use an <code>Option</code>/<code>Maybe</code> and claim explicitly that your function doesn’t know if it can provides a result.</li>
+<li>Throw an exception, saying that something was not expected at all directly.</li>
+</ul>
+<p>Yes, it’s almost an automatic merge. Do you see where I’m going with that? When I call a function, I can’t know if the programmer hasn’t decide to use <code>null</code> if the function don’t have a result. Worse, even if I see an Option, I can’t tell if this guy isn’t bad enough to return a <code>null</code> instead of a real <code>Option</code>. Yes you can expect that other programmers respect a kind of best practice and stick to the Option/exception alternatives. But best practices aren’t statically typed.</p>
+<p>It leads us to a difficult choice. Shall we add this third solution or not. Due to the feedbacks I’ve read about Mario’s article about <code>Option</code> in Java, I tend to understand that the community thinks so. After a long discussion between myself and I, I tend to agree with them. But I keep it mind that it doesn’t resolve at all the <code>null</code> issue. It’s just a patch.</p>
+]]></description>
+    <pubDate>Mon, 22 Oct 2012 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2012-10-22-null-and-option-fire-and-ice.html</guid>
+</item>
+
+    </channel> 
+</rss>
