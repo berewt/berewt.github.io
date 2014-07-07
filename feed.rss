@@ -6,8 +6,34 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Tue, 17 Jun 2014 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Thu, 03 Jul 2014 00:00:00 UT</lastBuildDate>
         <item>
+    <title>Le mythe du savoir pratique</title>
+    <link>http://nicolas.biri.name//posts/2014-07-03-Le-mythe-du-savoir-pratique.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on July  3, 2014
+    
+</div>
+
+<p>Le problème quand on est contre une technologisation des savoirs à l’école, notamment en primaire, est le même que quand on avance face au vent un jour de tempête. De nuit. En hiver. Et qu’il pleut. Beaucoup. Bref, c’est pas l’expérience la plus agréable qui soit.</p>
+<p>C’est qu’apprendre aux enfants des savoirs techniques, c’est leur apprendre à se “débrouiller”, et ça, c’est super. Ils peuvent créer, faire des choses eux mêmes, être indépendant. Ils doivent aussi pouvoir sauver le monde, la veuve et l’orphelin et avoir le poil soyeux.</p>
+<p>En fait, on ne peut pas être contre l’apprentissage de nouvelles choses à un enfant, c’est super d’apprendre des trucs. Pensez vous, quand on est contre apprentissage, la balance est simple chez beaucoup: dans un cas, l’enfant a un savoir en plus, dans l’autre cas, il ne l’a pas. Quel monstre voudrait le priver d’un savoir ?</p>
+<p>Quand on objecte que ce savoir nécessite du temps et que ce temps, c’est nécessairement celui d’un autre savoir, ça devient un peu plus complexe. Celles qui sortent sont en général de deux ordres :</p>
+<pre><code>- Il y a des savoirs inutiles, il suffit de prendre le temps sur
+  l&#39;enseignement de ceux-ci.
+- On a déjà un enseignement technique en primaire, il suffit de n&#39;apprendre
+  que le savoir X à la place, c&#39;est bien plus important (X étant le savoir
+  à la mode, dans notre cas, l&#39;informatique).</code></pre>
+<p>J’ai un vrai problème avec ces deux points. Et au fond, ce problème est le même dans les deux cas : pour juger quel savoir ou non est dispensable, il est nécessaire de savoir quel est le but que l’on souhaite pour l’enseignement.</p>
+<p>Là encore, l’argument en faveur des savoirs techniques est implacable : connaître la technique, c’est obtenir de la liberté face aux constructeurs / commerciaux / entreprises / chats au regard mignon. Admettons.</p>
+<p>Ceux qui avancent de telles théorie n’ont pas appris à bidouiller à l’école. Non, même un cours sur table traçante ou une initiation en basic ne leur a pas appris, arrêtons de se mentir, ça a pu leur donner envie, mais pas plus. En revanche, pour eux, l’école a parfaitement jouer son rôle. Elle leur a appris à avoir un regard critique, un esprit d’analyse, qui leur permet aujourd’hui de juger que ce savoir, qu’ils ont pu acquérir plus tard car l’école leur avait donner les moyens d’apprendre, leur semble important.</p>
+<p>C’est à mon sens cela qui est la clé de la réussite de l’éducation : permettre à un futur citoyen de pouvoir se faire une idée éclairée sur le monde et de l’aider dans l’apprentissage de nouveaux savoirs. Pas de lui donner les outils pour une idée du monde qu’on s’est faite pour lui. Si l’on veut atteindre ce but, cela passe par plein de choses au primaire, qui ne laisse de temps à coté que pour montrer ce qu’il est possible de faire, pas pour le pratiquer suffisamment pour devenir “un bidouilleur”.</p>
+<p>Accessoirement, si c’est notre but, les programmes actuels y répondent globalement bien. Les résultats ne semblent pas bon, notamment pour les élèves venant de milieux modestes, mais la réponse passe certainement plus par des outils pédagogiques que par un changement des savoirs.</p>
+]]></description>
+    <pubDate>Thu, 03 Jul 2014 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2014-07-03-Le-mythe-du-savoir-pratique.html</guid>
+</item>
+<item>
     <title>La place de l'algorithmique</title>
     <link>http://nicolas.biri.name//posts/2014-06-17-La-place-de-l-algorithmique.html</link>
     <description><![CDATA[<div class="info">
@@ -174,39 +200,6 @@
 ]]></description>
     <pubDate>Sat, 27 Oct 2012 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2012-10-27-some-languages-are-more-equals-than-others.html</guid>
-</item>
-<item>
-    <title>Null and Option, fire and ice</title>
-    <link>http://nicolas.biri.name//posts/2012-10-22-null-and-option-fire-and-ice.html</link>
-    <description><![CDATA[<div class="info">
-    Posted on October 22, 2012
-    
-</div>
-
-<p>ML, Haskell or Erlang, does not have <code>null</code> and they <a href="/English/Make%20it%20functional/2012/10/10/nothing-just-call-me-maybe/" title="Nothing, Just, call me Maybe (on this blog)">don’t miss it</a>. Tony Hoare himself consider the introduction of null as an error. A billion dollar error more precisely. As a consequence, many languages try to work around <code>null</code>. Groovy has its <em>safe navigation operator</em> (<code>.?</code>), Scala has its <em>Option</em> and Java has… well Java has <code>if (x != null) … else …</code>. As this last solution is neither concise nor elegant, some programmers support the introduction of an equivalent to <code>Option</code> in Java. In the Java 8 perspective, <a href="http://java.dzone.com/articles/no-more-excuses-use-null" title="No more excuses to use null references in Java 8, on DZone">Mario Fusco’s article</a> is certainly one of the most interesting on this subject. The idea is simple and straightforward: as it seems cool to avoid using <code>null</code>, let’s provide a way to avoid it more often.</p>
-<p>A few words about the Groovy solution. <code>x?.foo</code> is basically a shortcut for: <code>x == null? null : x.foo</code> you can achieve almost the same with a macro in your text editor. It is useful because it saves a lot of typing and makes code denser but it doesn’t provide any type safety.</p>
-<p>We should agree that the main goal of avoiding <code>null</code> is to be sure that we handle the lack of information properly. <em>Properly</em> means that if there is an uncertainty, I <strong>have to</strong> deal with it either by propagating it (as the <code>.?</code> groovy operator or the <a href="http://en.wikipedia.org/wiki/Null_Object_pattern" title="The null object pattern in Wikipedia">null object pattern</a> does), but also by providing a default value or by doing a different process depending on the case. <code>Option</code>/<code>Maybe</code> comes with a lot of handy function to do it.</p>
-<p>So far, so good. Except that Scala and Java do have <code>null</code>. Let’s come back to what happen in a null-free world. Suppose that you’re writing a function and you’re not sure you can provide the expected result. In this case, you only have two options:</p>
-<ul>
-<li>Use an <code>Option</code>/<code>Maybe</code> and claim explicitly that your function doesn’t know if it can provide a result.</li>
-<li>Throw an exception, saying that something was not expected at all directly.</li>
-</ul>
-<p>It’s clear. I’m not sure it can be clearer. Let’s come back to the world of null and look how we deal with the same situation, without taking into account the <code>Option</code> alternative:</p>
-<ul>
-<li>Return null if your function can compute a result. In the best case, you will say it explicitly… in the documentation. The compiler isn’t aware of it. Other devs will know about it only if they read the doc. But the program continues.</li>
-<li>Throw an exception, exactly like in the previous case.</li>
-</ul>
-<p>Adding Option to the second case, people expect to get back to the first one. Ahem… <strong>No!</strong> Here is what you get instead:</p>
-<ul>
-<li>Return null if your function can compute a result. In the best case, you will say it explicitly… in the documentation. The compiler isn’t aware of it. Other devs will know about it only if they read the doc. But the program continues.</li>
-<li>Use an <code>Option</code>/<code>Maybe</code> and claim explicitly that your function doesn’t know if it can provides a result.</li>
-<li>Throw an exception, saying that something was not expected at all directly.</li>
-</ul>
-<p>Yes, it’s almost an automatic merge. Do you see where I’m going with that? When I call a function, I can’t know if the programmer hasn’t decide to use <code>null</code> if the function don’t have a result. Worse, even if I see an Option, I can’t tell if this guy isn’t bad enough to return a <code>null</code> instead of a real <code>Option</code>. Yes you can expect that other programmers respect a kind of best practice and stick to the Option/exception alternatives. But best practices aren’t statically typed.</p>
-<p>It leads us to a difficult choice. Shall we add this third solution or not. Due to the feedbacks I’ve read about Mario’s article about <code>Option</code> in Java, I tend to understand that the community thinks so. After a long discussion between myself and I, I tend to agree with them. But I keep it mind that it doesn’t resolve at all the <code>null</code> issue. It’s just a patch.</p>
-]]></description>
-    <pubDate>Mon, 22 Oct 2012 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2012-10-22-null-and-option-fire-and-ice.html</guid>
 </item>
 
     </channel> 
