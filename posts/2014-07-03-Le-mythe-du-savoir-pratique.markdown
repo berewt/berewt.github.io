@@ -38,10 +38,11 @@ commerciaux / entreprises / chats au regard mignon. Admettons.
 
 Ceux qui avancent de telles théorie n'ont pas appris à bidouiller à l'école.
 Non, même un cours sur table traçante ou une initiation en basic ne leur a pas
-appris, arrêtons de se mentir. En revanche, pour eux, l'école a parfaitement
-jouer son rôle. Elle leur a appris à avoir un regard critique, un esprit
-d'analyse, qui leur permet aujourd'hui de juger que ce savoir, qu'ils ont pu
-acquérir plus tard car l'école leur avait donner les moyens d'apprendre, leur semble important.
+appris, arrêtons de se mentir, ça a pu leur donner envie, mais pas plus. En
+revanche, pour eux, l'école a parfaitement jouer son rôle. Elle leur a appris à
+avoir un regard critique, un esprit d'analyse, qui leur permet aujourd'hui de
+juger que ce savoir, qu'ils ont pu acquérir plus tard car l'école leur avait
+donner les moyens d'apprendre, leur semble important.
 
 C'est à mon sens cela qui est la clé de la réussite de l'éducation : permettre
 à un futur citoyen de pouvoir se faire une idée éclairée sur le monde et de
@@ -54,4 +55,4 @@ suffisamment pour devenir "un bidouilleur".
 Accessoirement, si c'est notre but, les programmes actuels y répondent
 globalement bien. Les résultats ne semblent pas bon, notamment pour les élèves
 venant de milieux modestes, mais la réponse passe certainement plus par des
-outils pédagogiqiues que par un changement des savoirs. 
+outils pédagogiques que par un changement des savoirs. 
