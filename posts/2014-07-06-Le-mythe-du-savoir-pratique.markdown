@@ -23,11 +23,11 @@ Quand on objecte que ce savoir nécessite du temps et que ce temps, c'est
 nécessairement celui d'un autre savoir, ça devient un peu plus complexe. Celles
 qui sortent sont en général de deux ordres :
 
-    - Il y a des savoirs inutiles, il suffit de prendre le temps sur
-      l'enseignement de ceux-ci.
-    - On a déjà un enseignement technique en primaire, il suffit de n'apprendre
-      que le savoir X à la place, c'est bien plus important (X étant le savoir
-      à la mode, dans notre cas, l'informatique).
+- Il y a des savoirs inutiles, il suffit de prendre le temps sur l'enseignement
+  de ceux-ci.
+- On a déjà un enseignement technique en primaire, il suffit de n'apprendre que
+  le savoir X à la place, c'est bien plus important (X étant le savoir à la
+mode, dans notre cas, l'informatique).
 
 J'ai un vrai problème avec ces deux points. Et au fond, ce problème est le même
 dans les deux cas : pour juger quel savoir ou non est dispensable, il est
