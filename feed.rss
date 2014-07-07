@@ -6,12 +6,12 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Thu, 03 Jul 2014 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Sun, 06 Jul 2014 00:00:00 UT</lastBuildDate>
         <item>
     <title>Le mythe du savoir pratique</title>
-    <link>http://nicolas.biri.name//posts/2014-07-03-Le-mythe-du-savoir-pratique.html</link>
+    <link>http://nicolas.biri.name//posts/2014-07-06-Le-mythe-du-savoir-pratique.html</link>
     <description><![CDATA[<div class="info">
-    Posted on July  3, 2014
+    Posted on July  6, 2014
     
 </div>
 
@@ -19,19 +19,18 @@
 <p>C’est qu’apprendre aux enfants des savoirs techniques, c’est leur apprendre à se “débrouiller”, et ça, c’est super. Ils peuvent créer, faire des choses eux mêmes, être indépendant. Ils doivent aussi pouvoir sauver le monde, la veuve et l’orphelin et avoir le poil soyeux.</p>
 <p>En fait, on ne peut pas être contre l’apprentissage de nouvelles choses à un enfant, c’est super d’apprendre des trucs. Pensez vous, quand on est contre apprentissage, la balance est simple chez beaucoup: dans un cas, l’enfant a un savoir en plus, dans l’autre cas, il ne l’a pas. Quel monstre voudrait le priver d’un savoir ?</p>
 <p>Quand on objecte que ce savoir nécessite du temps et que ce temps, c’est nécessairement celui d’un autre savoir, ça devient un peu plus complexe. Celles qui sortent sont en général de deux ordres :</p>
-<pre><code>- Il y a des savoirs inutiles, il suffit de prendre le temps sur
-  l&#39;enseignement de ceux-ci.
-- On a déjà un enseignement technique en primaire, il suffit de n&#39;apprendre
-  que le savoir X à la place, c&#39;est bien plus important (X étant le savoir
-  à la mode, dans notre cas, l&#39;informatique).</code></pre>
+<ul>
+<li>Il y a des savoirs inutiles, il suffit de prendre le temps sur l’enseignement de ceux-ci.</li>
+<li>On a déjà un enseignement technique en primaire, il suffit de n’apprendre que le savoir X à la place, c’est bien plus important (X étant le savoir à la mode, dans notre cas, l’informatique).</li>
+</ul>
 <p>J’ai un vrai problème avec ces deux points. Et au fond, ce problème est le même dans les deux cas : pour juger quel savoir ou non est dispensable, il est nécessaire de savoir quel est le but que l’on souhaite pour l’enseignement.</p>
 <p>Là encore, l’argument en faveur des savoirs techniques est implacable : connaître la technique, c’est obtenir de la liberté face aux constructeurs / commerciaux / entreprises / chats au regard mignon. Admettons.</p>
 <p>Ceux qui avancent de telles théorie n’ont pas appris à bidouiller à l’école. Non, même un cours sur table traçante ou une initiation en basic ne leur a pas appris, arrêtons de se mentir, ça a pu leur donner envie, mais pas plus. En revanche, pour eux, l’école a parfaitement jouer son rôle. Elle leur a appris à avoir un regard critique, un esprit d’analyse, qui leur permet aujourd’hui de juger que ce savoir, qu’ils ont pu acquérir plus tard car l’école leur avait donner les moyens d’apprendre, leur semble important.</p>
 <p>C’est à mon sens cela qui est la clé de la réussite de l’éducation : permettre à un futur citoyen de pouvoir se faire une idée éclairée sur le monde et de l’aider dans l’apprentissage de nouveaux savoirs. Pas de lui donner les outils pour une idée du monde qu’on s’est faite pour lui. Si l’on veut atteindre ce but, cela passe par plein de choses au primaire, qui ne laisse de temps à coté que pour montrer ce qu’il est possible de faire, pas pour le pratiquer suffisamment pour devenir “un bidouilleur”.</p>
 <p>Accessoirement, si c’est notre but, les programmes actuels y répondent globalement bien. Les résultats ne semblent pas bon, notamment pour les élèves venant de milieux modestes, mais la réponse passe certainement plus par des outils pédagogiques que par un changement des savoirs.</p>
 ]]></description>
-    <pubDate>Thu, 03 Jul 2014 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2014-07-03-Le-mythe-du-savoir-pratique.html</guid>
+    <pubDate>Sun, 06 Jul 2014 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2014-07-06-Le-mythe-du-savoir-pratique.html</guid>
 </item>
 <item>
     <title>La place de l'algorithmique</title>
