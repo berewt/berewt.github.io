@@ -83,17 +83,17 @@ mon sens de "former des citoyens" (apprenons le tri sélectif et les dangers des
 réseaux sociaux). Je parle de fournir les clés pour pouvoir raisonner.
 L'informatique, en tant que science, peut aider. Cela n'est pas étonnant quand on
 sait d'où elle vient. L'informatique, en tant que technique, non. Elle peut être
-utiliser avec parcimonie et à condition de ne pas jouer un rôle central comme
-support à la science, pas plus.
+utilisée avec parcimonie et à condition de ne pas jouer un rôle central. Elle doit
+rester un support à la science, pas plus.
 
 Il y a u véritable problème avec ce que j'espère: cela ne se formalise pas sur
 une grille d'apprentissage. C'est fournir une aide au raisonnement, simplifier
 l'acquisition du savoir.
 
-Ce discours, est très dangereux. Les informaticiens qui ont l'impression de
-détenir un savoir qui leur donne une toute puissance sur le reste des mortels.
-Il n'en est rien. Ils n'ont à la disposition qu'un outil que beaucoup d'autres
-possèdent inconsciemment et qu'eux même utilisent parfois très mal hors de leur
-domaine.
+Le discours des informaticiens qui ont l'impression de détenir un savoir qui
+leur donne une toute puissance sur le reste des mortels, sous-jacent au discours
+majoritaire est très dangereux. Et faux. Ils n'ont à la disposition qu'un outil
+que beaucoup d'autres possèdent inconsciemment et qu'eux même utilisent parfois
+très mal hors de leur domaine.
 
 Image: source Wikipedia, en hommage à [Laurent](http://embruns.net/).
