@@ -31,7 +31,7 @@
 <p>In my last three posts, I’ve ended my Java example with a comment to indicate that I won’t write extra methods. <code>equals</code> is one of them. Today, we’re going to write what we need to test equality of two people.</p>
 <h2 id="fill-in-the-blank">Fill in the blank</h2>
 <p>Today’s scenario is really basic, so we can dive directly into the code. We start with the Person class in Java from the previous post:</p>
-<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
 
     <span class="kw">private</span> <span class="dt">final</span> String  firstname;
     <span class="kw">private</span> <span class="dt">final</span> String  lastname;
@@ -49,16 +49,16 @@
     }
 
     <span class="co">/* Feed it with any expected extra-methods */</span>
-}</code></pre>
+}</code></pre></div>
 <p>And the Haskel version:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
                      ,<span class="ot"> lastname  ::</span> <span class="dt">String</span>
                      ,<span class="ot"> age       ::</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
                      ,<span class="ot"> father    ::</span> <span class="dt">Maybe</span> <span class="dt">Person</span>
-                     }</code></pre>
+                     }</code></pre></div>
 <h2 id="painfull-equality-and-useful-shortcuts">Painfull equality and useful shortcuts</h2>
 <p>It is so boring to build equality that most Java IDE have a shortcut for it. Fortunately we have only one <code>equals</code> method to write and the class is quite short. Of course, we also have to provide an appropriate <code>hashCode</code> method, but as it doesn’t change anything to this example, its code is left to the reader. In general, there is no need to bind the implementation of <code>equals</code> and <code>hashCode</code>. It is often seen as mandatory for Java developer because both function are implemented in <code>Object</code>. But you may need to test equality without providing an hashing function, or the converse. So let’s continue with Java <code>equals</code> function:</p>
-<pre class="sourceCode java"><code class="sourceCode java"> <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(Object o) {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"> <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(Object o) {
      <span class="kw">if</span> (<span class="kw">this</span> == o) <span class="kw">return</span> <span class="kw">true</span>;
      <span class="kw">if</span> (! (o instanceOf Person)) <span class="kw">return</span> <span class="kw">false</span>;
      Person other = (Person) other;
@@ -66,33 +66,33 @@
             Objects.<span class="fu">equal</span>(lastname, other.<span class="fu">lastname</span>) &amp;&amp; 
             Objects.<span class="fu">equal</span>(age, other.<span class="fu">age</span>) &amp;&amp; 
             Objects.<span class="fu">equal</span>(father, other.<span class="fu">father</span>); 
-}</code></pre>
+}</code></pre></div>
 <p><code>Objects</code> class was introduced in Java 7 and is very very incomplete at the moment (in my opinion) but that’s out of scope. At least, its introduction allow us to avoid the use of ternary operators to check nullity. If you use an older version of Java, you should use stuff like <code>father == null ? other.father == null : other.father.equals(father)</code> in your code but verbose code is easier to maintain, right?</p>
 <p>Lets do it in Haskell. It’s also painful. Aside the type declaration, you have to claim that you have an <em>instance</em> of equal for your Person type:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Person</span> <span class="kw">where</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">instance</span> <span class="dt">Eq</span> <span class="dt">Person</span> <span class="kw">where</span>
   (<span class="dt">Person</span> fn1 ln2 age1 father1) <span class="fu">==</span> (<span class="dt">Person</span> fn2 ln2 age2 father2) <span class="fu">=</span>
     fn1     <span class="fu">==</span> fn2    <span class="fu">&amp;&amp;</span>
     ln1     <span class="fu">==</span> ln2    <span class="fu">&amp;&amp;</span>
     age1    <span class="fu">==</span> age2   <span class="fu">&amp;&amp;</span>
     father1 <span class="fu">==</span> father2
-  _ <span class="fu">==</span> _ <span class="fu">=</span> <span class="dt">False</span></code></pre>
+  _ <span class="fu">==</span> _ <span class="fu">=</span> <span class="dt">False</span></code></pre></div>
 <p>Yes, its only a bit shorter. The test of different “fields” is a bit easier. The main reason is that we don’t have the differentiation of pointer equality and object equality. The only kind of equality that can be defined in Haskell is object equality. Another reason is that we don’t have to bother with <code>null</code> but we have already talked about it. There is a third reason. Try to guess what it could be, the answer is in the next part of this post.</p>
 <p>Haskell could have stick to this solution and wait for solutions provided by IDE to simplify the life of the developers. Instead, they propose a keyword, <code>deriving</code>. With this keyword, we can add equality (and other typeclasses) to a type quite easily. In our specific case, we have to add the following line right below the definition of the Person type: <code>deriving (Eq)</code>. This time, it’s shorter:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
                      ,<span class="ot"> lastname  ::</span> <span class="dt">String</span>
                      ,<span class="ot"> age       ::</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
                      ,<span class="ot"> father    ::</span> <span class="dt">Maybe</span> <span class="dt">Person</span>
                      }
-              <span class="kw">deriving</span> (<span class="dt">Eq</span>)</code></pre>
+              <span class="kw">deriving</span> (<span class="dt">Eq</span>)</code></pre></div>
 <h2 id="type-safety-everywhere">Type safety everywhere</h2>
 <p>So, what is the third difference between the “long implementation of equality in Haskell and its Java counterpart? The short answer is there is no explicit type check in the Haskell version. The complete answer is there is no type check <strong>at runtime</strong> in the Haskell version. In Haskell, when you use equal, the compiler requires that both arguments have the same type. It’s not better or worse, it’s different. The motivation for this choice is as follow: Haskell ask you to know which are the exact types of the values you manipulate. So, if you come with two values of different types and compare them, it considers it as an error. Most of the time, it works similarly in Java. Most of the time… We will see what happens in the other case in a next post.</p>
 <h2 id="haskell-bonus-point">Haskell Bonus Point</h2>
 <p>In the Haskell snippets, where does this <code>Eq</code> comes from and what means this <code>instance</code> keyword? <code>Eq</code> is what we called a <a href="http://en.wikipedia.org/wiki/Type_class" title="Yes, a wikipedia link, the article is quite complete and comprehensive">typeclass</a>. For any type, you can provide an instance of a typeclass, providing the function required by it. In the <code>Eq</code> cases two function are defined: <code>(==)</code> and <code>(/=)</code>. The complete definition is the following:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span>  <span class="dt">Eq</span> a  <span class="kw">where</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">class</span>  <span class="dt">Eq</span> a  <span class="kw">where</span>
 <span class="ot">    (/=)             ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>
     x <span class="fu">/=</span> y           <span class="fu">=</span>  not (x <span class="fu">==</span> y)
 <span class="ot">    (==)             ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span>
-    x <span class="fu">==</span> y           <span class="fu">=</span>  not (x <span class="fu">/=</span> y)</code></pre>
+    x <span class="fu">==</span> y           <span class="fu">=</span>  not (x <span class="fu">/=</span> y)</code></pre></div>
 <p>As you can see, there is already a minimal definition of <code>(==)</code> and <code>(/=)</code>, which allows you to define only one of the two functions when you create an instance. A first remark about type signature (<code>(/=) :: a -&gt; a -&gt; Bool</code> and <code>(==) :: a -&gt; a -&gt; Bool</code>). As often in Haskell, the signature is here for documentation purpose. It can be read as: function <code>(==)</code> (and respectively <code>(/=)</code>) takes an <code>a</code> to produce a function that takes an <code>a</code> to produce a boolean. Its a bit different than a function that takes two <code>a</code> to produce a boolean, but we will focus on it another day. Actually, it can be used as if it was a two <code>a</code> argument function. <code>a</code> is a type variable, which must be replace by the correct type when you declare your instance. In our example, it was replaced by <code>Person</code> in our declaration. Some other little Haskell things. The use of parenthesis around a function with two parameters indicates that you can use the function without the parenthesis in an infix manner. To test equality of two values <code>a</code> and <code>b</code>, you can either write <code>a == b</code> or <code>(==) a b</code>.</p>
 <p>Typclasses can be seen from a Java developer point of view as interfaces. It’s not totally accurate since you can’t build a one-to-one mapping between the two approach. There are some analogies between the imperative and the functional paradigm, but they fail at some point. I’m giving you two major differences (there are certainly more of them):</p>
 <ul>

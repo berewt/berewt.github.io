@@ -31,7 +31,7 @@
 <p>So, you’re now convinced that type safety is far better from these <code>null</code> things to avoid insidious bugs. If you’re not, read the <a href="../English/Make%20it%20functional/2012/10/10/nothing-just-call-me-maybe/" title="Nothing, Just, call me Maybe (on this blog)">previous article</a> again. So, we have a nice type to avoid nullity, but how do we use it? When we want to access them, update them, compose them, is it more or less convenient than using <code>null</code>?I could say that <a href="http://en.wikipedia.org/wiki/Category_theory" title="Please, if you don't want to bother with theory, don't click">category theory</a> answers this question. It does, but I guess you came here because you wanted proof.</p>
 <h2 id="make-everything-optional">Make everything optional</h2>
 <p>Back to our person data again. Suppose that finally the age of a person is now optional. But unfortunately we are still going to deal with it when it’s available. Yes, as usual dealing with non-mandatory elements sucks. So here are our starting point in Java:</p>
-<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
 
     <span class="kw">private</span> <span class="dt">final</span> String  firstname;
     <span class="kw">private</span> <span class="dt">final</span> String  lastname;
@@ -49,17 +49,17 @@
     }
 
     <span class="co">/* Feed it with any expected extra-methods */</span>
-}</code></pre>
+}</code></pre></div>
 <p>and in Haskell:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
                      ,<span class="ot"> lastname  ::</span> <span class="dt">String</span>
                      ,<span class="ot"> age       ::</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
                      ,<span class="ot"> father    ::</span> <span class="dt">Maybe</span> <span class="dt">Person</span>
-                     }</code></pre>
+                     }</code></pre></div>
 <p>And you know these data mining guys with their odd queries? Here they are! You were asked to dig for a person’s father’s age. Of course, you can only provide this information if the person’s age, father and the father’s age are available. In any other case, you won’t be able to provide a better result than <code>null</code> or <code>Nothing</code> depending whether you use a poorly designed language or a cool one.</p>
 <h2 id="running-out-of-the-null-hell">Running out of the null hell</h2>
 <p>There are so many optional values that we have a hard time with them, for example, here is the Java version:</p>
-<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> FamilyQuery {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> FamilyQuery {
     <span class="kw">public</span> <span class="dt">static</span> Integer <span class="fu">fathersAgeAtBirth</span>(Person p) {
         Integer currentAge = p.<span class="fu">getAge</span>();
         <span class="kw">if</span> (currentAge == <span class="kw">null</span>)
@@ -73,25 +73,25 @@
         <span class="kw">else</span>
             <span class="kw">return</span> fathersAge - currentAge;
     }
-}</code></pre>
+}</code></pre></div>
 <p>Hopefully, multiple returns make things a bit easier. Without them, you would have to used an ugly nested-if structure. The main issue with this piece of code is that you have to interrupt your navigation to check for nullity, and then continue with it. Well you know, criticism is easy, can we do better? You can judge it by yourself, here is the Haskell version:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fathersAgeAtBirth ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fathersAgeAtBirth ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
 fathersAgeAtBirth p <span class="fu">=</span>
   <span class="kw">do</span>
     currentAge <span class="ot">&lt;-</span> age p
     pFather <span class="ot">&lt;-</span> father p
     fathersAge <span class="ot">&lt;-</span> age pFather
-    return <span class="fu">$</span> subtract fathersAge currentAge</code></pre>
+    return <span class="fu">$</span> subtract fathersAge currentAge</code></pre></div>
 <p>The <code>do</code> notation is a way to dive into the content of <code>Maybe</code>s. Each time you use the left arrow, you try to extract the content from right side into the left side variable. If it isn’t possible you stop and return <code>Nothing</code>. You don’t have to worry anymore whether a field is defined or not, <code>Maybe</code> has the power to deal with it.</p>
 <h2 id="haskell-bonus-point">Haskell bonus point</h2>
 <h3 id="for-operator-lovers-idiomatic-haskell">For operator lovers (idiomatic Haskell)</h3>
 <p>I must confess. The above version is a light, sugar free Haskell solution. Actually, dealing with value enclosed in a structure (here, the <code>Maybe</code> structure) is done many time in a program. Thus, we have some special functions to do it more efficiently. It can lead to the following code.</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fathersAgeAtBirth ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fathersAgeAtBirth ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
 fathersAgeAtBirth p <span class="fu">=</span>
   subtract <span class="fu">&lt;$&gt;</span> fathersAge <span class="fu">&lt;*&gt;</span> currentAge
   <span class="kw">where</span>
     fathersAge <span class="fu">=</span> father p <span class="fu">&gt;&gt;=</span> age
-    currentAge <span class="fu">=</span> age p</code></pre>
+    currentAge <span class="fu">=</span> age p</code></pre></div>
 <p>Yes, most of the time, it is where we lost most of the imperative programmers, especially those who prefer verbose code with clear, literal function names. Indeed, perl lovers shouldn’t be concerned. I don’t have the willpower to explain it for now, because I would need to introduce many new functions and concepts to do it right. Just look how the first line of the function <code>subtract &lt;$&gt; fathersAge &lt;*&gt; currentAge</code> looks like what we expect to code if we just have to manipulate integers. It’s a central idea in functional programming: add a concept thanks to an adequate data structure and provide function to make the introduction of this concept as little intrusive as possible.</p>
 <h3 id="back-to-pattern-matching">Back to pattern matching</h3>
 <p>Remember the first post on pattern matching? We can inpsect a complex data structure with it. Here, we need to check that:</p>
@@ -101,13 +101,13 @@ fathersAgeAtBirth p <span class="fu">=</span>
 <li>the father’s age is defined.</li>
 </ul>
 <p>In any other case, we won’t be able to produce another result than <code>Nothing</code>. Here is the result:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fathersAgeAtBirth ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">fathersAgeAtBirth ::</span> <span class="dt">Person</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span>
 fathersAgeAtBirth (<span class="dt">Person</span> _ 
                           _ 
                           <span class="dt">Just</span>(currentAge) 
                           (<span class="dt">Person</span> _ _ <span class="dt">Just</span>(fathersAge) _) <span class="fu">=</span>
   <span class="dt">Just</span> (fathersAge <span class="fu">-</span> currentAge)
-fathersAgeAtBirth _ <span class="fu">=</span> <span class="dt">Nothing</span></code></pre>
+fathersAgeAtBirth _ <span class="fu">=</span> <span class="dt">Nothing</span></code></pre></div>
 <p>This kind of pattern matching is a bit too complex to be considered as idiomatic, but it’s another illustration of how powerful it can be.</p>
 
         </div>

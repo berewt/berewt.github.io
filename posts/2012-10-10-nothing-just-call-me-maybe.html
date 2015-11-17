@@ -31,14 +31,14 @@
 <p>Today, we will talk about null pointer exception. Or more precisely the lack of null pointer exception in functional programming. Please hold <a href="http://beust.com/weblog/2012/08/19/a-note-on-null-pointers/">your trolls</a>, we are analyzing facts. It’s not that functional programming doesn’t like <code>null</code>, it’s just that we actually don’t have this concept. Yes we can live without it, wanna see how?</p>
 <p>But what happens when a Haskell programmer wants to express that a function has no result? Well, it’s quite simple, we use <code>Maybe</code>. It’s a monad but I’m not going to bother you with the monad stuff at the moment, a lot was already written on this topic, in many cases by very clever people. The Internet doesn’t need my 2 cents on it. More than that, telling you what a monad is may be insufficient to help you getting why it’s useful, especially at this stage.</p>
 <p>So, we have the <code>Maybe</code> type, which has two constructors <code>Nothing</code> and <code>Just</code> with the following definition:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Maybe</span> a <span class="fu">=</span> <span class="dt">Just</span> a
-              <span class="fu">|</span> <span class="dt">Nothing</span></code></pre>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Maybe</span> a <span class="fu">=</span> <span class="dt">Just</span> a
+              <span class="fu">|</span> <span class="dt">Nothing</span></code></pre></div>
 <p>The <code>a</code> here is the way we introduces polymorphism in Haskell. Shortly, we can either have a value boxed of type <code>a</code> in a <code>Just</code> object or <code>Nothing</code>. Imagine you boxed your result type in Java: if it’s a null, you return an object of class <code>Nothing</code>; if it’s a non null result, boxed it in a <code>Just</code> object. If you can imagine it, you get the whole idea.</p>
 <p>At this stage, you may wonder how it can help. Here we are:</p>
 <h2 id="a-bit-of-genealogy">A bit of genealogy</h2>
 <p>We’re completing our <code>Person</code> class, adding a <code>father</code> field to it. Unfortunately, all of our people aren’t really into our big brother approach, and some of them refuse to fill the information.</p>
 <p>Suppose that given a person, we want to produce the list of its known ancestors’ name (the list order is up to you). How would you do that? Of course, this example is totally stupid, but it ilustrates a classical scenario of navigation between 0-1 cardinality properties, which happens quite frenquently in the real world. Here is how we represent a person in Java:</p>
-<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
 
     <span class="kw">private</span> <span class="dt">final</span> String firstname;
     <span class="kw">private</span> <span class="dt">final</span> String lastname;
@@ -58,17 +58,17 @@
     <span class="co">/* I still won't write getters and equals/hashCode.</span>
 <span class="co">     * And I still thinks it's stupid to have to.</span>
 <span class="co">     */</span>
-}</code></pre>
+}</code></pre></div>
 <p>And in Haskell:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Person</span> <span class="fu">=</span> <span class="dt">Person</span> {<span class="ot"> firstname ::</span> <span class="dt">String</span>
                      ,<span class="ot"> lastname  ::</span> <span class="dt">String</span>
                      ,<span class="ot"> age       ::</span> <span class="dt">Int</span>
                      ,<span class="ot"> father    ::</span> <span class="dt">Maybe</span> <span class="dt">Person</span>
-                     }</code></pre>
+                     }</code></pre></div>
 <p>Ok, the type signature of <code>father</code> in haskell is a bit more complex than the java one, I admit. Let’s look to the solution to our example.</p>
 <h2 id="the-billion-dollars-mistake">The billion dollars mistake</h2>
 <p>Let’s start ith Java. We build a <code>Genealogy</code> class with an ancestor method, like so:</p>
-<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Genealogy {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Genealogy {
     <span class="kw">public</span> <span class="dt">static</span> List[Person] <span class="fu">ancestors</span>(Person myPerson) {
        Collection&lt;Person&gt; result = <span class="kw">new</span> LinkedList&lt;Person&gt;();
        Person father = p.<span class="fu">getFather</span>();
@@ -77,9 +77,9 @@
            father = father.<span class="fu">getFather</span>(); 
        }
     }
-}</code></pre>
+}</code></pre></div>
 <p>It looks pretty and neat. Mostly because the example is simple and because my solution is correct. Let’s try a faulty version:</p>
-<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Genealogy {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Genealogy {
     <span class="kw">public</span> <span class="dt">static</span> List[Person] <span class="fu">ancestors</span>(Person myPerson) {
        Collection&lt;Person&gt; result = <span class="kw">new</span> LinkedList&lt;Person&gt;();
        Person father = myPerson;
@@ -88,11 +88,11 @@
            result.<span class="fu">add</span>(father);
        } <span class="kw">while</span> (father != <span class="kw">null</span>);
     }
-}</code></pre>
+}</code></pre></div>
 <p>You see what happens in the above version if <code>myPerson.getFather()</code> is <code>null</code>? Yes, it crashes and yes, it’s a bug. The issue with <code>null</code> is that nobody will warn you in this case. You’ll have to wait for the tests (the best case) or the bug (the worst case) to see it, thanks to a wonderful null pointer exception.</p>
 <p>Ok, move on to Haskell:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">ancestor (<span class="dt">Person</span> _ _ _ <span class="dt">Nothing</span> ) <span class="fu">=</span> []
-ancestor (<span class="dt">Person</span> _ _ _ (<span class="dt">Just</span> p)) <span class="fu">=</span> p<span class="fu">:</span>(ancestor p)</code></pre>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">ancestor (<span class="dt">Person</span> _ _ _ <span class="dt">Nothing</span> ) <span class="fu">=</span> []
+ancestor (<span class="dt">Person</span> _ _ _ (<span class="dt">Just</span> p)) <span class="fu">=</span> p<span class="fu">:</span>(ancestor p)</code></pre></div>
 <p>So, as you might have noticed, I propose a recursive definition. It can be read as: if no father is defined, returns the empty list. Otherwise return a list made of the content of the father field and the list of the father’s ancestors (<code>:</code> is the prepending operator in Haskell). As we have to unbox the content of father to get the person’s value, we can’t do it wrong. Typing saves you from using a <em>null</em> value. Thanks to the “Maybe boxing” we have a type safe version.</p>
 <p>So <code>Maybe</code> provides you a convenient solution to avoid some bugs, catching errors at compile time instead of doing it at runtime. Unfortunately, as old Lulu used to say, “you can’t spend good time with me and keep your 200 bucks”. Here type safety has a performance price. we will see later that the <code>Maybe</code> type is very convenient to use in many scenarios, but that’s enough for today.</p>
 <h1 id="haskell-extra-point">Haskell extra point</h1>
