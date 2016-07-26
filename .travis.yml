@@ -5,15 +5,28 @@ branches:
 env:
   global:
     - secure: "eqnEuhunk5Xok1NUE8HB1YGtwn04ejzdAZAAjBuvsoC50nCyFbOZQsBjLyhMTkbtIyw8qm2sX0mzPf9O3siluSQup1f3QI23rY+TjNOlcDjQ0ATCtgpAzXDboa1iA08qOC5oP5mzqnq0U5T6kwkLh8pA36SQGkK+o9jlrRhJG4g="
+before_install:
+  - export PATH=/opt/ghc/7.10.2/bin:$PATH
+
+addons:
+  apt:
+    sources:
+    - hvr-ghc
+    packages:
+    - ghc-7.10.2
+
 install:
   - cabal install hakyll
   - ghc --make site.hs
+
 before_script:
   - cd _site
   - git checkout master
   - git pull origin master
   - cd ..
+
 script: ./site build
+
 after_script:
   - cd _site
   - git status
