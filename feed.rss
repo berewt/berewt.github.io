@@ -7,8 +7,99 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Tue, 17 Nov 2015 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Thu, 28 Jul 2016 00:00:00 UT</lastBuildDate>
         <item>
+    <title>Union Type in Idris (Part 1)</title>
+    <link>http://nicolas.biri.name//posts/2016-07-26-union-type-in-idris-part-1.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on July 28, 2016
+    
+        by Nicolas Biri
+    
+</div>
+
+<p><strong>TL;DR:</strong> This article discusses the interest of union types and presents an implementation of this concept in Idris.</p>
+<h1 id="an-introduction-to-sum-and-union-types">An introduction to sum and union types</h1>
+<p>If you are familiar with language like Haskell or Scala, you may know what a sum type is. Consider the following example in Haskell:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Whisky</span> <span class="fu">=</span> <span class="dt">Whisky</span> {<span class="ot">age ::</span> <span class="dt">Nat</span>,<span class="ot"> alcohol ::</span> <span class="dt">Float</span>}
+<span class="kw">data</span> <span class="dt">Beer</span> <span class="fu">=</span> <span class="dt">Beer</span> {<span class="ot">alcohol ::</span> <span class="dt">Float</span>}
+
+<span class="kw">data</span> <span class="dt">Alcohol</span> <span class="fu">=</span> <span class="dt">AlcoholWhisky</span> <span class="dt">Whisky</span> <span class="fu">|</span> <span class="dt">AlcoholBeer</span> <span class="dt">Beer</span>
+
+<span class="ot">myAlcohol ::</span> <span class="dt">Alcohol</span>
+myAlcohol <span class="fu">=</span> <span class="dt">AlcoholWhisky</span> (<span class="dt">Whisky</span> <span class="dv">12</span> <span class="dv">40</span>)</code></pre></div>
+<p>In this short example, <code>Alcohol</code> is a sum type. It’s called like this because the number of inhabitants of this type is the sum of the inhabitants of the type <code>Whisky</code> and of those of the type <code>Beer</code>.</p>
+<p>I always thought that the need of the <code>Alcohol</code> constructors (<code>AlcoholWhisky</code> and <code>AlcoholBeer</code>) is a little clumpsy in such types. It’s getting worse when we stack sums:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Water</span> <span class="fu">=</span> <span class="dt">Water</span> {<span class="ot">calcium ::</span> <span class="dt">Float</span>}
+<span class="kw">data</span> <span class="dt">OrangeJuice</span> <span class="fu">=</span> <span class="dt">Water</span> {<span class="ot">sugar ::</span> <span class="dt">Float</span>}
+
+<span class="kw">data</span> <span class="dt">NoAlcohol</span> <span class="fu">=</span> <span class="dt">NoAlcoholWater</span> <span class="dt">Water</span> <span class="fu">|</span> <span class="dt">NoAlcoholOrangeJuice</span> <span class="dt">OrangeJuice</span>
+
+<span class="kw">data</span> <span class="dt">Beverage</span> <span class="fu">=</span> <span class="dt">BeverageAlcohol</span> <span class="dt">Alcohol</span> <span class="fu">|</span> <span class="dt">BeverageNoAlcohol</span> <span class="dt">NoAlcohol</span>
+
+<span class="ot">myBeverage ::</span> <span class="dt">Beverage</span>
+myBeverage <span class="fu">=</span> <span class="dt">BeverageAlcohol</span> myAlcohol</code></pre></div>
+<p>It would be easier if we can claim that a type <code>t</code> is a union of several types and provides any of these types vaule as a value of type <code>t</code>.</p>
+<p>This idea is not new, it’s for example investigated in the <a href="http://hackage.haskell.org/package/open-union"><code>open-union</code></a> package. Thanks to this package, we can replace the first example with something like:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">type</span> <span class="dt">Alcohol</span> <span class="fu">=</span> <span class="dt">Union</span> <span class="ch">&#39;[Whisky, Beer]</span>
+
+
+<span class="ot">myAlcohol ::</span> <span class="dt">Alcohol</span>
+myAlcohol <span class="fu">=</span> liftUnion (<span class="dt">Whisky</span> <span class="dv">12</span> <span class="dv">40</span>)</code></pre></div>
+<p><code>open-union</code> is a great solution in Haskell. However, it relies on <code>Data.Dynamic</code> which means that we need to carry over the representation of the type.</p>
+<h1 id="defining-union-types-in-idris">Defining union types in Idris</h1>
+<p><a href="http://www.idris-lang.org/">Idris</a> is a purely functional programming language with dependent-type designed by Edwin Brady. I assume here a basic knowledge of Idris and of dependent types.</p>
+<h2 id="declaring-union-types">Declaring union types</h2>
+<p>Suppose that you can promote the values as types, how would it helps to build an union type? This question was the one that started the journey.</p>
+<p>Here was the idea: we can define a type as a list of type. From there, it suffices to find a way to “point” the valid type in our union and we obtain an union for free. Here is the implementation:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">MemberHere</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)
+  <span class="dt">MemberThere</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)</code></pre></div>
+<p>So, <code>Union</code> is a type that is parametrized by a list of types. For example, with this data declaration, <code>Union [Char, String]</code> is a valid type.</p>
+<p>To build members of <code>Union</code> we have two constructors. <code>MemberHere</code> is the easiest. Given a value of type <code>ty</code>, we can build an instance of any <code>Union</code> type such that the list of its composed types starts with <code>ty</code>, whatever are the other types of the union. <code>MemberThere</code> provides a way to prepend other types in our <code>Union</code>. Let’s see these types in action:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">x</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
+x <span class="fu">=</span> <span class="dt">MemberHere</span> <span class="st">&quot;Ahoy!&quot;</span>
+
+<span class="fu">y</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
+x <span class="fu">=</span> <span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> <span class="dv">3</span>)</code></pre></div>
+<p>With this basic definitions, we have in hands all we need to create union types. Altough, the instances are really painful to write, even more than with classic sum types.</p>
+<p>We can do way better with a small helper:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">member</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Union</span> ts
+member x {e<span class="fu">=</span><span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">MemberHere</span> x
+member x {e<span class="fu">=</span><span class="dt">There</span> later} <span class="fu">=</span> <span class="dt">MemberThere</span> (member x {e<span class="fu">=</span>later})</code></pre></div>
+<p>This short function takes advantages of Idris [auto implicit arguments]((http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments), which automatically computes argument at compile times, depending on the executino context. The idea is that, given a type <code>ty</code>, such that <code>ty</code> is in the union, we can compute the location of this type in the union and provide an <code>Elem</code>. This <code>Elem</code> is then used to compute the <code>Union</code> boilerplate. An we obtain:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">x</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
+x <span class="fu">=</span> member <span class="st">&quot;Ahoy!&quot;</span>
+
+<span class="fu">y</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
+x <span class="fu">=</span> member <span class="dv">3</span></code></pre></div>
+<p>Note that as complex as the union will be, the instanciation will always straightforward.</p>
+<h2 id="extracting-union-type">Extracting union type</h2>
+<p>Ok, so union type are easy to declare and to instanciate. We also need an easy way to get our value back if we want to compete with sun types.</p>
+<p>Let’s define a <code>get</code> function that extract a value of type <code>ty</code> from an union. To typecheck, <code>ty</code> must be a valid type (a type listed in the union). And we can’t be sure to obtain a <code>ty</code>. Thus, the type of <code>get</code> is:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty</code></pre></div>
+<p>And once again, the idea is to use the witness of the type position in the union (<code>p</code>) to compute the answer.</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty
+get (<span class="dt">MemberHere</span> x)       {e<span class="fu">=</span><span class="dt">Here</span>}    <span class="fu">=</span> <span class="dt">Just</span> x
+get (<span class="dt">MemberHere</span> x)       {e<span class="fu">=</span><span class="dt">There</span> <span class="fu">_</span>} <span class="fu">=</span> <span class="dt">Nothing</span>
+get (<span class="dt">MemberThere</span> x)      {e<span class="fu">=</span><span class="dt">Here</span>}    <span class="fu">=</span> <span class="dt">Nothing</span>
+get (<span class="dt">MemberThere</span> later) {e<span class="fu">=</span>(<span class="dt">There</span> l)} <span class="fu">=</span> get later {e<span class="fu">=</span>l}</code></pre></div>
+<p>All these case should be straight forward. And now we can have (in the REPL):</p>
+<pre><code>&gt;&gt;&gt; :let x = the (Union [String, Nat, List String]) $ member &quot;Ahoy!&quot;
+&gt;&gt;&gt; the (Maybe String) $ get x
+Just &quot;Ahoy!&quot; : Maybe String
+&gt;&gt;&gt; the (Maybe Nat) $ get x
+Nothing : Maybe Nat
+&gt;&gt;&gt; </code></pre>
+<p>We uset <code>the</code> here to provide a Type hint, but it won’t be useful in most of the cases, as the type will be provided by the context.</p>
+<h1 id="part-1-is-over">Part 1 is over</h1>
+<p>That’s all for today, next time I will talk about folding union.</p>
+]]></description>
+    <pubDate>Thu, 28 Jul 2016 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2016-07-26-union-type-in-idris-part-1.html</guid>
+    <dc:creator>Nicolas Biri</dc:creator>
+</item>
+<item>
     <title>Après les morts</title>
     <link>http://nicolas.biri.name//posts/2015-11-17-Apres-les-morts.html</link>
     <description><![CDATA[<div class="info">
@@ -120,39 +211,6 @@
 ]]></description>
     <pubDate>Tue, 17 Jun 2014 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2014-06-17-La-place-de-l-algorithmique.html</guid>
-    <dc:creator>Nicolas Biri</dc:creator>
-</item>
-<item>
-    <title>L'éducation et l'informatique</title>
-    <link>http://nicolas.biri.name//posts/2014-06-16-l-education-et-l-informatique.html</link>
-    <description><![CDATA[<div class="info">
-    Posted on June 16, 2014
-    
-</div>
-
-<h1 id="préambule">Préambule</h1>
-<p>L’air du temps est chargé d’idées fantasmées sur le numérique, son rôle et son importance dans la vie quotidienne. Ces fantasmes ont renforcé l’idée qu’un apprentissage du numérique, de l’informatique ou du code devait être centrale pour aider les futures générations à appréhender le monde. S’il est évident que l’informatique a une place grandissante dans les usages quotidiens, il ne faut pas surestimer son rôle et surtout la place qu’elle doit avoir dans l’éducation.</p>
-<p>Il y a quelques jours, j’apprenais que des députés avaient rédigé une proposition de loi visant à rendre obligatoire <a href="http://www.assemblee-nationale.fr/14/propositions/pion2022.asp">l’enseignement du <em>codage</em> à l’école</a>. L’intitulé m’avait interpellé et j’en avais fait une <a href="https://storify.com/Serianox_/loi-codage">relecture détaillée</a> sur twitter. Il s’agit d’une critique plutôt destructive car le texte est terriblement mauvais.</p>
-<p>Cette relecture m’a laissé un goût d’inachevé. S’il est facile de s’accorder sur ce qu’il ne faut pas faire, il est bien plus intéressant de donner des éléments sur ce que pourrait être un enseignement de l’informatique. Dans cette optique, cet article est je l’espère le premier d’une série sur l’apprentissage de l’informatique, tentant d’expliquer ce qui fait le coeur d’un apprentissage dans ce domaine.</p>
-<iframe
-  width="560" height="315" src="//www.youtube.com/embed/Ia55clAtdMs"
-  frameborder="0" allowfullscreen />
-<p>Pour bien commencer, si vous comprenez l’anglais, il peut être utile d’écouter cette vidéo de Simon Peyton Jones. Elle pose une distinction importante, celle entre l’utilisation des technologies numériques, peu utile à long terme, et la compréhension de l’informatique, qui peut être un vrai savoir de base. Le soucis est qu’il est facile de mal comprendre ce message et de lui substituer celui d’une opposition consommateur ou acteur de l’informatique. Il s’agit plutôt de dire que comme beaucoup d’autre sciences, les fondements de l’informatique peuvent être enseignés et aider à la compréhension. Cela n’est pas une incitation à développer, comme le français n’est pas une incitation à devenir écrivain.</p>
-<h1 id="quel-enseignement">Quel enseignement ?</h1>
-<h2 id="les-outils-matériels">Les outils matériels</h2>
-<p>La familiarisation avec du matériel informatique, quel qu’il soit (ordinateur, tablette) est un premier pas qui n’est pas inutile pour certains élèves. Donc pour commencer, oui, il est utile qu’ils aient une idée de l’interaction qu’on peut avoir avec un ordinateur. Il s’agit là du même apprentissage que l’on a avec tout nouvel outil. Ce n’est pas autre chose qu’apprendre à se servir d’une règle graduée, en un peu plus complexe. Il est important de ne pas le sacraliser. Cette sacralisation est d’ailleurs la source de nombreuses stupidités énoncées sur l’enseignement de l’informatique par nos politiciens. Il n’y a ici aucune révolution, juste la simple adaptation des outils proposés aux élèves au monde “moderne”.</p>
-<h2 id="lusage">L’usage</h2>
-<p>Comprendre en quoi l’ordinateur peut être utile dans la vie quotidienne est également important. Là aussi, il n’y a rien d’extraordinaire. Utiliser l’ordinateur pour se documenter, comme on le faisait avec des dictionnaires ou des encyclopédies avant. L’utiliser comme support pour soutenir les autres matières (publication sur internet, mise en page, vérification de calculs, etc.). Il n’y a là rien, absolument rien qui change les priorités de l’école. Il peut effectivement important de tenter d’imposer l’utilisation de l’outil mais cela ne change rien à ce qu’on espère des compétences des élèves. Encore une fois, l’ordinateur doit être vu comme un outil. Je sais que cette vue utilitariste de l’informatique gêne parfois. C’est pourtant la plus répandue dans les usages quotidiens.</p>
-<h2 id="la-compréhension-technologique-matérielle-et-logicielle">La compréhension technologique (matérielle et logicielle)</h2>
-<p>L’école a depuis longtemps, l’objectif d’aider les enfants à apréhender le monde. Cet objectif peut inclure sans aucun problème la compréhension générale du monde numérique (ordinateur, logiciel et réseau notamment). Cela est indispensable pour voir l’informatique comme une création humaine dirigée par l’homme, et non comme un objet ésothérique qui répond à sa seule volonté. Avec cette compréhension, on placerait les élèves au dessus de la majorité des journalistes technologiques, ce qui serait déjà une réussite. Là aussi, il s’agit d’un ajustement mineur : faire de la place dans les apprentissages technologiques des élèves pour les technologies du numérique.</p>
-<h1 id="rien-dautre">Rien d’autre ?</h1>
-<p>Non. Tout est déjà là. Le <em>codage</em>, tellement sacralisé, ne doit pas être un fondement central de l’éducation. Une simple initiation, pour comprendre comment on “donne des ordres” à un ordinateur peut suffire. Il s’agit dès lors d’un simple atelier, ou projet scolaire, comme il y en a déjà.</p>
-<p>L’idée de considérer le <em>code</em> (concept ridicule) au même niveau que le français ou les mathématiques est une absurdité sans nom. Ne pas savoir lire ou faire des calculs simples est un réel handicap. Ne pas savoir programmer est embêtant en de très rares occasions.</p>
-<p>L’informatique est une science à la croisée des chemins de plein d’autres. Ses premiers parents sont philosophes et logiciens (oui, c’est parfois les mêmes). Elle nécessite des capacités de raisonnement, d’abstraction, de conceptualisation, d’analyse. L’apprentissage de ses fondements pourrait être utile et aider certains à raisonner, elle pourrait en perdre d’autres. Systématiser son apprentissage est à mon avis à double tranchant. Dans un système centralisé comme celui de l’école française, c’est un risque énorme.</p>
-<p>Je crois en un apprentissage théorique de l’informatique, en son utilité pour certains. Et hors université, cet apprentissage est à construire. Il mérite mieux que des idées lancées à l’emporte pièce.</p>
-]]></description>
-    <pubDate>Mon, 16 Jun 2014 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2014-06-16-l-education-et-l-informatique.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
 
