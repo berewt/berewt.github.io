@@ -2,8 +2,8 @@
 title: The big switch
 date: 2012-10-02 17:00
 comments: true
-categories: English, Make it functional
-tags: Haskell, Java, pattern matching, switch
+categories: [English, Make it functional]
+tags: [Haskell, Java, pattern matching, switch]
 ---
 
 Pattern matching is often put forward as a first feature example when we

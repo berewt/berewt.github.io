@@ -1,8 +1,8 @@
 ---
 title: Nothing, Just, Call me Maybe!
 comments: true
-categories: English, Make it functional
-tags: Haskell, Java, Maybe, monad, null
+categories: [English, Make it functional]
+tags: [Haskell, Java, Maybe, monad, null]
 ---
 
 Today, we will talk about null pointer exception. Or more precisely the lack of

@@ -1,6 +1,7 @@
 ---
-title: Union Type in Idris (Part 1)
-categories: Functional Programming, Idris
+title: "Union Type in Idris (Part 1)"
+lang: en
+category: [English, Functional Programming, Idris]
 date: 2016-07-28
 author: Nicolas Biri
 ---

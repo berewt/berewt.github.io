@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Some languages are more equals than others
-categories: English, Make it functional
-tags: Haskell, Java, equals, typeclass
+categories: [English, Make it functional]
+tags: [Haskell, Java, equals, typeclass]
 ---
 
 In my last three posts, I've ended my Java example with a comment to indicate

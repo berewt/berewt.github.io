@@ -1,8 +1,8 @@
 ---
-title: Maybe: You want something more?
+title: "Maybe: You want something more?"
 comments: true
-categories: English, Make it functional
-tags: Haskell, Java, Maybe, monad, null
+categories: [English, Make it functional]
+tags: [Haskell, Java, Maybe, monad, null]
 ---
 
 So, you're now convinced that type safety is far better from these `null` things

@@ -1,8 +1,8 @@
 ---
 title: Douce France
 comments: true
-categories: Français, Politique
-tags: Europe, Élection
+categories: [Français, Politique]
+tags: [Europe, Élection]
 ---
 
 J'ai voté hier. À reculons. Plus que pour tout autre scrutins,

@@ -1,7 +1,7 @@
 ---
 title: L'éducation et l'informatique
 lang: fr
-categories: Français, numérique, éducation
+categories: [Français, numérique, éducation]
 ---
 
 # Préambule

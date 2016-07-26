@@ -1,7 +1,7 @@
 ---
 title:  La place de l'algorithmique
 lang: fr
-category: éducation, informatique
+category: [éducation, informatique]
 ---
 
 <img src="/images/hamster.jpg" alt="Une image de hamster, pour le plaisir d'embruns" />

@@ -1,8 +1,8 @@
 ---
 title: Null and Option, fire and ice
 comments: true
-categories: English, 2 cents about Programming
-tags: Option, null, Java, Scala, Groovy
+categories: [English, 2 cents about Programming]
+tags: [Option, null, Java, Scala, Groovy]
 ---
 
 ML, Haskell or Erlang, does not have `null` and they [don't miss it][maybe].

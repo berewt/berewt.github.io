@@ -1,8 +1,8 @@
 ---
 title: Un troisième premier billet
 comments: true
-categories: Français, Meta
-tags: git, markdown, jekyll, blogging
+categories: [Français, Meta]
+tags: [git, markdown, jekyll, blogging]
 ---
 
 J'ai peu écrit ces derniers mois et j'ose espérer que c'est en grande partie

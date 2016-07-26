@@ -2,7 +2,7 @@
 title: Introduction to "Make it functional"
 date: 2012-09-13 19:13
 comments: true
-categories: English, Make it functional
+categories: [English, Make it functional]
 ---
 
 I started the ["Make it functional"][mif] category of my weblog to help

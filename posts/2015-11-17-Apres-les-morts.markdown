@@ -1,7 +1,7 @@
 ---
 title: Après les morts
 date: 2015-11-17
-categories: Français, Société
+categories: [Français, Société]
 author: Nicolas Biri
 ---
 
