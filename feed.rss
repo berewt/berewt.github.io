@@ -7,12 +7,12 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Thu, 28 Jul 2016 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Tue, 26 Jul 2016 00:00:00 UT</lastBuildDate>
         <item>
     <title>Union Type in Idris (Part 1)</title>
     <link>http://nicolas.biri.name//posts/2016-07-26-union-type-in-idris-part-1.html</link>
     <description><![CDATA[<div class="info">
-    Posted on July 28, 2016
+    Posted on July 26, 2016
     
         by Nicolas Biri
     
@@ -67,7 +67,7 @@ x <span class="fu">=</span> <span class="dt">MemberThere</span> (<span class="dt
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">member</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Union</span> ts
 member x {e<span class="fu">=</span><span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">MemberHere</span> x
 member x {e<span class="fu">=</span><span class="dt">There</span> later} <span class="fu">=</span> <span class="dt">MemberThere</span> (member x {e<span class="fu">=</span>later})</code></pre></div>
-<p>This short function takes advantages of Idris [auto implicit arguments]((http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments), which automatically computes argument at compile times, depending on the executino context. The idea is that, given a type <code>ty</code>, such that <code>ty</code> is in the union, we can compute the location of this type in the union and provide an <code>Elem</code>. This <code>Elem</code> is then used to compute the <code>Union</code> boilerplate. An we obtain:</p>
+<p>This short function takes advantages of Idris <a href="http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments">auto implicit arguments</a>, which automatically computes argument at compile times, depending on the executino context. The idea is that, given a type <code>ty</code>, such that <code>ty</code> is in the union, we can compute the location of this type in the union and provide an <code>Elem</code>. This <code>Elem</code> is then used to compute the <code>Union</code> boilerplate. An we obtain:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">x</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
 x <span class="fu">=</span> member <span class="st">&quot;Ahoy!&quot;</span>
 
@@ -95,7 +95,7 @@ Nothing : Maybe Nat
 <h1 id="part-1-is-over">Part 1 is over</h1>
 <p>That’s all for today, next time I will talk about folding union.</p>
 ]]></description>
-    <pubDate>Thu, 28 Jul 2016 00:00:00 UT</pubDate>
+    <pubDate>Tue, 26 Jul 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-07-26-union-type-in-idris-part-1.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
