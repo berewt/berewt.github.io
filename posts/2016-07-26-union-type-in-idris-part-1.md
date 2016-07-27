@@ -170,6 +170,7 @@ the cases, as the type will be provided by the context.
 
 # Part 1 is over
 
-That's all for today, next time I will talk about folding union.
+That's all for today, you can continue with the fold for
+[union type](http://nicolas.biri.name/posts/2016-07-27-union-type-in-idris-part-2.html).
 
 
