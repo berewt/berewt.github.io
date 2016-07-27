@@ -7,12 +7,12 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Thu, 28 Jul 2016 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Wed, 27 Jul 2016 00:00:00 UT</lastBuildDate>
         <item>
     <title>Union Type in Idris (Part 2)</title>
     <link>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</link>
     <description><![CDATA[<div class="info">
-    Posted on July 28, 2016
+    Posted on July 27, 2016
     
         by Nicolas Biri
     
@@ -81,7 +81,7 @@ foldUnion (f <span class="ot">::</span> xs) (<span class="dt">MemberThere</span>
 <h1 id="part-2-is-over">Part 2 is over</h1>
 <p>That’s all for today, next time I will talk about union restriction and generalization.</p>
 ]]></description>
-    <pubDate>Thu, 28 Jul 2016 00:00:00 UT</pubDate>
+    <pubDate>Wed, 27 Jul 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
