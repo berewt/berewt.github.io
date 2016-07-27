@@ -7,8 +7,85 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Tue, 26 Jul 2016 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Thu, 28 Jul 2016 00:00:00 UT</lastBuildDate>
         <item>
+    <title>Union Type in Idris (Part 2)</title>
+    <link>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on July 28, 2016
+    
+        by Nicolas Biri
+    
+</div>
+
+<p>The <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
+<h1 id="first-part-summary">First part summary</h1>
+<p>We have detailed how we can write union types in Idris and how to extract a value from it. We recall here the union type definition, that is used through this article:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">MemberHere</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)
+  <span class="dt">MemberThere</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)</code></pre></div>
+<p>You may also need the signature of the previously defined function for creating union type values and retrieving the value of an union:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">member</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Union</span> ts
+<span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty</code></pre></div>
+<h1 id="folding-union">Folding Union</h1>
+<p>When I started reading some Idris, I was amazed by the <a href="https://gist.github.com/puffnfresh/11202637"><code>printf</code> example</a> (also available <a href="https://www.youtube.com/watch?v=fVBck2Zngjo">in video</a>).</p>
+<p>And my motivation when I start union type was actually to provide a type safe way to fold an union type.</p>
+<h2 id="a-first-try-decomposing-the-union-type">A first try: Decomposing the union type</h2>
+<p>So my first idea was to decompose the union to know which functions we need to cover all the cases.. It means that I wanted something like:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> <span class="ot">:</span>t foldUnion (the (<span class="dt">Union</span> [<span class="dt">Char</span>, <span class="dt">String</span>])) <span class="fu">$</span> member <span class="ch">&#39;c&#39;</span>
+foldUnion (the (<span class="dt">Union</span> [<span class="dt">Char</span>, <span class="dt">String</span>])) <span class="fu">$</span> member <span class="ch">&#39;c&#39;</span> <span class="ot">:</span> (<span class="dt">Char</span> <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> (<span class="dt">String</span> <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a</code></pre></div>
+<p>if you want to do such a thing, it means that the type of <code>foldUnion u</code> where <code>u</code> is an arbitrary union will <em>depend</em> on the type of <code>u</code>. So it means that our code will be like:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> ts) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> ts</code></pre></div>
+<p>Where <code>UnionFold</code> should build a type from a list of type.</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">UnionFold</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span></code></pre></div>
+<p>The case decoposition is quite straightforward atually. If the list is empty, we are done, so the type should be an arbitrary <code>a</code>. If there is a type in the list, we should provide a function for this type and continue with the tail of the list:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">UnionFold</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
+<span class="dt">UnionFold</span> [] <span class="fu">=</span> a
+<span class="dt">UnionFold</span> (ty<span class="ot">:</span>ts) <span class="fu">=</span> (ty <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> ts</code></pre></div>
+<p>Let’s come back to <code>foldUnion</code>. The next issue we face is once again is to choose the right function to apply:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">UnionCata</span> a ts
+foldUnion (<span class="dt">MemberHere</span> x) <span class="fu">=</span> <span class="fu">\</span>f <span class="ot">=&gt;</span> foldUnion&#39; (f x)
+  <span class="kw">where</span>
+    <span class="fu">foldUnion&#39;</span> <span class="ot">:</span> {xs <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span>} <span class="ot">-&gt;</span> (x <span class="ot">:</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionCata</span> a xs
+    foldUnion&#39; {xs <span class="fu">=</span> []} x <span class="fu">=</span> x
+    foldUnion&#39; {xs <span class="fu">=</span> <span class="fu">_</span><span class="ot">::</span>xs&#39;} x <span class="fu">=</span> const <span class="fu">$</span> foldUnion&#39; {xs<span class="fu">=</span>xs&#39;} x
+foldUnion (<span class="dt">MemberThere</span> later) <span class="fu">=</span> const <span class="fu">$</span> foldUnion later</code></pre></div>
+<p>If we have the <code>MemberHere</code> constructor, it means thas the element of the union has the first type of the union, and thus, we need to apply the first function. The challenge is then to skip all the other functions until we exhaust all the mapping functions.</p>
+<p>If we are in the <code>MemberThere</code> case, we must skip the next function and look further.</p>
+<p>We can know write things like:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;&gt;&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;Ahoy!&quot;</span>
+<span class="fu">&gt;&gt;&gt;</span> foldUnion x length id (sum <span class="fu">.</span> map length)
+<span class="dv">5</span> <span class="ot">:</span> <span class="dt">Nat</span></code></pre></div>
+<h2 id="functions-to-the-left-union-to-the-right">Functions to the left, union to the right</h2>
+<p>There is an issue with the former proposal: we need to provide the unon first. It makes sense in the case of <code>printf</code>, as we want to provide the format string before its parameter. It’s less meaningful in the case of folding.</p>
+<p>It’s pretty hard to change the parameter order though. Actually, if we dont know the union, how can we know if we still have to pass a function or the final union. More clearly, we aren’t able to define the type of a partially applied function.</p>
+<p>An alternative is to gather the folding functions to define what kind of unions can be fold with these functions.</p>
+<p>The objective is consequently to obtain a signature like:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> <span class="dt">UnionFold</span> a ts <span class="ot">-&gt;</span> (u<span class="ot">:</span> <span class="dt">Union</span> ts) <span class="ot">-&gt;</span> a</code></pre></div>
+<p>With this signature, <code>UnionFold a ts</code> indicates that we have sufficient functions to fold an <code>Union ts</code>, to provide an <code>a</code>. My goal was to be able to build this UnionFold as easily as possible. I take advantage of the <a href="http://docs.idris-lang.org/en/latest/tutorial/typesfuns.html#list-and-vect">list syntax in Idris</a> to obtain a convenient way to define it. So <code>UnionFold a ts</code> is defined as:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">UnionFold</span> <span class="ot">:</span> (target<span class="ot">:</span> <span class="dt">Type</span>) <span class="ot">-&gt;</span> (union<span class="ot">:</span> <span class="dt">Type</span>) <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">Nil</span> <span class="ot">:</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> [])
+  <span class="fu">(::)</span> <span class="ot">:</span> (t <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> ts) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> (t<span class="ot">::</span>ts))</code></pre></div>
+<p>This definition is straightforward as soon as we have understand the objective of this type.</p>
+<p>With this, we can know detail <code>foldUnion</code>:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> (fs<span class="ot">:</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> ts)) <span class="ot">-&gt;</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> a
+foldUnion [] (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="kw">impossible</span>
+foldUnion [] (<span class="dt">MemberThere</span> <span class="fu">_</span>) <span class="kw">impossible</span>
+foldUnion (f <span class="ot">::</span> <span class="fu">_</span>) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> f y
+foldUnion (f <span class="ot">::</span> xs) (<span class="dt">MemberThere</span> y) <span class="fu">=</span> foldUnion xs y</code></pre></div>
+<p>The two first cases (ithe impossible ones) can be omited (as they are impossible). I added them for documentation purpose. The two last cases are quite easy to read: we go through the <code>UnionFold</code> and the <code>Union</code> simultaneously and as soon as we fan the right location, we apply the corresponding function.</p>
+<p>And the previous example became:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;&gt;&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;Ahoy!&quot;</span>
+<span class="fu">&gt;&gt;&gt;</span> foldUnion [length, id, sum <span class="fu">.</span> map length] x
+<span class="dv">5</span> <span class="ot">:</span> <span class="dt">Nat</span></code></pre></div>
+<h1 id="part-2-is-over">Part 2 is over</h1>
+<p>That’s all for today, next time I will talk about union restriction and generalization.</p>
+]]></description>
+    <pubDate>Thu, 28 Jul 2016 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</guid>
+    <dc:creator>Nicolas Biri</dc:creator>
+</item>
+<item>
     <title>Union Type in Idris (Part 1)</title>
     <link>http://nicolas.biri.name//posts/2016-07-26-union-type-in-idris-part-1.html</link>
     <description><![CDATA[<div class="info">
@@ -93,7 +170,7 @@ Nothing : Maybe Nat
 &gt;&gt;&gt; </code></pre>
 <p>We uset <code>the</code> here to provide a Type hint, but it won’t be useful in most of the cases, as the type will be provided by the context.</p>
 <h1 id="part-1-is-over">Part 1 is over</h1>
-<p>That’s all for today, next time I will talk about folding union.</p>
+<p>That’s all for today, you can continue with the fold for <a href="http://nicolas.biri.name/posts/2016-07-27-union-type-in-idris-part-2.html">union type</a>.</p>
 ]]></description>
     <pubDate>Tue, 26 Jul 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-07-26-union-type-in-idris-part-1.html</guid>
@@ -177,40 +254,6 @@ Nothing : Maybe Nat
 ]]></description>
     <pubDate>Sun, 06 Jul 2014 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2014-07-06-Le-mythe-du-savoir-pratique.html</guid>
-    <dc:creator>Nicolas Biri</dc:creator>
-</item>
-<item>
-    <title>La place de l'algorithmique</title>
-    <link>http://nicolas.biri.name//posts/2014-06-17-La-place-de-l-algorithmique.html</link>
-    <description><![CDATA[<div class="info">
-    Posted on June 17, 2014
-    
-</div>
-
-<p><img src="/images/hamster.jpg" alt="Une image de hamster, pour le plaisir d'embruns" /></p>
-<blockquote>
-<p>Algorithme: Mécanisme réglant le fonctionnement de la pensée organisée et s’explicitant par des représentations analogues à celles des mathématiciens.</p>
-<p>Source : <a href="http://www.cnrtl.fr/lexicographie/algorithme">Centre National des Ressources Textuelles et Lexicales</a></p>
-</blockquote>
-<p>L’algorithmique est souvent présentée comme la discipline centrale de l’informatique. Ainsi, si l’on parle d’enseignement de l’informatique, rapidement se pose la question de la maîtrise de l’algorithmique par les élèves. Aujourd’hui, je vais essayer de poser quelques éléments de réflexion concernant son apprentissage dans le contexte d’un enseignement de l’informatique à l’école.</p>
-<h1 id="lalgorithme-insidieux">L’algorithme insidieux</h1>
-<p>Commençons par une bonne nouvelle. Avant même le début du commencement d’une réforme du <em>numérique</em> vos enfants (ou ceux de vos voisins, amis, parents) utilisent des algorithmes. Rappeler vous comment on vous a appris à additionner des nombres: Tu additionnes le chiffre le plus à droite de chaque nombre, tu écris le chiffre des unités, tu poses la retenue, tu l’ajoutes aux chiffres les plus à droite suivants, et tu continues comme cela jusqu’à ce que tu aies traité tous les chiffres (à peu près, vous avez le droit d’utiliser votre propre variation tant que vous obtenez le bon résultat). Cette mécanique <em>est</em> un algorithme. La méthode pour identifier un groupe nominal en français est aussi un algorithme. Pire, c’est un algorithme utilisé également dans certaines branche de l’informatique. L’école, insidieusement, apprend des algorithmes à vos enfants.</p>
-<p>S’il n’y avait que l’école. Faites un gâteau avec votre enfant : vous regroupez les ingrédients selon la recette, vous les intégrés selon les étapes décrites et vous faites cuire selon les instructions. Un algorithme. Vous vous souvenez comment on vous a appris à lacer vos chaussures ? Algorithme. Vous êtes, nous sommes tous les monsieur Jourdain de l’algorithmique.</p>
-<h1 id="de-lusage-à-la-formalisation">De l’usage à la formalisation</h1>
-<p>De plus en plus, des enseignants essaient de guider les élèves vers la création de certains de ces algorithmes. De les mettre par exemple face à deux nombres et de les faire formaliser leur démarche pour les additionner. En cela, ils font plus pour faire apprendre l’informatique aux enfants que l’ensemble des gesticulations autour du <em>code à l’école</em>.</p>
-<p>Cette capacité à créer un algorithme, qui peut se réduire en primaire à une verbalisation des différentes étapes de l’algorithme ou la création d’une fiche technique avec l’aide de l’enseignant peut être une activité centrale pour réussir à développer son raisonnement. En donner les clés à l’apprenant, ce n’est pas construire un savoir spécifique mais un outil pour apprendre et comprendre.</p>
-<h1 id="le-rôle-de-linformatique">Le rôle de l’informatique</h1>
-<p>L’algorithmique est une des matières clés de l’informatique. Réussir à “coder” un algorithme, le retranscrire dans un langage de programmation, est souvent présenter comme le premier obstacle pour un étudiant en informatique. C’est faux. Le premier obstacle est de réussir à décomposer ce qu’on souhaite faire pour comprendre l’algorithme, la retranscription vient ensuite. Tenter d’apprendre simultanément l’algorithmique et un nouveau langage, c’est augmenter la taille de l’obstacle.</p>
-<p>L’avantage de l’informatique est de fournir un terrain de jeux immense pour apprendre cette formalisation. Avec des notions d’arithmétique de base et des tableaux de nombres, on peut fournir un tas d’exercice simple pour apprendre à construire des algorithmes.</p>
-<p>Toutefois, ce savoir est totalement inutile si on ne réussit pas à faire passer un message épisthémologique simple: ce sont les mêmes mécanismes de base qui sont à l’oeuvre pour construire les algorithmes en mathématiques, en français ou en informatique.</p>
-<h1 id="mais-alors-tu-es-pour-linformatique-à-lécole">Mais alors tu es pour l’informatique à l’école ?</h1>
-<p>C’est plus compliqué que cela. Je suis pour une école qui aide les enfants à se construire. Je ne parle pas de cette idée louable mais à l’intérêt discutable à mon sens de “former des citoyens” (apprenons le tri sélectif et les dangers des réseaux sociaux). Je parle de fournir les clés pour pouvoir raisonner. L’informatique, en tant que science, peut aider. Cela n’est pas étonnant quand on sait d’où elle vient. L’informatique, en tant que technique, non. Elle peut être utilisée avec parcimonie et à condition de ne pas jouer un rôle central. Elle doit rester un support à la science, pas plus.</p>
-<p>Il y a u véritable problème avec ce que j’espère: cela ne se formalise pas sur une grille d’apprentissage. C’est fournir une aide au raisonnement, simplifier l’acquisition du savoir.</p>
-<p>Le discours des informaticiens qui ont l’impression de détenir un savoir qui leur donne une toute puissance sur le reste des mortels, sous-jacent au discours majoritaire est très dangereux. Et faux. Ils n’ont à la disposition qu’un outil que beaucoup d’autres possèdent inconsciemment et qu’eux même utilisent parfois très mal hors de leur domaine.</p>
-<p>Image: source Wikipedia, en hommage à <a href="http://embruns.net/">Laurent</a>.</p>
-]]></description>
-    <pubDate>Tue, 17 Jun 2014 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2014-06-17-La-place-de-l-algorithmique.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
 
