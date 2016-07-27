@@ -2,7 +2,7 @@
 title: "Union Type in Idris (Part 1)"
 lang: en
 category: [English, Functional Programming, Idris]
-date: 2016-07-28
+date: 2016-07-26
 author: Nicolas Biri
 ---
 
@@ -114,7 +114,7 @@ member x {e=There later} = MemberThere (member x {e=later})
 ```
 
 This short function takes advantages of Idris
-[auto implicit arguments]((http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments),
+[auto implicit arguments](http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments),
 which automatically computes argument at compile times, depending on the
 executino context. The idea is that, given a type `ty`, such that `ty` is in the
 union, we can compute the location of this type in the union and provide an
