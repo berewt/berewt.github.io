@@ -18,7 +18,8 @@ sum type is. Consider the following example in Haskell:
 data Whisky = Whisky {age :: Nat, alcohol :: Float}
 data Beer = Beer {alcohol :: Float}
 
-data Alcohol = AlcoholWhisky Whisky | AlcoholBeer Beer
+data Alcohol = AlcoholWhisky Whisky
+             | AlcoholBeer Beer
 
 myAlcohol :: Alcohol
 myAlcohol = AlcoholWhisky (Whisky 12 40)
@@ -36,9 +37,11 @@ stack sums:
 data Water = Water {calcium :: Float}
 data OrangeJuice = Water {sugar :: Float}
 
-data NoAlcohol = NoAlcoholWater Water | NoAlcoholOrangeJuice OrangeJuice
+data NoAlcohol = NoAlcoholWater Water
+               | NoAlcoholOrangeJuice OrangeJuice
 
-data Beverage = BeverageAlcohol Alcohol | BeverageNoAlcohol NoAlcohol
+data Beverage = BeverageAlcohol Alcohol
+              | BeverageNoAlcohol NoAlcohol
 
 myBeverage :: Beverage
 myBeverage = BeverageAlcohol myAlcohol
@@ -109,8 +112,9 @@ We can do way better with a small helper:
 
 ```idris
 member : ty -> {auto e: Elem ty ts} -> Union ts
-member x {e=Here} = MemberHere x
-member x {e=There later} = MemberThere (member x {e=later})
+member x {e = Here} = MemberHere x
+member x {e = There later} =
+  MemberThere (member x {e = later})
 ```
 
 This short function takes advantages of Idris
@@ -148,21 +152,21 @@ union (`p`) to compute the answer.
 
 ```idris
 get : Union ts -> {auto e: Elem ty ts} -> Maybe ty
-get (MemberHere x)       {e=Here}    = Just x
-get (MemberHere x)       {e=There _} = Nothing
-get (MemberThere x)      {e=Here}    = Nothing
-get (MemberThere later) {e=(There l)} = get later {e=l}
+get (MemberHere x)  {e = Here}    = Just x
+get (MemberHere x)  {e = There _} = Nothing
+get (MemberThere x) {e = Here}    = Nothing
+get (MemberThere later) {e = There l} =
+  get later {e=l}
 ```
 
 All these case should be straight forward. And now we can have (in the REPL):
 
-```
+```idris
 >>> :let x = the (Union [String, Nat, List String]) $ member "Ahoy!"
 >>> the (Maybe String) $ get x
 Just "Ahoy!" : Maybe String
 >>> the (Maybe Nat) $ get x
 Nothing : Maybe Nat
->>> 
 ```
 
 We uset `the` here to provide a Type hint, but it won't be useful in most of

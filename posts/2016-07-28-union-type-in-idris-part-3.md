@@ -24,7 +24,7 @@ precisely, I will detail union type restrictions and generalisation.
 Let suppose that we have a variable `x` of type
 `Union [Nat, String, List String]` and the following repl session:
 
-```
+```idris
 > the (Maybe Nat) x
 Nothing : Maybe Nat
 ```
@@ -37,7 +37,8 @@ Given an union instance, we can either get a value of a type in this uion or we 
 restrict the union. Quite clear and easy to write:
 
 ```idris
-retract : Union xs -> {auto p: Elem ty xs} -> Either (Union (dropElem xs p)) ty
+retract : Union xs -> {auto p: Elem ty xs}
+                   -> Either (Union (dropElem xs p)) ty
 ```
 
 The result type may require some explanations. The presence of `Either` and the
@@ -48,11 +49,17 @@ if we look at the
 The implementation is almost as easy to write as the type:
 
 ```idris
-retract : Union xs -> {auto p: Elem ty xs} -> Either (Union (dropElem xs p)) ty
+retract : Union xs -> {auto p: Elem ty xs}
+                  -> Either (Union (dropElem xs p)) ty
 retract (MemberHere x) {p = Here} = Right x
-retract (MemberHere x) {p = (There _)} = Left (MemberHere x)
-retract (MemberThere x) {p = Here} = Left x
-retract (MemberThere x) {p = (There later)} = either (Left . MemberThere) Right $ retract x {p = later}
+retract (MemberHere x) {p = (There _)} =
+  Left (MemberHere x)
+retract (MemberThere x) {p = Here} =
+  Left x
+retract (MemberThere x) {p = (There later)} =
+  either (Left . MemberThere)
+         Right
+         $ retract x {p = later}
 ```
 
 The 3 first cases are trivial, they can almost be completed automatically by
@@ -63,7 +70,7 @@ just buried it one step further.
 
 It's time to see retract in action:
 
-```
+```idris
 > :let x = the (Union [Nat, String, List String]) $ member "foo"
 > the (Either _ Nat) $ retract x
 Left (MemberHere "foo") : Either (Union [String, List String]) Nat
@@ -103,7 +110,8 @@ Now that we have a definition of `Sub`, we can type our `generalize` function
 more easily:
 
 ```idris
-generalize : (u: Union xs) -> {auto s: Sub xs ys} -> Union ys
+generalize : (u: Union xs) -> {auto s: Sub xs ys}
+                           -> Union ys
 ```
 
 Given an union, if we have a proof that the list of type in the union is a subset
@@ -114,9 +122,11 @@ Things are getting more complex when we want to implement generalize. Let's
 start with a naive implementation and see how it goes:
 
 ```idris
-generalize : (u: Union xs) -> {auto s: Sub xs ys} -> Union ys
+generalize : (u: Union xs) -> {auto s: Sub xs ys}
+                           -> Union ys
 generalize (MemberHere x) = member x
-generalize (MemberThere x) {s = (SubK y z)} = generalize x {s=y}
+generalize (MemberThere x) {s = (SubK y z)} =
+  generalize x {s=y}
 ```
 
 If we have at `MemberHere`, `x` is the value of the union, and thus, must be
@@ -140,14 +150,17 @@ _location_ of the value. Fortunately, this location is carried along by `Sub`
 and can be easily added:
 
 ```idris
-generalize : (u: Union xs) -> {auto s: Sub xs ys} -> Union ys
-generalize (MemberHere x) {s = (SubK _ z)} = member x {p = z}
-generalize (MemberThere x) {s = (SubK y _)} = generalize x {s=y}
+generalize : (u: Union xs) -> {auto s: Sub xs ys}
+                           -> Union ys
+generalize (MemberHere x) {s = (SubK _ z)} =
+  member x {p = z}
+generalize (MemberThere x) {s = (SubK y _)} =
+  generalize x {s=y}
 ```
 
 And here we go:
 
-```
+```idris
 > :let x = the (Union [Nat, String]) $ member 2
 > the (Union [String, Nat, List String]) $ generalize x
 MemberThere (MemberHere 2) : Union [String, Nat, List String]

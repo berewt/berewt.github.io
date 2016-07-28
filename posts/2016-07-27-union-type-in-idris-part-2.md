@@ -44,8 +44,8 @@ So my first idea was to decompose the union to know which functions we need
 to cover all the cases.. It means that I wanted something like:
 
 ```idris
-> :t foldUnion (the (Union [Char, String])) $ member 'c'
-foldUnion (the (Union [Char, String])) $ member 'c' : (Char -> a) -> (String -> a) -> a
+> :t foldUnion (the (Union [Char, String]) $ member 'c')
+foldUnion (the (Union [Char, String]) $ member 'c') : (Char -> a) -> (String -> a) -> a
 ```
 
 if you want to do such a thing, it means that the type of `foldUnion u` where
@@ -130,7 +130,8 @@ to obtain a convenient way to define it. So `UnionFold a ts` is defined as:
 ```idris
 data UnionFold : (target: Type) -> (union: Type) -> Type where
   Nil : UnionFold a (Union [])
-  (::) : (t -> a) -> UnionFold a (Union ts) -> UnionFold a (Union (t::ts))
+  (::) : (t -> a) -> UnionFold a (Union ts)
+                  -> UnionFold a (Union (t::ts))
 ```
 
 This definition is straightforward as soon as we have understand the objective
@@ -139,7 +140,8 @@ of this type.
 With this, we can know detail `foldUnion`:
 
 ```idris
-foldUnion : (fs: UnionFold a (Union ts)) -> Union ts -> a
+foldUnion : (fs: UnionFold a (Union ts)) -> Union ts
+                                         -> a
 foldUnion [] (MemberHere _) impossible
 foldUnion [] (MemberThere _) impossible
 foldUnion (f :: _) (MemberHere y) = f y
