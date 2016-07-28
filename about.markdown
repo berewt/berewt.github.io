@@ -6,10 +6,11 @@ lang: fr
 <img src="/images/me.jpg" id="me" />
 
 Nicolas Biri, principalement informaticien et passionné par plein
-d'autres choses dont je ne ferai pas la liste exhaaustive.
+d'autres choses dont je ne ferai pas la liste exhaaustive, parce que j'ai
+la flemme et que les passions changent avec le temps.
 
-Créateur du compte twitter [@1HaskellADay](http://twitter.com/1HaskellADay), qui
-propose (presque) chaque jour un petit exercice d'algorithmique en Haskell.
+Je suis le pire alumnus des doctorants, l'avocat des langages fonctionels,
+du typage statique et des effets de bord explicites.
 
-Travaille dans la recherche en Informatique au Luxembourg, principalement
-dans les interfaces hommes-machines adaptives.
+Je suis également hacker de la Bastille, ennemi des convictions, et globalement
+détestable, même si certains trouvent ce dernier point sympathique.
