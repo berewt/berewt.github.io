@@ -162,8 +162,8 @@ And the previous example became:
 
 # Part 2 is over
 
-That's all for today, next time I will talk about union restriction and
-generalization.
+That's all for today, next time I will talk about union
+[restriction and generalization](http://nicolas.biri.name/posts/2016-07-28-union-type-in-idris-part-3.html).
 
 
 
