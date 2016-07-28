@@ -36,7 +36,8 @@
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Whisky</span> <span class="fu">=</span> <span class="dt">Whisky</span> {<span class="ot">age ::</span> <span class="dt">Nat</span>,<span class="ot"> alcohol ::</span> <span class="dt">Float</span>}
 <span class="kw">data</span> <span class="dt">Beer</span> <span class="fu">=</span> <span class="dt">Beer</span> {<span class="ot">alcohol ::</span> <span class="dt">Float</span>}
 
-<span class="kw">data</span> <span class="dt">Alcohol</span> <span class="fu">=</span> <span class="dt">AlcoholWhisky</span> <span class="dt">Whisky</span> <span class="fu">|</span> <span class="dt">AlcoholBeer</span> <span class="dt">Beer</span>
+<span class="kw">data</span> <span class="dt">Alcohol</span> <span class="fu">=</span> <span class="dt">AlcoholWhisky</span> <span class="dt">Whisky</span>
+             <span class="fu">|</span> <span class="dt">AlcoholBeer</span> <span class="dt">Beer</span>
 
 <span class="ot">myAlcohol ::</span> <span class="dt">Alcohol</span>
 myAlcohol <span class="fu">=</span> <span class="dt">AlcoholWhisky</span> (<span class="dt">Whisky</span> <span class="dv">12</span> <span class="dv">40</span>)</code></pre></div>
@@ -45,9 +46,11 @@ myAlcohol <span class="fu">=</span> <span class="dt">AlcoholWhisky</span> (<span
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">data</span> <span class="dt">Water</span> <span class="fu">=</span> <span class="dt">Water</span> {<span class="ot">calcium ::</span> <span class="dt">Float</span>}
 <span class="kw">data</span> <span class="dt">OrangeJuice</span> <span class="fu">=</span> <span class="dt">Water</span> {<span class="ot">sugar ::</span> <span class="dt">Float</span>}
 
-<span class="kw">data</span> <span class="dt">NoAlcohol</span> <span class="fu">=</span> <span class="dt">NoAlcoholWater</span> <span class="dt">Water</span> <span class="fu">|</span> <span class="dt">NoAlcoholOrangeJuice</span> <span class="dt">OrangeJuice</span>
+<span class="kw">data</span> <span class="dt">NoAlcohol</span> <span class="fu">=</span> <span class="dt">NoAlcoholWater</span> <span class="dt">Water</span>
+               <span class="fu">|</span> <span class="dt">NoAlcoholOrangeJuice</span> <span class="dt">OrangeJuice</span>
 
-<span class="kw">data</span> <span class="dt">Beverage</span> <span class="fu">=</span> <span class="dt">BeverageAlcohol</span> <span class="dt">Alcohol</span> <span class="fu">|</span> <span class="dt">BeverageNoAlcohol</span> <span class="dt">NoAlcohol</span>
+<span class="kw">data</span> <span class="dt">Beverage</span> <span class="fu">=</span> <span class="dt">BeverageAlcohol</span> <span class="dt">Alcohol</span>
+              <span class="fu">|</span> <span class="dt">BeverageNoAlcohol</span> <span class="dt">NoAlcohol</span>
 
 <span class="ot">myBeverage ::</span> <span class="dt">Beverage</span>
 myBeverage <span class="fu">=</span> <span class="dt">BeverageAlcohol</span> myAlcohol</code></pre></div>
@@ -77,8 +80,9 @@ x <span class="fu">=</span> <span class="dt">MemberThere</span> (<span class="dt
 <p>With this basic definitions, we have in hands all we need to create union types. Altough, the instances are really painful to write, even more than with classic sum types.</p>
 <p>We can do way better with a small helper:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">member</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Union</span> ts
-member x {e<span class="fu">=</span><span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">MemberHere</span> x
-member x {e<span class="fu">=</span><span class="dt">There</span> later} <span class="fu">=</span> <span class="dt">MemberThere</span> (member x {e<span class="fu">=</span>later})</code></pre></div>
+member x {e <span class="fu">=</span> <span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">MemberHere</span> x
+member x {e <span class="fu">=</span> <span class="dt">There</span> later} <span class="fu">=</span>
+  <span class="dt">MemberThere</span> (member x {e <span class="fu">=</span> later})</code></pre></div>
 <p>This short function takes advantages of Idris <a href="http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments">auto implicit arguments</a>, which automatically computes argument at compile times, depending on the executino context. The idea is that, given a type <code>ty</code>, such that <code>ty</code> is in the union, we can compute the location of this type in the union and provide an <code>Elem</code>. This <code>Elem</code> is then used to compute the <code>Union</code> boilerplate. An we obtain:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">x</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
 x <span class="fu">=</span> member <span class="st">&quot;Ahoy!&quot;</span>
@@ -92,17 +96,17 @@ x <span class="fu">=</span> member <span class="dv">3</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty</code></pre></div>
 <p>And once again, the idea is to use the witness of the type position in the union (<code>p</code>) to compute the answer.</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty
-get (<span class="dt">MemberHere</span> x)       {e<span class="fu">=</span><span class="dt">Here</span>}    <span class="fu">=</span> <span class="dt">Just</span> x
-get (<span class="dt">MemberHere</span> x)       {e<span class="fu">=</span><span class="dt">There</span> <span class="fu">_</span>} <span class="fu">=</span> <span class="dt">Nothing</span>
-get (<span class="dt">MemberThere</span> x)      {e<span class="fu">=</span><span class="dt">Here</span>}    <span class="fu">=</span> <span class="dt">Nothing</span>
-get (<span class="dt">MemberThere</span> later) {e<span class="fu">=</span>(<span class="dt">There</span> l)} <span class="fu">=</span> get later {e<span class="fu">=</span>l}</code></pre></div>
+get (<span class="dt">MemberHere</span> x)  {e <span class="fu">=</span> <span class="dt">Here</span>}    <span class="fu">=</span> <span class="dt">Just</span> x
+get (<span class="dt">MemberHere</span> x)  {e <span class="fu">=</span> <span class="dt">There</span> <span class="fu">_</span>} <span class="fu">=</span> <span class="dt">Nothing</span>
+get (<span class="dt">MemberThere</span> x) {e <span class="fu">=</span> <span class="dt">Here</span>}    <span class="fu">=</span> <span class="dt">Nothing</span>
+get (<span class="dt">MemberThere</span> later) {e <span class="fu">=</span> <span class="dt">There</span> l} <span class="fu">=</span>
+  get later {e<span class="fu">=</span>l}</code></pre></div>
 <p>All these case should be straight forward. And now we can have (in the REPL):</p>
-<pre><code>&gt;&gt;&gt; :let x = the (Union [String, Nat, List String]) $ member &quot;Ahoy!&quot;
-&gt;&gt;&gt; the (Maybe String) $ get x
-Just &quot;Ahoy!&quot; : Maybe String
-&gt;&gt;&gt; the (Maybe Nat) $ get x
-Nothing : Maybe Nat
-&gt;&gt;&gt; </code></pre>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;&gt;&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;Ahoy!&quot;</span>
+<span class="fu">&gt;&gt;&gt;</span> the (<span class="dt">Maybe</span> <span class="dt">String</span>) <span class="fu">$</span> get x
+<span class="dt">Just</span> <span class="st">&quot;Ahoy!&quot;</span> <span class="ot">:</span> <span class="dt">Maybe</span> <span class="dt">String</span>
+<span class="fu">&gt;&gt;&gt;</span> the (<span class="dt">Maybe</span> <span class="dt">Nat</span>) <span class="fu">$</span> get x
+<span class="dt">Nothing</span> <span class="ot">:</span> <span class="dt">Maybe</span> <span class="dt">Nat</span></code></pre></div>
 <p>We uset <code>the</code> here to provide a Type hint, but it won’t be useful in most of the cases, as the type will be provided by the context.</p>
 <h1 id="part-1-is-over">Part 1 is over</h1>
 <p>That’s all for today, you can continue with the fold for <a href="http://nicolas.biri.name/posts/2016-07-27-union-type-in-idris-part-2.html">union type</a>.</p>
