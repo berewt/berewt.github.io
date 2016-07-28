@@ -7,8 +7,84 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Wed, 27 Jul 2016 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Thu, 28 Jul 2016 00:00:00 UT</lastBuildDate>
         <item>
+    <title>Union Type in Idris (Part 3)</title>
+    <link>http://nicolas.biri.name//posts/2016-07-28-union-type-in-idris-part-3.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on July 28, 2016
+    
+        by Nicolas Biri
+    
+</div>
+
+<p>Go back to the <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
+<h1 id="some-are-better-than-others-union-is-better-than-sum">Some are better than others, Union is better than sum</h1>
+<p>At this point, we have a slightly less complex syntax than sum types (with some drawbacks, but I will detail them in another part), but did we have other benefits?</p>
+<p>Well, yes.</p>
+<p>Today, we are going to inverstigate how flexible union types are. More precisely, I will detail union type restrictions and generalisation.</p>
+<h1 id="shrink-my-union">Shrink my union</h1>
+<p>Let suppose that we have a variable <code>x</code> of type <code>Union [Nat, String, List String]</code> and the following repl session:</p>
+<pre><code>&gt; the (Maybe Nat) x
+Nothing : Maybe Nat</code></pre>
+<p>We know that <code>x</code> does not contain a <code>Nat</code>. Thus, <code>x</code> contains either a <code>String</code> or a <code>List String</code>. Well, we can explicitly express it with union types.</p>
+<p>Let’s compute the type of this reasoning. Given an union instance, we can either get a value of a type in this uion or we can restrict the union. Quite clear and easy to write:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">retract</span> <span class="ot">:</span> <span class="dt">Union</span> xs <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty xs} <span class="ot">-&gt;</span> <span class="dt">Either</span> (<span class="dt">Union</span> (dropElem xs p)) ty</code></pre></div>
+<p>The result type may require some explanations. The presence of <code>Either</code> and the right case (<code>ty</code>) is clear. The left case (<code>dropElem xs p</code>) is straightforward if we look at the <a href="http://www.idris-lang.org/docs/current/base_doc/docs/Data.List.html#Data.List.dropElem"><code>dropElem</code> documentation</a>: it removes the element pointed by <code>p</code> from the list.</p>
+<p>The implementation is almost as easy to write as the type:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">retract</span> <span class="ot">:</span> <span class="dt">Union</span> xs <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty xs} <span class="ot">-&gt;</span> <span class="dt">Either</span> (<span class="dt">Union</span> (dropElem xs p)) ty
+retract (<span class="dt">MemberHere</span> x) {p <span class="fu">=</span> <span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">Right</span> x
+retract (<span class="dt">MemberHere</span> x) {p <span class="fu">=</span> (<span class="dt">There</span> <span class="fu">_</span>)} <span class="fu">=</span> <span class="dt">Left</span> (<span class="dt">MemberHere</span> x)
+retract (<span class="dt">MemberThere</span> x) {p <span class="fu">=</span> <span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">Left</span> x
+retract (<span class="dt">MemberThere</span> x) {p <span class="fu">=</span> (<span class="dt">There</span> later)} <span class="fu">=</span> either (<span class="dt">Left</span> <span class="fu">.</span> <span class="dt">MemberThere</span>) <span class="dt">Right</span> <span class="fu">$</span> retract x {p <span class="fu">=</span> later}</code></pre></div>
+<p>The 3 first cases are trivial, they can almost be completed automatically by Idris (I should talk about this really cool feature in a next post). The last case is a bit more complex. The idea is to <em>lift</em> the result of retract to the next step: on a right, propagate the found value, on a left, just buried it one step further.</p>
+<p>It’s time to see retract in action:</p>
+<pre><code>&gt; :let x = the (Union [Nat, String, List String]) $ member &quot;foo&quot;
+&gt; the (Either _ Nat) $ retract x
+Left (MemberHere &quot;foo&quot;) : Either (Union [String, List String]) Nat
+&gt; the (Either _ String) $ retract x
+Right &quot;foo&quot; : Either (Union [Nat, List String]) String</code></pre>
+<h1 id="enlarge-my-union">Enlarge my union!</h1>
+<p>Can we do the opposite of <code>retract</code>? If I have a member of <code>Union [Nat, List String]</code>, can we claim that we have a member of a broader union?</p>
+<p>Yes, we can <em>but</em> it is a bit more complex than the <code>retract</code> case. The main reason is that we have an infinity of target types for the result union.</p>
+<h2 id="identifying-the-broader-unions">Identifying the broader unions</h2>
+<p>The objective is to define a data type that contain a proof that an union is broader than another one. Or, by transitivity, that each element of a list of types is contained in another list. This is as simple as it sounds. I mean, really, if its sounds complicated to you, it will be complicated to read, if it sounds simple, it will be simple to read:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Sub</span> <span class="ot">:</span> <span class="dt">List</span> a <span class="ot">-&gt;</span> <span class="dt">List</span> a <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">SubZ</span> <span class="ot">:</span> <span class="dt">Sub</span> [] ys
+  <span class="dt">SubK</span> <span class="ot">:</span> <span class="dt">Sub</span> xs ys <span class="ot">-&gt;</span>  <span class="dt">Elem</span> ty ys <span class="ot">-&gt;</span> <span class="dt">Sub</span> (ty<span class="ot">::</span>xs) ys</code></pre></div>
+<p>To build a <code>Sub</code> type, we must be able proof that each element of the first list are in the second one.</p>
+<h2 id="trying-to-generalize-union">Trying to <code>generalize</code> union</h2>
+<p>Now that we have a definition of <code>Sub</code>, we can type our <code>generalize</code> function more easily:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys} <span class="ot">-&gt;</span> <span class="dt">Union</span> ys</code></pre></div>
+<p>Given an union, if we have a proof that the list of type in the union is a subset of the list of type in the resulting union, we can generalize the union. Yes, it’s that <strong>easy</strong>.</p>
+<p>Things are getting more complex when we want to implement generalize. Let’s start with a naive implementation and see how it goes:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys} <span class="ot">-&gt;</span> <span class="dt">Union</span> ys
+generalize (<span class="dt">MemberHere</span> x) <span class="fu">=</span> member x
+generalize (<span class="dt">MemberThere</span> x) {s <span class="fu">=</span> (<span class="dt">SubK</span> y z)} <span class="fu">=</span> generalize x {s<span class="fu">=</span>y}</code></pre></div>
+<p>If we have at <code>MemberHere</code>, <code>x</code> is the value of the union, and thus, must be put in the result union, and we use previously defined <code>member</code> to do so. If we haven’t find the value yet, we just restart one step further.</p>
+<p>This version reallly seemed ok to me. Unfortunately, it didn’t match the compiler expactations:</p>
+<pre><code>When checking right hand side of generalize with expected type
+        Union ys
+
+When checking argument p to function Data.UnionType.member:
+        Can&#39;t find a value of type
+                Elem ty ys</code></pre>
+<p>Almost there, the sole issue is that Idris wasn’t able to compute the new <em>location</em> of the value. Fortunately, this location is carried along by <code>Sub</code> and can be easily added:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys} <span class="ot">-&gt;</span> <span class="dt">Union</span> ys
+generalize (<span class="dt">MemberHere</span> x) {s <span class="fu">=</span> (<span class="dt">SubK</span> <span class="fu">_</span> z)} <span class="fu">=</span> member x {p <span class="fu">=</span> z}
+generalize (<span class="dt">MemberThere</span> x) {s <span class="fu">=</span> (<span class="dt">SubK</span> y <span class="fu">_</span>)} <span class="fu">=</span> generalize x {s<span class="fu">=</span>y}</code></pre></div>
+<p>And here we go:</p>
+<pre><code>&gt; :let x = the (Union [Nat, String]) $ member 2
+&gt; the (Union [String, Nat, List String]) $ generalize x
+MemberThere (MemberHere 2) : Union [String, Nat, List String]</code></pre>
+<h1 id="part-3-is-over">Part 3 is over</h1>
+<p>That’s all for today.</p>
+]]></description>
+    <pubDate>Thu, 28 Jul 2016 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2016-07-28-union-type-in-idris-part-3.html</guid>
+    <dc:creator>Nicolas Biri</dc:creator>
+</item>
+<item>
     <title>Union Type in Idris (Part 2)</title>
     <link>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</link>
     <description><![CDATA[<div class="info">
@@ -79,7 +155,7 @@ foldUnion (f <span class="ot">::</span> xs) (<span class="dt">MemberThere</span>
 <span class="fu">&gt;&gt;&gt;</span> foldUnion [length, id, sum <span class="fu">.</span> map length] x
 <span class="dv">5</span> <span class="ot">:</span> <span class="dt">Nat</span></code></pre></div>
 <h1 id="part-2-is-over">Part 2 is over</h1>
-<p>That’s all for today, next time I will talk about union restriction and generalization.</p>
+<p>That’s all for today, next time I will talk about union <a href="http://nicolas.biri.name/posts/2016-07-28-union-type-in-idris-part-3.html">restriction and generalization</a>.</p>
 ]]></description>
     <pubDate>Wed, 27 Jul 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</guid>
@@ -228,32 +304,6 @@ Nothing : Maybe Nat
 ]]></description>
     <pubDate>Wed, 14 Jan 2015 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2015-01-14-Le-twitapero-ludique.html</guid>
-    <dc:creator>Nicolas Biri</dc:creator>
-</item>
-<item>
-    <title>Le mythe du savoir pratique</title>
-    <link>http://nicolas.biri.name//posts/2014-07-06-Le-mythe-du-savoir-pratique.html</link>
-    <description><![CDATA[<div class="info">
-    Posted on July  6, 2014
-    
-</div>
-
-<p>Le problème quand on est contre une technologisation des savoirs à l’école, notamment en primaire, est le même que quand on avance face au vent un jour de tempête. De nuit. En hiver. Et qu’il pleut. Beaucoup. Bref, c’est pas l’expérience la plus agréable qui soit.</p>
-<p>C’est qu’apprendre aux enfants des savoirs techniques, c’est leur apprendre à se “débrouiller”, et ça, c’est super. Ils peuvent créer, faire des choses eux mêmes, être indépendant. Ils doivent aussi pouvoir sauver le monde, la veuve et l’orphelin et avoir le poil soyeux.</p>
-<p>En fait, on ne peut pas être contre l’apprentissage de nouvelles choses à un enfant, c’est super d’apprendre des trucs. Pensez vous, quand on est contre apprentissage, la balance est simple chez beaucoup: dans un cas, l’enfant a un savoir en plus, dans l’autre cas, il ne l’a pas. Quel monstre voudrait le priver d’un savoir ?</p>
-<p>Quand on objecte que ce savoir nécessite du temps et que ce temps, c’est nécessairement celui d’un autre savoir, ça devient un peu plus complexe. Celles qui sortent sont en général de deux ordres :</p>
-<ul>
-<li>Il y a des savoirs inutiles, il suffit de prendre le temps sur l’enseignement de ceux-ci.</li>
-<li>On a déjà un enseignement technique en primaire, il suffit de n’apprendre que le savoir X à la place, c’est bien plus important (X étant le savoir à la mode, dans notre cas, l’informatique).</li>
-</ul>
-<p>J’ai un vrai problème avec ces deux points. Et au fond, ce problème est le même dans les deux cas : pour juger quel savoir ou non est dispensable, il est nécessaire de savoir quel est le but que l’on souhaite pour l’enseignement.</p>
-<p>Là encore, l’argument en faveur des savoirs techniques est implacable : connaître la technique, c’est obtenir de la liberté face aux constructeurs / commerciaux / entreprises / chats au regard mignon. Admettons.</p>
-<p>Ceux qui avancent de telles théorie n’ont pas appris à bidouiller à l’école. Non, même un cours sur table traçante ou une initiation en basic ne leur a pas appris, arrêtons de se mentir, ça a pu leur donner envie, mais pas plus. En revanche, pour eux, l’école a parfaitement jouer son rôle. Elle leur a appris à avoir un regard critique, un esprit d’analyse, qui leur permet aujourd’hui de juger que ce savoir, qu’ils ont pu acquérir plus tard car l’école leur avait donner les moyens d’apprendre, leur semble important.</p>
-<p>C’est à mon sens cela qui est la clé de la réussite de l’éducation : permettre à un futur citoyen de pouvoir se faire une idée éclairée sur le monde et de l’aider dans l’apprentissage de nouveaux savoirs. Pas de lui donner les outils pour une idée du monde qu’on s’est faite pour lui. Si l’on veut atteindre ce but, cela passe par plein de choses au primaire, qui ne laisse de temps à coté que pour montrer ce qu’il est possible de faire, pas pour le pratiquer suffisamment pour devenir “un bidouilleur”.</p>
-<p>Accessoirement, si c’est notre but, les programmes actuels y répondent globalement bien. Les résultats ne semblent pas bon, notamment pour les élèves venant de milieux modestes, mais la réponse passe certainement plus par des outils pédagogiques que par un changement des savoirs.</p>
-]]></description>
-    <pubDate>Sun, 06 Jul 2014 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2014-07-06-Le-mythe-du-savoir-pratique.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
 
