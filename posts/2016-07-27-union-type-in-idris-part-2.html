@@ -32,7 +32,7 @@
 
 <p>The <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
 <h1 id="first-part-summary">First part summary</h1>
-<p>We have detailed how we can write union types in Idris and how to extract a value from it. We recall here the union type definition, that is used through this article:</p>
+<p>We have detailed how we can write union types in Idris and how to extract a value from them. We recall here the union type definition that is used through this article:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
   <span class="dt">MemberHere</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)
   <span class="dt">MemberThere</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)</code></pre></div>
@@ -41,7 +41,7 @@
 <span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty</code></pre></div>
 <h1 id="folding-union">Folding Union</h1>
 <p>When I started reading some Idris, I was amazed by the <a href="https://gist.github.com/puffnfresh/11202637"><code>printf</code> example</a> (also available <a href="https://www.youtube.com/watch?v=fVBck2Zngjo">in video</a>).</p>
-<p>And my motivation when I start union type was actually to provide a type safe way to fold an union type.</p>
+<p>And my motivation when I started union type was actually to provide a type-safe way to fold an union type.</p>
 <h2 id="a-first-try-decomposing-the-union-type">A first try: Decomposing the union type</h2>
 <p>So my first idea was to decompose the union to know which functions we need to cover all the cases.. It means that I wanted something like:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> <span class="ot">:</span>t foldUnion (the (<span class="dt">Union</span> [<span class="dt">Char</span>, <span class="dt">String</span>]) <span class="fu">$</span> member <span class="ch">'c'</span>)
@@ -50,7 +50,7 @@ foldUnion (the (<span class="dt">Union</span> [<span class="dt">Char</span>, <sp
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> ts) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> ts</code></pre></div>
 <p>Where <code>UnionFold</code> should build a type from a list of type.</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">UnionFold</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span></code></pre></div>
-<p>The case decoposition is quite straightforward atually. If the list is empty, we are done, so the type should be an arbitrary <code>a</code>. If there is a type in the list, we should provide a function for this type and continue with the tail of the list:</p>
+<p>The case decomposition is actually quite straightforward. If the list is empty, we are done, so the type should be an arbitrary <code>a</code>. If there is a type in the list, we should provide a function for this type and continue with the tail of the list:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">UnionFold</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
 <span class="dt">UnionFold</span> [] <span class="fu">=</span> a
 <span class="dt">UnionFold</span> (ty<span class="ot">:</span>ts) <span class="fu">=</span> (ty <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> ts</code></pre></div>
@@ -69,12 +69,12 @@ foldUnion (<span class="dt">MemberThere</span> later) <span class="fu">=</span> 
 <span class="fu">&gt;&gt;&gt;</span> foldUnion x length id (sum <span class="fu">.</span> map length)
 <span class="dv">5</span> <span class="ot">:</span> <span class="dt">Nat</span></code></pre></div>
 <h2 id="functions-to-the-left-union-to-the-right">Functions to the left, union to the right</h2>
-<p>There is an issue with the former proposal: we need to provide the unon first. It makes sense in the case of <code>printf</code>, as we want to provide the format string before its parameter. It’s less meaningful in the case of folding.</p>
-<p>It’s pretty hard to change the parameter order though. Actually, if we dont know the union, how can we know if we still have to pass a function or the final union. More clearly, we aren’t able to define the type of a partially applied function.</p>
+<p>There is an issue with the former proposal: we need to provide the union first. It makes sense in the case of <code>printf</code>, as we want to provide the format string before its parameter. It’s less meaningful in the case of folding.</p>
+<p>It’s pretty hard to change the parameters order though. Actually, if we dont know the union, how can we know if we still have to pass a function or the final union. To put it simply, we aren’t able to define the type of a partially applied function.</p>
 <p>An alternative is to gather the folding functions to define what kind of unions can be fold with these functions.</p>
 <p>The objective is consequently to obtain a signature like:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> <span class="dt">UnionFold</span> a ts <span class="ot">-&gt;</span> (u<span class="ot">:</span> <span class="dt">Union</span> ts) <span class="ot">-&gt;</span> a</code></pre></div>
-<p>With this signature, <code>UnionFold a ts</code> indicates that we have sufficient functions to fold an <code>Union ts</code>, to provide an <code>a</code>. My goal was to be able to build this UnionFold as easily as possible. I take advantage of the <a href="http://docs.idris-lang.org/en/latest/tutorial/typesfuns.html#list-and-vect">list syntax in Idris</a> to obtain a convenient way to define it. So <code>UnionFold a ts</code> is defined as:</p>
+<p>With this signature, <code>UnionFold a ts</code> indicates that we have sufficient functions to fold an <code>Union ts</code>, to provide an <code>a</code>. My goal was to be able to build this UnionFold as easily as possible. I took advantage of the <a href="http://docs.idris-lang.org/en/latest/tutorial/typesfuns.html#list-and-vect">list syntax in Idris</a> to obtain a convenient way to define it. So <code>UnionFold a ts</code> is defined as:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">UnionFold</span> <span class="ot">:</span> (target<span class="ot">:</span> <span class="dt">Type</span>) <span class="ot">-&gt;</span> (union<span class="ot">:</span> <span class="dt">Type</span>) <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
   <span class="dt">Nil</span> <span class="ot">:</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> [])
   <span class="fu">(::)</span> <span class="ot">:</span> (t <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> ts)
@@ -87,7 +87,7 @@ foldUnion [] (<span class="dt">MemberHere</span> <span class="fu">_</span>) <spa
 foldUnion [] (<span class="dt">MemberThere</span> <span class="fu">_</span>) <span class="kw">impossible</span>
 foldUnion (f <span class="ot">::</span> <span class="fu">_</span>) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> f y
 foldUnion (f <span class="ot">::</span> xs) (<span class="dt">MemberThere</span> y) <span class="fu">=</span> foldUnion xs y</code></pre></div>
-<p>The two first cases (ithe impossible ones) can be omited (as they are impossible). I added them for documentation purpose. The two last cases are quite easy to read: we go through the <code>UnionFold</code> and the <code>Union</code> simultaneously and as soon as we fan the right location, we apply the corresponding function.</p>
+<p>The two first cases (the impossible ones) can be omitted (as they are impossible). I added them for documentation purpose. The two last cases are quite easy to read: we go through the <code>UnionFold</code> and the <code>Union</code> simultaneously and as soon as we find the right location, we apply the corresponding function.</p>
 <p>And the previous example became:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;&gt;&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;Ahoy!&quot;</span>
 <span class="fu">&gt;&gt;&gt;</span> foldUnion [length, id, sum <span class="fu">.</span> map length] x
