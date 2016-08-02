@@ -7,8 +7,106 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Thu, 28 Jul 2016 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Tue, 02 Aug 2016 00:00:00 UT</lastBuildDate>
         <item>
+    <title>Union Type in Idris (Part 4)</title>
+    <link>http://nicolas.biri.name//posts/2016-08-02-union-type-in-idris-part-4.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on August  2, 2016
+    
+        by Nicolas Biri
+    
+</div>
+
+<p>Go back to the <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
+<h1 id="a-glimpe-of-equality">A glimpe of equality</h1>
+<p>Idris handles equality with a typeclass, just like Haskell. Whilst equality must be define specifically for each sum type, we can define the equality in a generic manner for union types. The idea is to define the equality iteratively on the list of types of the union.</p>
+<h2 id="equality-for-union-xxs">Equality for <code>Union x:xs</code></h2>
+<p>Let’s start with the recursive case, do we really need to elaborate?</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">(<span class="dt">Eq</span> ty, <span class="dt">Eq</span> (<span class="dt">Union</span> xs)) <span class="ot">=&gt;</span> <span class="dt">Eq</span> (<span class="dt">Union</span> (ty<span class="ot">::</span>xs)) <span class="kw">where</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberHere</span> x) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> x <span class="fu">==</span> y
+  (<span class="fu">==</span>) (<span class="dt">MemberHere</span> x) (<span class="dt">MemberThere</span> y) <span class="fu">=</span> <span class="dt">False</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberThere</span> x) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> <span class="dt">False</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberThere</span> x) (<span class="dt">MemberThere</span> y) <span class="fu">=</span> x <span class="fu">==</span> y</code></pre></div>
+<p>We need equality for the previous union (induction) nd for the newly added type. Then, two terms are equal if they point to the same type and have the same value.</p>
+<h2 id="the-base-case">The base case</h2>
+<p>Things here are a little trickier. We nned an instance of <code>Eq (Union [])</code>. Let’s look back at the <code>Union</code> definition:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">MemberHere</span> <span class="ot">:</span> (x<span class="ot">:</span> ty) <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>xs)
+  <span class="dt">MemberThere</span> <span class="ot">:</span> (x<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>xs)</code></pre></div>
+<p>Do you see the potential issue? None of them allow us to build a <code>Union []</code>. It’s impossible to build an element of <code>Union []</code>? Just explain it to Idris:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Eq</span> (<span class="dt">Union</span> []) <span class="kw">where</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="fu">_</span> <span class="kw">impossible</span>
+  (<span class="fu">/=</span>) (<span class="dt">MemberThere</span> <span class="fu">_</span>) <span class="fu">_</span> <span class="kw">impossible</span></code></pre></div>
+<p>Profit:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span> <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span>
+<span class="dt">True</span> <span class="ot">:</span> <span class="dt">Boolean</span>
+<span class="fu">&gt;</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span> <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;bar&quot;</span>
+<span class="dt">False</span> <span class="ot">:</span> <span class="dt">Boolean</span>
+<span class="fu">&gt;</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span> <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="dv">42</span>
+<span class="dt">False</span> <span class="ot">:</span> <span class="dt">Boolean</span></code></pre></div>
+<h2 id="uninhabited-types">Uninhabited types</h2>
+<p>There is an alternative to the <code>impossible</code> solution. We can claim that a type is uninhabited thanks to a typeclass:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Uninhabited</span> (<span class="dt">Union</span> []) <span class="kw">where</span>
+    uninhabited (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="kw">impossible</span>
+    uninhabited (<span class="dt">MemberThere</span> <span class="fu">_</span>) <span class="kw">impossible</span></code></pre></div>
+<p><code>Uninhabited</code> comes with an <code>absurd</code> funciton of type <code>Uninhabited e =&gt; e -&gt; a</code> absurd can be read as: if we have an instance of an uninhabited type, we can build anything from it.</p>
+<p>Thanks to <code>Uninhabited</code>, our instance of <code>Eq</code> can be written:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Eq</span> (<span class="dt">Union</span> []) <span class="kw">where</span>
+  (<span class="fu">==</span>) x <span class="fu">_</span> <span class="fu">=</span> absurd x</code></pre></div>
+<h1 id="unions-and-synonyms">Unions and synonyms</h1>
+<p>If our unions are well defined, a union of a unique type should be isomorphic to this type. A union of two types should be isomorphic to <code>Either</code>. Let’s transform these assumptions into proofs.</p>
+<h2 id="morphisms">Morphisms</h2>
+<p>The morphisms can be implemented as instances of the <code>Cast</code> typeclass and are straightforward as soon as we know how to deal with uninhabited types:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Cast</span> (<span class="dt">Union</span> [ty]) ty <span class="kw">where</span>
+  cast (<span class="dt">MemberHere</span> x) <span class="fu">=</span> x
+  cast (<span class="dt">MemberThere</span> x) <span class="fu">=</span> absurd x
+
+<span class="dt">Cast</span> l (<span class="dt">Union</span> [l]) <span class="kw">where</span>
+  cast x <span class="fu">=</span> (<span class="dt">MemberHere</span> x)
+
+<span class="dt">Cast</span> (<span class="dt">Union</span> [l, r]) (<span class="dt">Either</span> l r) <span class="kw">where</span>
+  cast (<span class="dt">MemberHere</span> x) <span class="fu">=</span> <span class="dt">Left</span> x
+  cast (<span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> x)) <span class="fu">=</span> <span class="dt">Right</span> x
+  cast (<span class="dt">MemberThere</span> (<span class="dt">MemberThere</span> x)) <span class="fu">=</span> absurd x
+
+<span class="dt">Cast</span> (<span class="dt">Either</span> l r) (<span class="dt">Union</span> [l, r]) <span class="kw">where</span>
+  cast (<span class="dt">Left</span> x) <span class="fu">=</span> (<span class="dt">MemberHere</span> x)
+  cast (<span class="dt">Right</span> x) <span class="fu">=</span> (<span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> x))</code></pre></div>
+<h2 id="put-an-iso-in-our-morphisms">Put an iso in our morphisms</h2>
+<p>Idris has a <code>Iso</code> type, that is use to prove that two types are isomorphic. Here is its definition:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Iso</span> <span class="ot">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
+  <span class="dt">MkIso</span> <span class="ot">:</span> (to <span class="ot">:</span> a <span class="ot">-&gt;</span> b)
+        <span class="ot">-&gt;</span> (from <span class="ot">:</span> b <span class="ot">-&gt;</span> a)
+        <span class="ot">-&gt;</span> (toFrom <span class="ot">:</span> (y <span class="ot">:</span> b) <span class="ot">-&gt;</span> to (from y) <span class="fu">=</span> y)
+        <span class="ot">-&gt;</span> (fromTo <span class="ot">:</span> (x <span class="ot">:</span> a) <span class="ot">-&gt;</span> from (to x) <span class="fu">=</span> x)
+        <span class="ot">-&gt;</span> <span class="dt">Iso</span> a b</code></pre></div>
+<p><code>to</code> and <code>from</code> are the two morphisms used to build the isomorphism. <code>toFrom</code> and <code>fromTo</code> are proofs. They are populated if and only if for (<code>to . from</code>) and (<code>from . to</code>) behave like the <code>id</code> function.</p>
+<p>Thus, being able to build an instance of <code>Iso a b</code> is a proof that <code>a</code> and <code>b</code> are isomorphic. Let’s buils these instances for <code>Union</code>:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">oneTypeUnion</span> <span class="ot">:</span> <span class="dt">Iso</span> (<span class="dt">Union</span> [ty]) ty
+oneTypeUnion <span class="fu">=</span> <span class="dt">MkIso</span> cast cast toFrom fromTo
+  <span class="kw">where</span>
+    toFrom <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberThere</span> x) <span class="fu">=</span> absurd x</code></pre></div>
+<p>And:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">eitherUnion</span> <span class="ot">:</span> <span class="dt">Iso</span> (<span class="dt">Union</span> [l, r]) (<span class="dt">Either</span> l r)
+eitherUnion <span class="fu">=</span> <span class="dt">MkIso</span> cast cast toFrom fromTo
+  <span class="kw">where</span>
+    toFrom (<span class="dt">Left</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    toFrom (<span class="dt">Right</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> <span class="fu">_</span>)) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberThere</span> (<span class="dt">MemberThere</span> x)) <span class="fu">=</span> absurd x</code></pre></div>
+<p><code>Refl</code> is a member of the type <code>x = x</code>. Being able to compile this code build a formal proof of the existence of the isomorphisms.</p>
+<h1 id="part-4-is-over">Part 4 is over</h1>
+<p>That’s all for this serie, the code is <a href="https://github.com/berewt/UnionType">on github</a>.</p>
+]]></description>
+    <pubDate>Tue, 02 Aug 2016 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2016-08-02-union-type-in-idris-part-4.html</guid>
+    <dc:creator>Nicolas Biri</dc:creator>
+</item>
+<item>
     <title>Union Type in Idris (Part 3)</title>
     <link>http://nicolas.biri.name//posts/2016-07-28-union-type-in-idris-part-3.html</link>
     <description><![CDATA[<div class="info">
@@ -290,39 +388,6 @@ get (<span class="dt">MemberThere</span> later) {e <span class="fu">=</span> <sp
 ]]></description>
     <pubDate>Tue, 17 Nov 2015 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2015-11-17-Apres-les-morts.html</guid>
-    <dc:creator>Nicolas Biri</dc:creator>
-</item>
-<item>
-    <title>Le Twitapéro-ludique</title>
-    <link>http://nicolas.biri.name//posts/2015-01-14-Le-twitapero-ludique.html</link>
-    <description><![CDATA[<div class="info">
-    Posted on January 14, 2015
-    
-</div>
-
-<p>Le jeu de société, passe-temps étiqueté “geek” dans la pop-culture, est un de mes passe-temps préférentiel. Pour ceux qui suivent ce blog et qui n’ont aucune autre idée de ce qu’est un jeu de société autre que les parties de Monopoly ou autre La bonne paye qu’ils ont fait enfants ou des jeux qu’ils ont vu dans les catalogues de Noël, je ne peux que leur conseiller de suivre le podcast des gens formidables de <a href="http://podcast.proxi-jeux.fr">Proxi-jeux</a>, notamment leur nouveau podcast, “<a href="http://podcast.proxi-jeux.fr/category/jouez-bien/">jouez bien</a>” qui s’adresse à ceux qui voudraient découvrir le jeu. Une autre solution est d’aller dans une ludothèque, dans un magasin spécialisé, ou de venir à une rencontre de joueurs.</p>
-<p>Et tiens, en parlant de renconte de joueurs, ça tombe bien, surtout si vous avez envie de venir en Lorraine, car j’en organise une, et c’est justement de ça dont il est question aujourd’hui.</p>
-<h1 id="le-twitapéro-ludique">Le twitapéro-ludique</h1>
-<p>Dans jeux de société, il y a société, et n’en déplaise à Emmnuel Macron, ce n’est pas dans le sens d’entreprise. Du coup, les joueurs ont besoin de se retrouver. À coté des grandes manifestations et des clubs de joueurs, les réseaux sociaux ont bien aidé pour se retrouver. Sur Twitter existe depuis pas mal de temps l’idée des twitapéros ludiques. Contrairement à pas mal d’autres twitapéro, le nom ici est bien trompeur, car le twitapéro dure la journée. L’idée est de se retrouver chez quelqu’un, pour jouer, discuter, échanger et dire du mal de ceux qui ne sont pas venus, ce dernier point étant optionnel.</p>
-<p>Les joueurs sont des gens agréables, et il n’y a donc aucune raison d’avoir peur de demander à y participer si vous en voyez un passer.</p>
-<h1 id="le-twitapéro-ludique-lorrain">Le Twitapéro-ludique lorrain</h1>
-<p>J’ai lancé l’idée et j’accueille la prochaine édition, un peu poussé avec plaisir par <span class="citation">[@blublugrublu]</span>(https://twitter.com/blublugrublu)). En voilà quelques détails.</p>
-<h2 id="le-quand">Le quand</h2>
-<p>Le 24 janvier (2015 oui), toute la journée. Comme c’est quand même le week-end et qu’il ne faut pas déconner, ça serait bien de ne pas arriver avant 9h. La fin est prévue quand vous en avez marre, généralement après la fin de The Voice. Vous pouvez arriver plus tard, repartir plus tôt, vous pouvez même ne pas venir.</p>
-<h2 id="le-où">Le où</h2>
-<p>Chez moi, <a href="https://goo.gl/maps/NXvQQ">ici</a>. C’est excentré, c’est perdu, si vous n’avez pas de voiture, c’est mal parti mais il y a de la place, c’est au calme (tu m’étonnes) et on annonce pas (encore) de neige.</p>
-<h2 id="le-qui">Le qui</h2>
-<p>Des gens ont déjà dit qu’<a href="http://doodle.com/6vnvairqwqagh3xw">ils venaient</a> ou qu’ils aimeraient venir mais qu’ils cherchaient un covoitureur (si vous voulez venir de Paris, contactez Vindeux, son email est dispo sur le lien précédent). Vous pouvez toujours venir si vous n’êtes pas inscrit. Si vous comptez venir ET cherchez un endroit pour dormir, j’ai encore quelques place à la maison, contactez moi.</p>
-<h2 id="le-comment">Le comment</h2>
-<p>Je prépare à manger le soir pour ceux dont je sais qu’ils viennent, le midi, chacun apporte sa nourriture et soit la garde pour lui, soit la partage avec les autres, il n’y a pas d’obligation, c’est assez libre, nous sommes Charlie. J’ai quelques bières au frais, je prendrai quelques boissons sans alcool, mais venir avec quelques boissons supplémentaire est également bienvenu.</p>
-<p>Vous pouvez amener des jeux, ou pas. Vous pouvez demander à des gens d’en apporter, ou pas. Vous pouvez ne rien y connaître. Vous venez comme vous êtes, mais habillez vous d’abord.</p>
-<h1 id="lorganisation">L’organisation</h1>
-<p>Pour ceux qui veulent, une jolie feuille Excel <a href="https://docs.google.com/spreadsheets/d/1DysLpiTP9mOaqN669ER21jtWJ8JAxI5xwsEB9Kyuuec/edit?usp=sharing">est disponible</a> pour les participants. Si vou souhaitez venir, ça serait vraiment CHOU de votre part de s’y inscrire, surtout si vous n’avez pas répondu au doodle.</p>
-<h2 id="autre-chose">Autre chose ?</h2>
-<p>Si vous avez des questions, n’hésitez pas à me contacter. Et surtout, jouez bien.</p>
-]]></description>
-    <pubDate>Wed, 14 Jan 2015 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2015-01-14-Le-twitapero-ludique.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
 

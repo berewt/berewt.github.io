@@ -54,7 +54,7 @@ myAlcohol <span class="fu">=</span> <span class="dt">AlcoholWhisky</span> (<span
 
 <span class="ot">myBeverage ::</span> <span class="dt">Beverage</span>
 myBeverage <span class="fu">=</span> <span class="dt">BeverageAlcohol</span> myAlcohol</code></pre></div>
-<p>It would be easier if we can claim that a type <code>t</code> is a union of several types and provides any of these types value as a value of type <code>t</code>.</p>
+<p>It would be easier if we can claim that a type <code>t</code> is a union of several types and provides any of these types vaule as a value of type <code>t</code>.</p>
 <p>This idea is not new, it’s for example investigated in the <a href="http://hackage.haskell.org/package/open-union"><code>open-union</code></a> package. Thanks to this package, we can replace the first example with something like:</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">type</span> <span class="dt">Alcohol</span> <span class="fu">=</span> <span class="dt">Union</span> <span class="ch">'[Whisky, Beer]</span>
 
@@ -65,8 +65,8 @@ myAlcohol <span class="fu">=</span> liftUnion (<span class="dt">Whisky</span> <s
 <h1 id="defining-union-types-in-idris">Defining union types in Idris</h1>
 <p><a href="http://www.idris-lang.org/">Idris</a> is a purely functional programming language with dependent-type designed by Edwin Brady. I assume here a basic knowledge of Idris and of dependent types.</p>
 <h2 id="declaring-union-types">Declaring union types</h2>
-<p>Suppose that you can promote the values as types, how would it helps to build a union type? This question was the one that started the journey.</p>
-<p>Here was the idea: we can define a type as a list of type. From there, we simply need to find a way to “point” the valid type in our union and we obtain a union for free. Here is the implementation:</p>
+<p>Suppose that you can promote the values as types, how would it helps to build an union type? This question was the one that started the journey.</p>
+<p>Here was the idea: we can define a type as a list of type. From there, it suffices to find a way to “point” the valid type in our union and we obtain an union for free. Here is the implementation:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
   <span class="dt">MemberHere</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)
   <span class="dt">MemberThere</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)</code></pre></div>
@@ -83,16 +83,16 @@ x <span class="fu">=</span> <span class="dt">MemberThere</span> (<span class="dt
 member x {e <span class="fu">=</span> <span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">MemberHere</span> x
 member x {e <span class="fu">=</span> <span class="dt">There</span> later} <span class="fu">=</span>
   <span class="dt">MemberThere</span> (member x {e <span class="fu">=</span> later})</code></pre></div>
-<p>This short function takes advantages of Idris <a href="http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments">auto implicit arguments</a>, which automatically computes argument at compile times, depending on the execution context. The idea is that given a type <code>ty</code>, such that <code>ty</code> is in the union, we can compute the location of this type in the union and provide an <code>Elem</code>. This <code>Elem</code> is then used to compute the <code>Union</code> boilerplate. An we obtain:</p>
+<p>This short function takes advantages of Idris <a href="http://docs.idris-lang.org/en/latest/tutorial/miscellany.html#auto-implicit-arguments">auto implicit arguments</a>, which automatically computes argument at compile times, depending on the executino context. The idea is that, given a type <code>ty</code>, such that <code>ty</code> is in the union, we can compute the location of this type in the union and provide an <code>Elem</code>. This <code>Elem</code> is then used to compute the <code>Union</code> boilerplate. An we obtain:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">x</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
 x <span class="fu">=</span> member <span class="st">&quot;Ahoy!&quot;</span>
 
 <span class="fu">y</span> <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]
 x <span class="fu">=</span> member <span class="dv">3</span></code></pre></div>
-<p>Note that as complex as the union will be, the instantiation will always be straightforward.</p>
+<p>Note that as complex as the union will be, the instanciation will always straightforward.</p>
 <h2 id="extracting-union-type">Extracting union type</h2>
-<p>Ok, so union type are easy to declare and to instantiate. We also need an easy way to get our value back if we want to compete with sum types.</p>
-<p>Let’s define a <code>get</code> function that extract a value of type <code>ty</code> from a union. To typecheck, <code>ty</code> must be a valid type (a type listed in the union). And we can’t be sure to obtain a <code>ty</code>. Thus, the type of <code>get</code> is:</p>
+<p>Ok, so union type are easy to declare and to instanciate. We also need an easy way to get our value back if we want to compete with sun types.</p>
+<p>Let’s define a <code>get</code> function that extract a value of type <code>ty</code> from an union. To typecheck, <code>ty</code> must be a valid type (a type listed in the union). And we can’t be sure to obtain a <code>ty</code>. Thus, the type of <code>get</code> is:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty</code></pre></div>
 <p>And once again, the idea is to use the witness of the type position in the union (<code>p</code>) to compute the answer.</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty
@@ -107,7 +107,7 @@ get (<span class="dt">MemberThere</span> later) {e <span class="fu">=</span> <sp
 <span class="dt">Just</span> <span class="st">&quot;Ahoy!&quot;</span> <span class="ot">:</span> <span class="dt">Maybe</span> <span class="dt">String</span>
 <span class="fu">&gt;&gt;&gt;</span> the (<span class="dt">Maybe</span> <span class="dt">Nat</span>) <span class="fu">$</span> get x
 <span class="dt">Nothing</span> <span class="ot">:</span> <span class="dt">Maybe</span> <span class="dt">Nat</span></code></pre></div>
-<p>We use <code>the</code> here to provide a Type hint, but it won’t be useful in most cases, as the type will be provided by the context.</p>
+<p>We uset <code>the</code> here to provide a Type hint, but it won’t be useful in most of the cases, as the type will be provided by the context.</p>
 <h1 id="part-1-is-over">Part 1 is over</h1>
 <p>That’s all for today, you can continue with the fold for <a href="http://nicolas.biri.name/posts/2016-07-27-union-type-in-idris-part-2.html">union type</a>.</p>
 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Codice et circenses - Union Type in Idris (Part 4)</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+        <link rel="alternate" type="application/rss+xml" title="Codices & circenses (RSS)" href="../feed.xml" />
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Codice et circenses</a>
+            </div>
+            <div id="navigation">
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../archive.html">Archive</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Union Type in Idris (Part 4)</h1>
+
+            <div class="info">
+    Posted on August  2, 2016
+    
+        by Nicolas Biri
+    
+</div>
+
+<p>Go back to the <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
+<h1 id="a-glimpe-of-equality">A glimpe of equality</h1>
+<p>Idris handles equality with a typeclass, just like Haskell. Whilst equality must be define specifically for each sum type, we can define the equality in a generic manner for union types. The idea is to define the equality iteratively on the list of types of the union.</p>
+<h2 id="equality-for-union-xxs">Equality for <code>Union x:xs</code></h2>
+<p>Let’s start with the recursive case, do we really need to elaborate?</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">(<span class="dt">Eq</span> ty, <span class="dt">Eq</span> (<span class="dt">Union</span> xs)) <span class="ot">=&gt;</span> <span class="dt">Eq</span> (<span class="dt">Union</span> (ty<span class="ot">::</span>xs)) <span class="kw">where</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberHere</span> x) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> x <span class="fu">==</span> y
+  (<span class="fu">==</span>) (<span class="dt">MemberHere</span> x) (<span class="dt">MemberThere</span> y) <span class="fu">=</span> <span class="dt">False</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberThere</span> x) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> <span class="dt">False</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberThere</span> x) (<span class="dt">MemberThere</span> y) <span class="fu">=</span> x <span class="fu">==</span> y</code></pre></div>
+<p>We need equality for the previous union (induction) nd for the newly added type. Then, two terms are equal if they point to the same type and have the same value.</p>
+<h2 id="the-base-case">The base case</h2>
+<p>Things here are a little trickier. We nned an instance of <code>Eq (Union [])</code>. Let’s look back at the <code>Union</code> definition:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">MemberHere</span> <span class="ot">:</span> (x<span class="ot">:</span> ty) <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>xs)
+  <span class="dt">MemberThere</span> <span class="ot">:</span> (x<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>xs)</code></pre></div>
+<p>Do you see the potential issue? None of them allow us to build a <code>Union []</code>. It’s impossible to build an element of <code>Union []</code>? Just explain it to Idris:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Eq</span> (<span class="dt">Union</span> []) <span class="kw">where</span>
+  (<span class="fu">==</span>) (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="fu">_</span> <span class="kw">impossible</span>
+  (<span class="fu">/=</span>) (<span class="dt">MemberThere</span> <span class="fu">_</span>) <span class="fu">_</span> <span class="kw">impossible</span></code></pre></div>
+<p>Profit:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span> <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span>
+<span class="dt">True</span> <span class="ot">:</span> <span class="dt">Boolean</span>
+<span class="fu">&gt;</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span> <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;bar&quot;</span>
+<span class="dt">False</span> <span class="ot">:</span> <span class="dt">Boolean</span>
+<span class="fu">&gt;</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="st">&quot;foo&quot;</span> <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="dv">42</span>
+<span class="dt">False</span> <span class="ot">:</span> <span class="dt">Boolean</span></code></pre></div>
+<h2 id="uninhabited-types">Uninhabited types</h2>
+<p>There is an alternative to the <code>impossible</code> solution. We can claim that a type is uninhabited thanks to a typeclass:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Uninhabited</span> (<span class="dt">Union</span> []) <span class="kw">where</span>
+    uninhabited (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="kw">impossible</span>
+    uninhabited (<span class="dt">MemberThere</span> <span class="fu">_</span>) <span class="kw">impossible</span></code></pre></div>
+<p><code>Uninhabited</code> comes with an <code>absurd</code> funciton of type <code>Uninhabited e =&gt; e -&gt; a</code> absurd can be read as: if we have an instance of an uninhabited type, we can build anything from it.</p>
+<p>Thanks to <code>Uninhabited</code>, our instance of <code>Eq</code> can be written:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Eq</span> (<span class="dt">Union</span> []) <span class="kw">where</span>
+  (<span class="fu">==</span>) x <span class="fu">_</span> <span class="fu">=</span> absurd x</code></pre></div>
+<h1 id="unions-and-synonyms">Unions and synonyms</h1>
+<p>If our unions are well defined, a union of a unique type should be isomorphic to this type. A union of two types should be isomorphic to <code>Either</code>. Let’s transform these assumptions into proofs.</p>
+<h2 id="morphisms">Morphisms</h2>
+<p>The morphisms can be implemented as instances of the <code>Cast</code> typeclass and are straightforward as soon as we know how to deal with uninhabited types:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">Cast</span> (<span class="dt">Union</span> [ty]) ty <span class="kw">where</span>
+  cast (<span class="dt">MemberHere</span> x) <span class="fu">=</span> x
+  cast (<span class="dt">MemberThere</span> x) <span class="fu">=</span> absurd x
+
+<span class="dt">Cast</span> l (<span class="dt">Union</span> [l]) <span class="kw">where</span>
+  cast x <span class="fu">=</span> (<span class="dt">MemberHere</span> x)
+
+<span class="dt">Cast</span> (<span class="dt">Union</span> [l, r]) (<span class="dt">Either</span> l r) <span class="kw">where</span>
+  cast (<span class="dt">MemberHere</span> x) <span class="fu">=</span> <span class="dt">Left</span> x
+  cast (<span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> x)) <span class="fu">=</span> <span class="dt">Right</span> x
+  cast (<span class="dt">MemberThere</span> (<span class="dt">MemberThere</span> x)) <span class="fu">=</span> absurd x
+
+<span class="dt">Cast</span> (<span class="dt">Either</span> l r) (<span class="dt">Union</span> [l, r]) <span class="kw">where</span>
+  cast (<span class="dt">Left</span> x) <span class="fu">=</span> (<span class="dt">MemberHere</span> x)
+  cast (<span class="dt">Right</span> x) <span class="fu">=</span> (<span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> x))</code></pre></div>
+<h2 id="put-an-iso-in-our-morphisms">Put an iso in our morphisms</h2>
+<p>Idris has a <code>Iso</code> type, that is use to prove that two types are isomorphic. Here is its definition:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Iso</span> <span class="ot">:</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
+  <span class="dt">MkIso</span> <span class="ot">:</span> (to <span class="ot">:</span> a <span class="ot">-&gt;</span> b)
+        <span class="ot">-&gt;</span> (from <span class="ot">:</span> b <span class="ot">-&gt;</span> a)
+        <span class="ot">-&gt;</span> (toFrom <span class="ot">:</span> (y <span class="ot">:</span> b) <span class="ot">-&gt;</span> to (from y) <span class="fu">=</span> y)
+        <span class="ot">-&gt;</span> (fromTo <span class="ot">:</span> (x <span class="ot">:</span> a) <span class="ot">-&gt;</span> from (to x) <span class="fu">=</span> x)
+        <span class="ot">-&gt;</span> <span class="dt">Iso</span> a b</code></pre></div>
+<p><code>to</code> and <code>from</code> are the two morphisms used to build the isomorphism. <code>toFrom</code> and <code>fromTo</code> are proofs. They are populated if and only if for (<code>to . from</code>) and (<code>from . to</code>) behave like the <code>id</code> function.</p>
+<p>Thus, being able to build an instance of <code>Iso a b</code> is a proof that <code>a</code> and <code>b</code> are isomorphic. Let’s buils these instances for <code>Union</code>:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">oneTypeUnion</span> <span class="ot">:</span> <span class="dt">Iso</span> (<span class="dt">Union</span> [ty]) ty
+oneTypeUnion <span class="fu">=</span> <span class="dt">MkIso</span> cast cast toFrom fromTo
+  <span class="kw">where</span>
+    toFrom <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberThere</span> x) <span class="fu">=</span> absurd x</code></pre></div>
+<p>And:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">eitherUnion</span> <span class="ot">:</span> <span class="dt">Iso</span> (<span class="dt">Union</span> [l, r]) (<span class="dt">Either</span> l r)
+eitherUnion <span class="fu">=</span> <span class="dt">MkIso</span> cast cast toFrom fromTo
+  <span class="kw">where</span>
+    toFrom (<span class="dt">Left</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    toFrom (<span class="dt">Right</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> <span class="fu">_</span>)) <span class="fu">=</span> <span class="dt">Refl</span>
+    fromTo (<span class="dt">MemberThere</span> (<span class="dt">MemberThere</span> x)) <span class="fu">=</span> absurd x</code></pre></div>
+<p><code>Refl</code> is a member of the type <code>x = x</code>. Being able to compile this code build a formal proof of the existence of the isomorphisms.</p>
+<h1 id="part-4-is-over">Part 4 is over</h1>
+<p>That’s all for this serie, the code is <a href="https://github.com/berewt/UnionType">on github</a>.</p>
+
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </div>
+    </body>
+</html>

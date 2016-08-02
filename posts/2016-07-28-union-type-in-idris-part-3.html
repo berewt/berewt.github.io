@@ -32,15 +32,15 @@
 
 <p>Go back to the <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
 <h1 id="some-are-better-than-others-union-is-better-than-sum">Some are better than others, Union is better than sum</h1>
-<p>At this point, we managed to get a slightly less complex syntax than sum types (with some drawbacks, but I will detail them in another part), but did we obtain other benefits?</p>
+<p>At this point, we have a slightly less complex syntax than sum types (with some drawbacks, but I will detail them in another part), but did we have other benefits?</p>
 <p>Well, yes.</p>
-<p>Today, we are going to invertigate how flexible union types are. More precisely, I will detail union type restrictions and generalisation.</p>
+<p>Today, we are going to inverstigate how flexible union types are. More precisely, I will detail union type restrictions and generalisation.</p>
 <h1 id="shrink-my-union">Shrink my union</h1>
-<p>Let suppose that we have a variable <code>x</code> of type <code>Union [Nat, String, List String]</code> and the following REPL session:</p>
+<p>Let suppose that we have a variable <code>x</code> of type <code>Union [Nat, String, List String]</code> and the following repl session:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> the (<span class="dt">Maybe</span> <span class="dt">Nat</span>) x
 <span class="dt">Nothing</span> <span class="ot">:</span> <span class="dt">Maybe</span> <span class="dt">Nat</span></code></pre></div>
 <p>We know that <code>x</code> does not contain a <code>Nat</code>. Thus, <code>x</code> contains either a <code>String</code> or a <code>List String</code>. Well, we can explicitly express it with union types.</p>
-<p>Let’s compute the underlying type of this reasoning. Given a union instance, we can either get a value of a type in this union or we can restrict the union. Quite clear and easy to write:</p>
+<p>Let’s compute the type of this reasoning. Given an union instance, we can either get a value of a type in this uion or we can restrict the union. Quite clear and easy to write:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">retract</span> <span class="ot">:</span> <span class="dt">Union</span> xs <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty xs}
                    <span class="ot">-&gt;</span> <span class="dt">Either</span> (<span class="dt">Union</span> (dropElem xs p)) ty</code></pre></div>
 <p>The result type may require some explanations. The presence of <code>Either</code> and the right case (<code>ty</code>) is clear. The left case (<code>dropElem xs p</code>) is straightforward if we look at the <a href="http://www.idris-lang.org/docs/current/base_doc/docs/Data.List.html#Data.List.dropElem"><code>dropElem</code> documentation</a>: it removes the element pointed by <code>p</code> from the list.</p>
@@ -56,7 +56,7 @@ retract (<span class="dt">MemberThere</span> x) {p <span class="fu">=</span> (<s
   either (<span class="dt">Left</span> <span class="fu">.</span> <span class="dt">MemberThere</span>)
          <span class="dt">Right</span>
          <span class="fu">$</span> retract x {p <span class="fu">=</span> later}</code></pre></div>
-<p>The 3 first cases are trivial, they can almost be completed automatically by Idris (I should talk about this really cool feature in a next post). The last case is a bit more complex. The idea is to <em>lift</em> the result of retract to the next step: on a right, propagate the found value, on a left, just bury it one step further.</p>
+<p>The 3 first cases are trivial, they can almost be completed automatically by Idris (I should talk about this really cool feature in a next post). The last case is a bit more complex. The idea is to <em>lift</em> the result of retract to the next step: on a right, propagate the found value, on a left, just buried it one step further.</p>
 <p>It’s time to see retract in action:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;foo&quot;</span>
 <span class="fu">&gt;</span> the (<span class="dt">Either</span> <span class="fu">_</span> <span class="dt">Nat</span>) <span class="fu">$</span> retract x
@@ -67,24 +67,24 @@ retract (<span class="dt">MemberThere</span> x) {p <span class="fu">=</span> (<s
 <p>Can we do the opposite of <code>retract</code>? If I have a member of <code>Union [Nat, List String]</code>, can we claim that we have a member of a broader union?</p>
 <p>Yes, we can <em>but</em> it is a bit more complex than the <code>retract</code> case. The main reason is that we have an infinity of target types for the result union.</p>
 <h2 id="identifying-the-broader-unions">Identifying the broader unions</h2>
-<p>The objective is to define a data type that contains a proof that a union is broader than another one. Or, by transitivity, that each element of a list of types is contained in another list. This is as simple as it sounds. I mean, really, if its sounds complicated to you, it will be complicated to read, if it sounds simple, it will be simple to read:</p>
+<p>The objective is to define a data type that contain a proof that an union is broader than another one. Or, by transitivity, that each element of a list of types is contained in another list. This is as simple as it sounds. I mean, really, if its sounds complicated to you, it will be complicated to read, if it sounds simple, it will be simple to read:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Sub</span> <span class="ot">:</span> <span class="dt">List</span> a <span class="ot">-&gt;</span> <span class="dt">List</span> a <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
   <span class="dt">SubZ</span> <span class="ot">:</span> <span class="dt">Sub</span> [] ys
   <span class="dt">SubK</span> <span class="ot">:</span> <span class="dt">Sub</span> xs ys <span class="ot">-&gt;</span>  <span class="dt">Elem</span> ty ys <span class="ot">-&gt;</span> <span class="dt">Sub</span> (ty<span class="ot">::</span>xs) ys</code></pre></div>
-<p>To build a <code>Sub</code> type, we must be able to prove that each element of the first list is in the second one.</p>
+<p>To build a <code>Sub</code> type, we must be able proof that each element of the first list are in the second one.</p>
 <h2 id="trying-to-generalize-union">Trying to <code>generalize</code> union</h2>
 <p>Now that we have a definition of <code>Sub</code>, we can type our <code>generalize</code> function more easily:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys}
                            <span class="ot">-&gt;</span> <span class="dt">Union</span> ys</code></pre></div>
-<p>Given a union, if we have a proof that the list of type in the union is a subset of the list of type in the resulting union, we can generalize the union. Yes, it’s that <strong>easy</strong>.</p>
+<p>Given an union, if we have a proof that the list of type in the union is a subset of the list of type in the resulting union, we can generalize the union. Yes, it’s that <strong>easy</strong>.</p>
 <p>Things are getting more complex when we want to implement generalize. Let’s start with a naive implementation and see how it goes:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys}
                            <span class="ot">-&gt;</span> <span class="dt">Union</span> ys
 generalize (<span class="dt">MemberHere</span> x) <span class="fu">=</span> member x
 generalize (<span class="dt">MemberThere</span> x) {s <span class="fu">=</span> (<span class="dt">SubK</span> y z)} <span class="fu">=</span>
   generalize x {s<span class="fu">=</span>y}</code></pre></div>
-<p>If we have at <code>MemberHere</code>, <code>x</code> is the value of the union, and thus, must be put in the result union, and we use previously defined <code>member</code> to do so. If we haven’t found the value yet, we just restart one step further.</p>
-<p>This version reallly seemed ok to me. Unfortunately, it didn’t match the compiler expectations:</p>
+<p>If we have at <code>MemberHere</code>, <code>x</code> is the value of the union, and thus, must be put in the result union, and we use previously defined <code>member</code> to do so. If we haven’t find the value yet, we just restart one step further.</p>
+<p>This version reallly seemed ok to me. Unfortunately, it didn’t match the compiler expactations:</p>
 <pre><code>When checking right hand side of generalize with expected type
         Union ys
 
