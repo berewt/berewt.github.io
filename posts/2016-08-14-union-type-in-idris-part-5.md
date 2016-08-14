@@ -154,7 +154,8 @@ by itself, to reduce `wut` to the type of the induction hypothesis. Thus,
 we just have to provide it:
 
 ```idris
-getMemberWithElemIsJust x (There later) = getMemberWithElemIsJust x later
+getMemberWithElemIsJust x (There later) =
+  getMemberWithElemIsJust x later
 ```
 
 And that's it. We have a complete proof that if we put a value at a given
