@@ -15,7 +15,7 @@ must be define specifically for each sum type, we can define the equality in a
 generic manner for union types. The idea is to define the equality iteratively
 on the list of types of the union.
 
-## Equality for `Union x:xs`
+## Equality for `Union x::xs`
 
 Let's start with the recursive case, do we really need to elaborate?
 
