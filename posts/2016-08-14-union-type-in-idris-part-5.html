@@ -91,7 +91,8 @@ getHereMemberIsJust <span class="fu">_</span> <span class="fu">=</span> <span cl
 --------------------------------------
 wut : get (member x) = Just x</code></pre>
 <p>Idris provides a recap of all the types in the context, and display the expected type for <code>wut</code>. With the context information, Idris was able, by itself, to reduce <code>wut</code> to the type of the induction hypothesis. Thus, we just have to provide it:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">getMemberWithElemIsJust x (<span class="dt">There</span> later) <span class="fu">=</span> getMemberWithElemIsJust x later</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">getMemberWithElemIsJust x (<span class="dt">There</span> later) <span class="fu">=</span>
+  getMemberWithElemIsJust x later</code></pre></div>
 <p>And that’s it. We have a complete proof that if we put a value at a given place of a union and if we get the value at the same place, we obtain <code>Just</code> this value.</p>
 <h1 id="the-difficulty-of-theorem-proving-digression">The difficulty of theorem proving (digression)</h1>
 <p>The above proofs are almost trivial when you are used to types and to theorem proving. However, it may be hard to grasp for newcomers. Actually, these small examples can be used to illustrate the difficulties encountered by the advocates of formally proved code to convince developpers and the industry.</p>
