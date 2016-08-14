@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Codice et circenses - Union Type in Idris (Part 5)</title>
+        <link rel="stylesheet" type="text/css" href="../css/default.css" />
+        <link rel="stylesheet" type="text/css" href="../css/syntax.css" />
+        <link rel="alternate" type="application/rss+xml" title="Codices & circenses (RSS)" href="../feed.xml" />
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="../">Codice et circenses</a>
+            </div>
+            <div id="navigation">
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../archive.html">Archive</a>
+            </div>
+        </div>
+
+        <div id="content">
+            <h1>Union Type in Idris (Part 5)</h1>
+
+            <div class="info">
+    Posted on August  2, 2016
+    
+        by Nicolas Biri
+    
+</div>
+
+<p>Go back to the <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
+<h1 id="unit-and-property-testing-in-idris">Unit and property testing in Idris</h1>
+<p>I thought I was done with the union type series, but then I think about how great this example is to demonstrate some of the possibilities of test and property checking in Idris.</p>
+<p>Idris has a <a href="http://docs.idris-lang.org/en/latest/tutorial/testing.html">basic testing framework</a>. I won’t discuss it here. As Idris is very young, the framework has little interest at this time and we can do way better (in my opinion) by just using types in a clever way.</p>
+<h2 id="unit-testing-at-compile-time">Unit testing at compile time</h2>
+<p>As types are a first class language construct in Idris, you can use value to build type. An interesting type constructor is <code>=</code>. The type <code>a = b</code> is populated by the proof that <code>a</code> is euqal to be <code>b</code>. To construct inhabitants of this class, we often use <code>Refl</code>, which is an inhabitant of <code>a = a</code> (We already used Refl in the definitions of isomorphisms in <a href="http://nicolas.biri.name/posts/2016-08-14-union-type-in-idris-part-4.html">part 4</a>.)</p>
+<p>This can be used to define unit testing functions, that will be resolved at compile time. If we go back to the definition of <code>Union</code> and ot the <code>member</code> constructor</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">MemberHere</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)
+  <span class="dt">MemberThere</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)
+
+<span class="fu">member</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Union</span> ts
+member x {e <span class="fu">=</span> <span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">MemberHere</span> x
+member x {e <span class="fu">=</span> <span class="dt">There</span> later} <span class="fu">=</span>
+  <span class="dt">MemberThere</span> (member x {e <span class="fu">=</span> later})</code></pre></div>
+<p>We can quickly set up some tests:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">memberCreateMemberHereTest</span> <span class="ot">:</span>
+  the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>]) (member <span class="st">&quot;Foo&quot;</span>) <span class="fu">=</span>
+  <span class="dt">MemberHere</span> <span class="st">&quot;Foo&quot;</span>
+memberCreateMemberHereTest <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>and:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">memberCreateMemberThereTest</span> <span class="ot">:</span>
+  the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>]) (member <span class="dv">42</span>) <span class="fu">=</span>
+  <span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> <span class="dv">42</span>)
+memberCreateMemberThereTest <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>These tests will be executed at compile time and will pass if our definition are correct. No need for a framework.Moreover, if we ship a faulty version without testing, thrd users won’t be able to use the library because they won’t be able to compile our code.</p>
+<h1 id="theorem-provind-or-enhanced-property-testing">Theorem provind (or enhanced property testing)</h1>
+<p>Tests prove that your definitions are correct for some values, theorem prove that it’s correct for all values. Even with something as simple as the <code>Union</code> library, we can prove fancy stuff.</p>
+<h2 id="lets-get-a-member">Let’s <code>get</code> a <code>member</code></h2>
+<p>First, let’s recall the definition of <code>get</code>:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty
+get (<span class="dt">MemberHere</span> x)      {p <span class="fu">=</span> <span class="dt">Here</span>}      <span class="fu">=</span> <span class="dt">Just</span> x
+get (<span class="dt">MemberHere</span> x)      {p <span class="fu">=</span> <span class="dt">There</span> <span class="fu">_</span>}   <span class="fu">=</span> <span class="dt">Nothing</span>
+get (<span class="dt">MemberThere</span> x)     {p <span class="fu">=</span> <span class="dt">Here</span>}      <span class="fu">=</span> <span class="dt">Nothing</span>
+get (<span class="dt">MemberThere</span> later) {p <span class="fu">=</span> (<span class="dt">There</span> l)} <span class="fu">=</span> get later {p <span class="fu">=</span> l}</code></pre></div>
+<p>It’s quite natural to see <code>get</code> as the <em>invert</em> of <code>member</code>. Let’s formalise it with some properties.</p>
+<p>To warm up, we’ll write a first one that just work for a trivial case: one type union. We want to check that if we build a one typ uninon with <code>member</code> and <code>get</code> ot back, we obtain <code>Just</code>. It’s as simple as writing this description:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">getHereMemberIsJust</span> <span class="ot">:</span> (x <span class="ot">:</span> a) <span class="ot">-&gt;</span> get (member x) <span class="fu">=</span> <span class="dt">Just</span> x
+getHereMemberIsJust <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>Let’s go further and prove something similar for more complex unions. To do so, we must be able to reason on <em>which type</em> we populated. To do so, we will make the <code>Elem ty ts</code> implicit parameter of <code>member</code> and <code>get</code> explicit.</p>
+<p>If we create a union with <code>member</code> at a place given by <code>Elem ty ts</code> and check the value at the same place with <code>get</code>, we should have <code>Just</code> the value:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">getMemberWithElemIsJust</span> <span class="ot">:</span>
+  (x <span class="ot">:</span> a) <span class="ot">-&gt;</span>
+  (p <span class="ot">:</span> <span class="dt">Elem</span> a xs) <span class="ot">-&gt;</span>
+  the (<span class="dt">Maybe</span> a) (get (member x {p}) {p}) <span class="fu">=</span> <span class="dt">Just</span> x</code></pre></div>
+<p>This prove is trickier thant the previous one. It should be proved by induction on <code>p</code>. The base case is easy. if <code>p = Here</code>, the compiler will reduce both part of the equality by itself and we only has to prove a straight forward equality:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">getMemberWithElemIsJust <span class="fu">_</span> <span class="dt">Here</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>The induction case is quite easy too now thanks to the previous case hypothesis.</p>
+<p>It’s time for me to introduce the interactive proof facilities of Idris. Actually, I should have done it way earlier but it’s one of this thing that seems so natural to use that you forgot to mention how great it is.</p>
+<p>The Idris REPL, and many compatible editors, provide some helpful command to ease type driven development. One of them is being able to define <em>holes</em> in your code and to check their type. More details about TDD and interactive development in Idris can be found in the <a href="http://docs.idris-lang.org/en/latest/tutorial/interactive.html">online documentation</a> or in the excellent <a href="https://www.manning.com/books/type-driven-development-with-idris">Idris book</a>.</p>
+<p>Now that you know it, we can use hole in our induction case:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">getMemberWithElemIsJust x (<span class="dt">There</span> later) <span class="fu">=</span> <span class="ot">?wut</span></code></pre></div>
+<p><code>?wut</code> is our hole, and if we ask to the compiler its type, we obtain:</p>
+<pre><code>  a : Type
+  x : a
+  xs : List Type
+  later : Elem a xs
+  y : Type
+--------------------------------------
+wut : get (member x) = Just x</code></pre>
+<p>Idris provides a recap of all the types in the context, and display the expected type for <code>wut</code>. With the context information, Idris was able, by itself, to reduce <code>wut</code> to the type of the induction hypothesis. Thus, we just have to provide it:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">getMemberWithElemIsJust x (<span class="dt">There</span> later) <span class="fu">=</span> getMemberWithElemIsJust x later</code></pre></div>
+<p>And that’s it. We have a complete proof that if we put a value at a given place of a union and if we get the value at the same place, we obtain <code>Just</code> this value.</p>
+<h1 id="the-difficulty-of-theorem-proving-digression">The difficulty of theorem proving (digression)</h1>
+<p>The above proofs are almost trivial when you are used to types and to theorem proving. However, it may be hard to grasp for newcomers. Actually, these small examples can be used to illustrate the difficulties encountered by the advocates of formally proved code to convince developpers and the industry.</p>
+<p>To be honest, I had few experiences with formal proof education to devleopers. However, during these experiences, I encountered two majors objections:</p>
+<ol style="list-style-type: decimal">
+<li>The properties I want to test are not complex enough to require a whole proof, proving that it works for some values, or for a set of random value is sufficient.</li>
+<li>When I have to encode a proof, I have to formalize a work that I have already done mentally when I wrote the code, in a non-natural way.</li>
+</ol>
+<p>Both objections are unfortunately valid in most cases. We can however mitigates this feeling by:</p>
+<ol style="list-style-type: decimal">
+<li>What if, for almost the same costs, as unit or properties tests, you can be sure that it is valid for all the values.</li>
+<li>Providing helpful enough programing environment to mae the formalisation process as natural as possible.</li>
+</ol>
+<p>Moreover, I should emphasize one of the major advantages of formal proof embedded in a library, that I’ve already mentioned in the article. These proofs of properties can be seen as a contract that my library ensure to respect. It offers garantees about third party code and thus can higly reduce the lack of confidence that I can have in those libraries.</p>
+
+        </div>
+        <div id="footer">
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </div>
+    </body>
+</html>

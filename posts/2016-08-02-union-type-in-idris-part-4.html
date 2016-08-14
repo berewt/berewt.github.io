@@ -33,7 +33,7 @@
 <p>Go back to the <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
 <h1 id="a-glimpe-of-equality">A glimpe of equality</h1>
 <p>Idris handles equality with a typeclass, just like Haskell. Whilst equality must be define specifically for each sum type, we can define the equality in a generic manner for union types. The idea is to define the equality iteratively on the list of types of the union.</p>
-<h2 id="equality-for-union-xxs">Equality for <code>Union x:xs</code></h2>
+<h2 id="equality-for-union-xxs">Equality for <code>Union x::xs</code></h2>
 <p>Let’s start with the recursive case, do we really need to elaborate?</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">(<span class="dt">Eq</span> ty, <span class="dt">Eq</span> (<span class="dt">Union</span> xs)) <span class="ot">=&gt;</span> <span class="dt">Eq</span> (<span class="dt">Union</span> (ty<span class="ot">::</span>xs)) <span class="kw">where</span>
   (<span class="fu">==</span>) (<span class="dt">MemberHere</span> x) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> x <span class="fu">==</span> y
