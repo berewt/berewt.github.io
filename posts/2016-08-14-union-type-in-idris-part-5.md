@@ -2,7 +2,7 @@
 title: "Union Type in Idris (Part 5)"
 lang: en
 category: [English, Functional Programming, Idris]
-date: 2016-08-02
+date: 2016-08-14
 author: Nicolas Biri
 ---
 
