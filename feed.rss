@@ -7,12 +7,12 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Tue, 02 Aug 2016 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Sun, 14 Aug 2016 00:00:00 UT</lastBuildDate>
         <item>
     <title>Union Type in Idris (Part 5)</title>
     <link>http://nicolas.biri.name//posts/2016-08-14-union-type-in-idris-part-5.html</link>
     <description><![CDATA[<div class="info">
-    Posted on August  2, 2016
+    Posted on August 14, 2016
     
         by Nicolas Biri
     
@@ -95,7 +95,7 @@ wut : get (member x) = Just x</code></pre>
 </ol>
 <p>Moreover, I should emphasize one of the major advantages of formal proof embedded in a library, that I’ve already mentioned in the article. These proofs of properties can be seen as a contract that my library ensure to respect. It offers garantees about third party code and thus can higly reduce the lack of confidence that I can have in those libraries.</p>
 ]]></description>
-    <pubDate>Tue, 02 Aug 2016 00:00:00 UT</pubDate>
+    <pubDate>Sun, 14 Aug 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-08-14-union-type-in-idris-part-5.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
