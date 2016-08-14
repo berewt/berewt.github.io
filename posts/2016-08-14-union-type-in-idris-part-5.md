@@ -65,7 +65,7 @@ are correct. No need for a framework.Moreover, if we ship a faulty version
 without testing, thrd users won't be able to use the library because they
 won't be able to compile our code.
 
-# Theorem provind (or enhanced property testing)
+# Theorem proving (or enhanced property testing)
 
 Tests prove that your definitions are correct for some values, theorem prove
 that it's correct for all values. Even with something as simple as the
