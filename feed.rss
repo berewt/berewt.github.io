@@ -192,7 +192,7 @@ eitherUnion <span class="fu">=</span> <span class="dt">MkIso</span> cast cast to
     fromTo (<span class="dt">MemberThere</span> (<span class="dt">MemberThere</span> x)) <span class="fu">=</span> absurd x</code></pre></div>
 <p><code>Refl</code> is a member of the type <code>x = x</code>. Being able to compile this code build a formal proof of the existence of the isomorphisms.</p>
 <h1 id="part-4-is-over">Part 4 is over</h1>
-<p>That’s all for this serie, the code is <a href="https://github.com/berewt/UnionType">on github</a>.</p>
+<p>In the <a href="http://nicolas.biri.name/posts/2016-08-14-union-type-in-idris-part-5.html">next part</a>, we’ll discuss union type testing. And, by the way, the code is <a href="https://github.com/berewt/UnionType">on github</a>.</p>
 ]]></description>
     <pubDate>Tue, 02 Aug 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-08-02-union-type-in-idris-part-4.html</guid>
