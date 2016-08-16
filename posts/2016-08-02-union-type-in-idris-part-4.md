@@ -160,4 +160,5 @@ Being able to compile this code build a formal proof of the existence of the iso
 
 # Part 4 is over
 
-That's all for this serie, the code is [on github](https://github.com/berewt/UnionType).
+In the [next part](http://nicolas.biri.name/posts/2016-08-14-union-type-in-idris-part-5.html), we'll discuss union type testing.
+And, by the way, the code is [on github](https://github.com/berewt/UnionType).
