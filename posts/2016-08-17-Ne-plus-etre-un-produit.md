@@ -6,7 +6,7 @@ date: 2016-08-17
 author: Nicolas Biri
 ---
 
-Aujourd'hui, sur ma timeline twitter, a circulé un article de la quadrature
+Aujourd'hui, sur ma timeline twitter, a circulé un article de la Quadrature
 intitulé
 "[Si vous êtes le produit, ce n'est pas gratuit](https://www.laquadrature.net/fr/si-vous-etes-le-produit)".
 Je suis très souvent critique sur la forme des prises de positions de la
@@ -49,7 +49,7 @@ qu'il ne **faut** pas utiliser ces  services qui m'a toujours gêné.
 # L'escroquerie de l'accusation de vol
 
 Continuons avec une instance de service qui monétise les données de ses
-utilisateurs avec l'exemple de uacebook. Je me permets de recopier
+utilisateurs avec l'exemple de Facebook. Je me permets de recopier
 complètement le passage concerné :
 
 > Dans une conférence d'il y a longtemps, j'expliquais que Facebook était le
