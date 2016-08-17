@@ -21,7 +21,7 @@ La premier partie, très juste, critique le mantra "si c'est gratuit, c'est vous
 le produit" et propose d'y substituer le plus juste "si vous êtes le produit,
 ce n'est pas gratuit".
 
-Juesque là, tout va bien.
+Jusque là, tout va bien.
 
 Et là, à peine plus loin, on commence à s'éloigner de ce que je juge pertinent :
 
@@ -38,7 +38,7 @@ ces sociétés, la limitation des droits que le contrat d'utilisation implique.
 Il est toutefois important de rappeler que beaucoup, en conscience, acceptent
 ces contraintes. Parce qu'ils estiment que la contrepartie fait que l'accord
 est bon. Prenons mon cas, je suis un gros utilisateur de Twitter, service
-commercial qui utilise le contenu que je piblie pour déterminer quelles
+commercial qui utilise le contenu que je publie pour déterminer quelles
 publicités je peux publier et qui a droit de vie et de mort sur mon compte. Je
 le sais et je l'accepte. Et je ne me sens ni traqué, ni ciblé, ni signataire
 d'un contrat léonins.
@@ -49,11 +49,11 @@ qu'il ne **faut** pas utiliser ces  services qui m'a toujours gêné.
 # L'escroquerie de l'accusation de vol
 
 Continuons avec une instance de service qui monétise les données de ses
-utilisateurs avec l'exemple de Facebook. Je me permets de recopier
+utilisateurs avec l'exemple de uacebook. Je me permets de recopier
 complètement le passage concerné :
 
 > Dans une conférence d'il y a longtemps, j'expliquais que Facebook était le
-> plus grand voleur que je connaisse1. Pour résumer : Facebook publie vos
+> plus grand voleur que je connaisse. Pour résumer : Facebook publie vos
 > contenus (sans vous payer) pour attirer du public vers les écrans de
 > publicité qu'il vend. Il revend (sans les payer) vos données personnelles à
 > ses clients (les régies publicitaires) pour qu'elles puissent mieux vous
@@ -79,9 +79,9 @@ service. Détaillons.
  régies publicitaires) pour qu'elles puissent mieux vous cibler.</q> Oui. ça
  fait partie là aussi de la contrepartie pour le service rendu.
 -  </q>Il vous propose – à vous – de payer pour que vos contenus soient plus
- visibles que les autres.</q> Si vous payer, c'est soit que vous estimer que
+ visibles que les autres.</q> Si vous payez, c'est soit que vous estimez que
  votre contenu est tellement intéressant qu'il doit être visible, soit que
- vous esérer que ça soit rentable pour vous. Dans tous les cas, si vous
+ vous espérez que ça soit rentable pour vous. Dans tous les cas, si vous
  _décidez_ de donner votre argent à Facebook, c'est que la contrepartie vous
  semble intéressante. On est loin du vol.
 
@@ -149,7 +149,7 @@ l'ad-blocker, cette idée même qui choque l'auteur.
 
 # Ma relation à la publicité sur internet
 
-Je n'utilise plus d'ad-blocker depuis plusieurs années, j'utiise uniquement
+Je n'utilise plus d'ad-blocker depuis plusieurs années, j'utilise uniquement
 un tracker ([ghostery](https://www.ghostery.com)), pour éviter aux sites de me
 pister.
 
@@ -157,12 +157,12 @@ Je n'utilise pas d'ad-blocker parce que j'estime que si je visite un site, je
 me dois d'accepter le contrat implicite qui me lie à ce site. De plus, cela à
 un gros avantage : si un site place trop de publicité, je m'en rends compte et
 j'arrête de m'y rendre. C'est la façon la plus saine pour ne pas encourager
-des pratiques commericales qu'on désapprouve.
+des pratiques commerciales qu'on désapprouve.
 
 En revanche, j'utilise un outil anti-tracking car si j'accepte le contrat
 implicite qui me lie au site que je visite, je refuse d'accepter celui des
 sites qu'il intègre si je ne décide pas explicitement de les visiter.
 
 Il est peut-être important vu la teneur de ce qui précède de bien souligner
-qu'il s'agit de ma façon d'intéragir, pas de ce que j'estime nécessaire que
+qu'il s'agit de ma façon d'interagir, pas de ce que j'estime nécessaire que
 tout le monde fasse.
