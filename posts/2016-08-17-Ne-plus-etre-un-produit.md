@@ -39,8 +39,8 @@ Il est toutefois important de rappeler que beaucoup, en conscience, acceptent
 ces contraintes. Parce qu'ils estiment que la contrepartie fait que l'accord
 est bon. Prenons mon cas, je suis un gros utilisateur de Twitter, service
 commercial qui utilise le contenu que je publie pour déterminer quelles
-publicités je peux publier et qui a droit de vie et de mort sur mon compte. Je
-le sais et je l'accepte. Et je ne me sens ni traqué, ni ciblé, ni signataire
+publicités peuvent m'intéresser et qui a droit de vie et de mort sur mon compte.
+Je le sais et je l'accepte. Et je ne me sens ni traqué, ni ciblé, ni signataire
 d'un contrat léonins.
 
 Il y a, chez les défenseurs des libertés, une volonté de convaincre les gens
