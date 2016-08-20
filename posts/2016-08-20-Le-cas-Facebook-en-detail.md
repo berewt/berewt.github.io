@@ -88,13 +88,13 @@ axes de critiques non exhaustifs.
 
 Si j'estimais normal qu'un utilisateur de Facebook doive avoir conscience que
 les données qu'il y partage soient utilisées par le site (même s'il peut être
-bon de le rappeler de façon non-biaisée). Je trouve bien moins normal qui piste
-les mouvements des internautes (utilisateurs **ou non**) pour monétiser son
-activité. En effet, losrsque je suis sur Facebook, je sais (ou devrais savoir)
-que ce que je fais lui est connu. Lorsque je visite un site tiers ayant un lien
-(parfois minime) avec Facebook, c'est bien moins le cas. L'acceptation
-implicite des conditions d'utilisation dont je parlais précédemment n'est plus
-de mise ici.
+bon de le rappeler de façon non-biaisée). Je trouve bien moins normal que
+Facebook piste les mouvements des internautes (utilisateurs **ou non**) pour
+monétiser son activité. En effet, losrsque je suis sur Facebook, je sais (ou
+devrais savoir) que ce que je fais lui est connu. Lorsque je visite un site
+tiers ayant un lien (parfois minime) avec Facebook, c'est bien moins le cas.
+L'acceptation implicite des conditions d'utilisation dont je parlais dans le
+billet précédent n'est plus de mise ici.
 
 Tout le monde a dû voir ce message pénible et obligatoire indiquant
 l'utilisation de cookies sur la plupart des sites web. Ce qui est fortement
@@ -114,7 +114,7 @@ la monétisation des profils des internautes (et en terme de confidentialité de
 données personnelles.)
 
 Pour autant, même avec cet argument (qui me fait avoir très peu de
-considération pour Facebook), je ne les traiterais pas de voleur, parce que ce
+considération pour Facebook), je ne les traiterai pas de voleur, parce que ce
 n'est pas le cas.
 
 ## Les autres pistes ?
