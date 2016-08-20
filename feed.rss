@@ -9,6 +9,47 @@
                    type="application/rss+xml" />
         <lastBuildDate>Wed, 17 Aug 2016 00:00:00 UT</lastBuildDate>
         <item>
+    <title>Le cas Facebook en détail</title>
+    <link>http://nicolas.biri.name//posts/2016-08-20-Le-cas-Facebook-en-detail.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on August 17, 2016
+    
+        by Nicolas Biri
+    
+</div>
+
+<p>Le <a href="http://nicolas.biri.name/posts/2016-08-17-Ne-plus-etre-un-produit.html">précédent billet</a> était une réaction agacée, à chaud, à une <a href="https://www.laquadrature.net/fr/si-vous-etes-le-produit">tribune mensongère et contre-productive</a> de la Quadrature du Net. Je sais, ce n’est pas la Quadrature dans son entièreté qui a porté cette tribune mais elle l’héberge et à ma connaissance, personne là bas n’a semblé trouver à redire sur les arguments de ce texte, je les associe de bon cœur.</p>
+<p>Comme visiblement certains n’ont pas compris (et j’avoue que le titre mal choisi n’aidait pas), que mon but n’était pas de faire une critique ou une dithyrambe profonde du modèle de Facebook, je propose de le faire ici, histoire de poser les choses. Au passage, ça permettra d’expliciter quelles sont les arguments qui, à mes yeux, sont valables pour critiquer Facebook. En effet, il parait que l’on ne peut critiquer que si on a quelque chose à proposer. D’ailleurs, tant qu’on parle de cela, je rappelle à toute critique cinéma que la prochaine fois qu’il di du mal d’un film, ça serait bien qu’il propose un court métrage comme contre proposition.</p>
+<h1 id="les-vérités-pénibles">Les vérités pénibles</h1>
+<p>Je ne vais pas refaire l’intégralité de mon précédent billet ici mais reprenons les principaux éléments qui m’ont agacés dans le billet publié par la Quadrature.</p>
+<h2 id="facebook-rend-un-service-à-ses-utilisateurs">Facebook rend un service à ses utilisateurs</h2>
+<p>L’occulter et ne présenter que le gain que Facebook tire des données que ses utilisateurs y laissent (ce que sous entend, au bas mot, le terme de voleur) est un biais énorme. Soit c’est fait sciemment, auquel cas on essaie de tromper ses lecteurs. Soit l’auteur n’en a pas conscience et c’est une incompréhension majeure des internautes qu’il souhaite défendre. Je ne dis pas que chacun doit estimer que ce que permet Facebook est utile pour lui. Libre à chacun de douter de ce que ses services pourraient lui apporter personnellement. En revanche, il me semble difficile de nier que beaucoup trouvent les services proposés suffisamment intéressants pour tenir les utiliser régulièrement.</p>
+<h2 id="il-est-normal-que-facebook-lutte-contre-le-blocage-de-la-publicité">Il est normal que Facebook lutte contre le blocage de la publicité</h2>
+<p>Trouver totalement normal que les internautes puissent utiliser des moyens légaux pour contourner la publicité mais être choquer que les compagnies vivant de la publicité tentent de déjouer ces moyens est là aussi un point de vue stupide. Je comprends que ces tentatives (que l’on parle de celle de Facebook ou de celles de plusieurs sites d’informations) agacent. Elles sont néanmoins totalement logiques et fondées. Il est normal pour un acteur commercial d’utiliser les moyens légaux à sa disposition pour tenter de pérenniser ses profits.</p>
+<h1 id="les-mauvaises-raisons-pour-utiliser-un-ad-blocker">Les mauvaises raisons pour utiliser un ad-blocker</h1>
+<p>En substance, le message à Facebook du billet de la Quadrature était : “il est normal que l’on puisse utiliser un ad-blocker si l’on n’est pas en phase avec votre modèle publicitaire.” Encore une fois, dans ce dont il est question ici, Facebook ne remet pas en cause cet usage, il cherche à le contourner légalement. Croyez bien que si l’article avait été sur le sujet de “Facebook cherche à interdire les bloqueurs de publicité”, ma réaction aurait été différente.</p>
+<p>Mais réfléchissons un peu à la logique d’utiliser Facebook avec un bloqueur de publicité. L’auteur explique que ça ne remet pas en cause la santé financière de Facebook. Il a raison, ça ne la compromettrait que si tout le monde arrivait, efficacement, à bloquer ses publicités. Il est amusant qu’après mon premier billet sur le sujet, on m’aie reproché un point de vue de “sachant”. Admettons. Promouvoir l’utilisation d’un service sans accepter la contrepartie publicitaire, modèle uniquement viable parce que d’autres l’acceptent ou ne savent pas comment se passer de la publicité, ce ne serait pas également un point de vue de sachant ?</p>
+<p>En continuant à utiliser un service (notamment un service communautaire) avec un ad-blocker, alors que vous savez parfaitement que vous ne l’utiliseriez pas sinon, vous renforcez ce service, l’intérêt que ceux qui n’utilisent pas ce service ont à l’utiliser et donc vous mettez ceux qui ne connaissent pas les bloqueurs de publicité dans une situation encore plus confortable. Votre sollicitude à l’égard des non-sachants me touche.</p>
+<h1 id="la-critique-de-facebook">La critique de Facebook</h1>
+<p>N’ayant pas parler de ce qui me gêne dans le fonctionnement de Facebook la dernière fois, on m’a taxé de simplisme ou de défendre Facebook. Alors soit, ne nous contentons pas de critiquer les mauvais arguments et proposons quelques axes de critiques non exhaustifs.</p>
+<h2 id="le-pistage-hors-du-site">Le pistage hors du site</h2>
+<p>Si j’estimais normal qu’un utilisateur de Facebook doive avoir conscience que les données qu’il y partage soient utilisées par le site (même s’il peut être bon de le rappeler de façon non-biaisée). Je trouve bien moins normal qui piste les mouvements des internautes (utilisateurs <strong>ou non</strong>) pour monétiser son activité. En effet, losrsque je suis sur Facebook, je sais (ou devrais savoir) que ce que je fais lui est connu. Lorsque je visite un site tiers ayant un lien (parfois minime) avec Facebook, c’est bien moins le cas. L’acceptation implicite des conditions d’utilisation dont je parlais précédemment n’est plus de mise ici.</p>
+<p>Tout le monde a dû voir ce message pénible et obligatoire indiquant l’utilisation de cookies sur la plupart des sites web. Ce qui est fortement ignoré, c’est que les cookies en questions ne sont pas uniquement ceux du site visités, mais également potentiellement tous ceux des sites qui sont intégrés au contenu du dit site.</p>
+<p>Prenons un exemple : je visite mon site de jeux de société préféré et celui-ci intègre sur sa page un bouton pour “partager le contenu sur Facebook”. Ce bouton est fourni par Facebook et le simple fait de l’afficher permet à Facebook de savoir que vous avez visité cette page.</p>
+<p>Cette pratique est légale, oui, mais fortement critiquable. Ce modèle, consistant à pister les gens de manière cachée, même lorsqu’ils ne sont pas sur votre site, est certainement le point le plus important à dénoncer dans la monétisation des profils des internautes (et en terme de confidentialité des données personnelles.)</p>
+<p>Pour autant, même avec cet argument (qui me fait avoir très peu de considération pour Facebook), je ne les traiterais pas de voleur, parce que ce n’est pas le cas.</p>
+<h2 id="les-autres-pistes">Les autres pistes ?</h2>
+<p>Facebook est critiquable sur sa diligence à bloquer ses utilisateurs pour (un peu) de nudité alors qu’il est moins rapide à bloquer des contenus haineux. Ou à sa volonté de bloquer certains contenus pour éviter d’être mal vus de certains pouvoir. Je comprends que ça puisse être choqué et dénoncé. Pour ma part, c’est juste une bonne raison de ne pas utiliser leur service car après tout, c’est le meilleur moyen pour lutter contre eux.</p>
+<p>Il y a certainement d’autres critiques légitimes, je n’ai pas envie de creuser, il y a déjà là suffisamment pour ne pas utiliser des arguments fallacieux.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>Voilà, avec un peu plus de calme, des arguments plus étayés de ce qui m’a énervé dans cette tribune de la Quadrature. Estimez maintenant si, en relisant cette tribune, l’avis qui y est porté propose des arguments valides et s’il touche au but ou non. Vous connaissez mon avis, faites vous le votre.</p>
+<p>Ce genre de divergence est la raison principale qui fait que je n’apprécie pas la Quadrature du Net. Leur envie de dénoncer un système, souvent à juste titre, leur fait parfois utiliser des arguments fallacieux ou renier certains principes qui me sont importants.</p>
+]]></description>
+    <pubDate>Wed, 17 Aug 2016 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2016-08-20-Le-cas-Facebook-en-detail.html</guid>
+    <dc:creator>Nicolas Biri</dc:creator>
+</item>
+<item>
     <title>Ne plus être le produit</title>
     <link>http://nicolas.biri.name//posts/2016-08-17-Ne-plus-etre-un-produit.html</link>
     <description><![CDATA[<div class="info">
@@ -337,85 +378,6 @@ generalize (<span class="dt">MemberThere</span> x) {s <span class="fu">=</span> 
 ]]></description>
     <pubDate>Thu, 28 Jul 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-07-28-union-type-in-idris-part-3.html</guid>
-    <dc:creator>Nicolas Biri</dc:creator>
-</item>
-<item>
-    <title>Union Type in Idris (Part 2)</title>
-    <link>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</link>
-    <description><![CDATA[<div class="info">
-    Posted on July 27, 2016
-    
-        by Nicolas Biri
-    
-</div>
-
-<p>The <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
-<h1 id="first-part-summary">First part summary</h1>
-<p>We have detailed how we can write union types in Idris and how to extract a value from it. We recall here the union type definition, that is used through this article:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Union</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
-  <span class="dt">MemberHere</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)
-  <span class="dt">MemberThere</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">Union</span> (ty<span class="ot">::</span>ts)</code></pre></div>
-<p>You may also need the signature of the previously defined function for creating union type values and retrieving the value of an union:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">member</span> <span class="ot">:</span> ty <span class="ot">-&gt;</span> {<span class="kw">auto</span> e<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Union</span> ts
-<span class="fu">get</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty ts} <span class="ot">-&gt;</span> <span class="dt">Maybe</span> ty</code></pre></div>
-<h1 id="folding-union">Folding Union</h1>
-<p>When I started reading some Idris, I was amazed by the <a href="https://gist.github.com/puffnfresh/11202637"><code>printf</code> example</a> (also available <a href="https://www.youtube.com/watch?v=fVBck2Zngjo">in video</a>).</p>
-<p>And my motivation when I start union type was actually to provide a type safe way to fold an union type.</p>
-<h2 id="a-first-try-decomposing-the-union-type">A first try: Decomposing the union type</h2>
-<p>So my first idea was to decompose the union to know which functions we need to cover all the cases.. It means that I wanted something like:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> <span class="ot">:</span>t foldUnion (the (<span class="dt">Union</span> [<span class="dt">Char</span>, <span class="dt">String</span>]) <span class="fu">$</span> member <span class="ch">&#39;c&#39;</span>)
-foldUnion (the (<span class="dt">Union</span> [<span class="dt">Char</span>, <span class="dt">String</span>]) <span class="fu">$</span> member <span class="ch">&#39;c&#39;</span>) <span class="ot">:</span> (<span class="dt">Char</span> <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> (<span class="dt">String</span> <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> a</code></pre></div>
-<p>if you want to do such a thing, it means that the type of <code>foldUnion u</code> where <code>u</code> is an arbitrary union will <em>depend</em> on the type of <code>u</code>. So it means that our code will be like:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> ts) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> ts</code></pre></div>
-<p>Where <code>UnionFold</code> should build a type from a list of type.</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">UnionFold</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span></code></pre></div>
-<p>The case decoposition is quite straightforward atually. If the list is empty, we are done, so the type should be an arbitrary <code>a</code>. If there is a type in the list, we should provide a function for this type and continue with the tail of the list:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="dt">UnionFold</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span> <span class="ot">-&gt;</span> <span class="dt">Type</span>
-<span class="dt">UnionFold</span> [] <span class="fu">=</span> a
-<span class="dt">UnionFold</span> (ty<span class="ot">:</span>ts) <span class="fu">=</span> (ty <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> ts</code></pre></div>
-<p>Let’s come back to <code>foldUnion</code>. The next issue we face is once again is to choose the right function to apply:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> <span class="dt">Union</span> ts <span class="ot">-&gt;</span> <span class="dt">UnionCata</span> a ts
-foldUnion (<span class="dt">MemberHere</span> x) <span class="fu">=</span> <span class="fu">\</span>f <span class="ot">=&gt;</span> foldUnion&#39; (f x)
-  <span class="kw">where</span>
-    <span class="fu">foldUnion&#39;</span> <span class="ot">:</span> {xs <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Type</span>} <span class="ot">-&gt;</span> (x <span class="ot">:</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionCata</span> a xs
-    foldUnion&#39; {xs <span class="fu">=</span> []} x <span class="fu">=</span> x
-    foldUnion&#39; {xs <span class="fu">=</span> <span class="fu">_</span><span class="ot">::</span>xs&#39;} x <span class="fu">=</span> const <span class="fu">$</span> foldUnion&#39; {xs<span class="fu">=</span>xs&#39;} x
-foldUnion (<span class="dt">MemberThere</span> later) <span class="fu">=</span> const <span class="fu">$</span> foldUnion later</code></pre></div>
-<p>If we have the <code>MemberHere</code> constructor, it means thas the element of the union has the first type of the union, and thus, we need to apply the first function. The challenge is then to skip all the other functions until we exhaust all the mapping functions.</p>
-<p>If we are in the <code>MemberThere</code> case, we must skip the next function and look further.</p>
-<p>We can know write things like:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;&gt;&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;Ahoy!&quot;</span>
-<span class="fu">&gt;&gt;&gt;</span> foldUnion x length id (sum <span class="fu">.</span> map length)
-<span class="dv">5</span> <span class="ot">:</span> <span class="dt">Nat</span></code></pre></div>
-<h2 id="functions-to-the-left-union-to-the-right">Functions to the left, union to the right</h2>
-<p>There is an issue with the former proposal: we need to provide the unon first. It makes sense in the case of <code>printf</code>, as we want to provide the format string before its parameter. It’s less meaningful in the case of folding.</p>
-<p>It’s pretty hard to change the parameter order though. Actually, if we dont know the union, how can we know if we still have to pass a function or the final union. More clearly, we aren’t able to define the type of a partially applied function.</p>
-<p>An alternative is to gather the folding functions to define what kind of unions can be fold with these functions.</p>
-<p>The objective is consequently to obtain a signature like:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> <span class="dt">UnionFold</span> a ts <span class="ot">-&gt;</span> (u<span class="ot">:</span> <span class="dt">Union</span> ts) <span class="ot">-&gt;</span> a</code></pre></div>
-<p>With this signature, <code>UnionFold a ts</code> indicates that we have sufficient functions to fold an <code>Union ts</code>, to provide an <code>a</code>. My goal was to be able to build this UnionFold as easily as possible. I take advantage of the <a href="http://docs.idris-lang.org/en/latest/tutorial/typesfuns.html#list-and-vect">list syntax in Idris</a> to obtain a convenient way to define it. So <code>UnionFold a ts</code> is defined as:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">UnionFold</span> <span class="ot">:</span> (target<span class="ot">:</span> <span class="dt">Type</span>) <span class="ot">-&gt;</span> (union<span class="ot">:</span> <span class="dt">Type</span>) <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
-  <span class="dt">Nil</span> <span class="ot">:</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> [])
-  <span class="fu">(::)</span> <span class="ot">:</span> (t <span class="ot">-&gt;</span> a) <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> ts)
-                  <span class="ot">-&gt;</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> (t<span class="ot">::</span>ts))</code></pre></div>
-<p>This definition is straightforward as soon as we have understand the objective of this type.</p>
-<p>With this, we can know detail <code>foldUnion</code>:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">foldUnion</span> <span class="ot">:</span> (fs<span class="ot">:</span> <span class="dt">UnionFold</span> a (<span class="dt">Union</span> ts)) <span class="ot">-&gt;</span> <span class="dt">Union</span> ts
-                                         <span class="ot">-&gt;</span> a
-foldUnion [] (<span class="dt">MemberHere</span> <span class="fu">_</span>) <span class="kw">impossible</span>
-foldUnion [] (<span class="dt">MemberThere</span> <span class="fu">_</span>) <span class="kw">impossible</span>
-foldUnion (f <span class="ot">::</span> <span class="fu">_</span>) (<span class="dt">MemberHere</span> y) <span class="fu">=</span> f y
-foldUnion (f <span class="ot">::</span> xs) (<span class="dt">MemberThere</span> y) <span class="fu">=</span> foldUnion xs y</code></pre></div>
-<p>The two first cases (ithe impossible ones) can be omited (as they are impossible). I added them for documentation purpose. The two last cases are quite easy to read: we go through the <code>UnionFold</code> and the <code>Union</code> simultaneously and as soon as we fan the right location, we apply the corresponding function.</p>
-<p>And the previous example became:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;&gt;&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;Ahoy!&quot;</span>
-<span class="fu">&gt;&gt;&gt;</span> foldUnion [length, id, sum <span class="fu">.</span> map length] x
-<span class="dv">5</span> <span class="ot">:</span> <span class="dt">Nat</span></code></pre></div>
-<h1 id="part-2-is-over">Part 2 is over</h1>
-<p>That’s all for today, next time I will talk about union <a href="http://nicolas.biri.name/posts/2016-07-28-union-type-in-idris-part-3.html">restriction and generalization</a>.</p>
-]]></description>
-    <pubDate>Wed, 27 Jul 2016 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2016-07-27-union-type-in-idris-part-2.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
 
