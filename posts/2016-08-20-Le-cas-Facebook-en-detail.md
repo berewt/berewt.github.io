@@ -2,7 +2,7 @@
 title: "Le cas Facebook en détail"
 lang: en
 category: [French, Société, Internet]
-date: 2016-08-17
+date: 2016-08-20
 author: Nicolas Biri
 ---
 
