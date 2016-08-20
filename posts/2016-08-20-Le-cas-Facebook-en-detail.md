@@ -6,8 +6,8 @@ date: 2016-08-17
 author: Nicolas Biri
 ---
 
-Le [précédent billet]() était une réaction agacée, à chaud, à une [tribune
-mensongère et contre-productive]() de la Quadrature du Net. Je sais, ce n'est pas
+Le [précédent billet](http://nicolas.biri.name/posts/2016-08-17-Ne-plus-etre-un-produit.html) était une réaction agacée, à chaud, à une [tribune
+mensongère et contre-productive](https://www.laquadrature.net/fr/si-vous-etes-le-produit) de la Quadrature du Net. Je sais, ce n'est pas
 la Quadrature dans son entièreté qui a porté cette tribune mais elle l'héberge
 et à ma connaissance, personne là bas n'a semblé trouver à redire sur les
 arguments de ce texte, je les associe de bon cœur.
