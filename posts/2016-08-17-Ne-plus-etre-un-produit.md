@@ -6,7 +6,7 @@ date: 2016-08-17
 author: Nicolas Biri
 ---
 
-Aujourd'hui, sur ma timeline twitter, a circulé un article de la quadrature
+Aujourd'hui, sur ma timeline twitter, a circulé un article de la Quadrature
 intitulé
 "[Si vous êtes le produit, ce n'est pas gratuit](https://www.laquadrature.net/fr/si-vous-etes-le-produit)".
 Je suis très souvent critique sur la forme des prises de positions de la
@@ -39,8 +39,8 @@ Il est toutefois important de rappeler que beaucoup, en conscience, acceptent
 ces contraintes. Parce qu'ils estiment que la contrepartie fait que l'accord
 est bon. Prenons mon cas, je suis un gros utilisateur de Twitter, service
 commercial qui utilise le contenu que je publie pour déterminer quelles
-publicités je peux publier et qui a droit de vie et de mort sur mon compte. Je
-le sais et je l'accepte. Et je ne me sens ni traqué, ni ciblé, ni signataire
+publicités peuvent m'intéresser et qui a droit de vie et de mort sur mon compte.
+Je le sais et je l'accepte. Et je ne me sens ni traqué, ni ciblé, ni signataire
 d'un contrat léonins.
 
 Il y a, chez les défenseurs des libertés, une volonté de convaincre les gens
@@ -49,7 +49,7 @@ qu'il ne **faut** pas utiliser ces  services qui m'a toujours gêné.
 # L'escroquerie de l'accusation de vol
 
 Continuons avec une instance de service qui monétise les données de ses
-utilisateurs avec l'exemple de uacebook. Je me permets de recopier
+utilisateurs avec l'exemple de Facebook. Je me permets de recopier
 complètement le passage concerné :
 
 > Dans une conférence d'il y a longtemps, j'expliquais que Facebook était le
