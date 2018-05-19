@@ -24,7 +24,7 @@ addons:
 
 install:
   - stack --resolver "lts-6.35" install hakyll
-  - ghc --make site.hs
+  - stack --resolver "lts-6.35" exec ghc -- --make site.hs
 
 before_script:
   - cd _site
