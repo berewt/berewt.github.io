@@ -31,6 +31,7 @@ Let's see how "if it compiles, you can ship it" can be real.
 First, let's write some idris to encode the score progression and scores display.
 
 To encode the score, we use the following rules. To win a game, a player must:
+
 - have scored at least four points;
 - **and** must be ahead by at least two points.
 
