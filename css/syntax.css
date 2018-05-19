@@ -2,6 +2,10 @@
 
 pre { display: block; overflow: auto; color: #dddede; background-color: #333336 ; padding: 10px; margin: 2em; }
 
+code {
+    font-size: medium;
+}
+
 code.sourceCode {
     background-color: transparent;
 }
