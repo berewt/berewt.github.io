@@ -515,11 +515,12 @@ Have fun coding.
 
 # Acknowledgments
 
-I would like to thanks the Lambdada community, who helped me to figure out how
+I would like to thanks the [Lambdada] community, who helped me to figure out how
 great the tests as type feature is, have heard the first version of my
 explanations and made some remarks to improve the code.
 
 This blog has no comments, for any question or remark, feel free to contact me
 on [twitter](https://twitter.com/BeRewt).
 
+[Lambdada]: http://lambdada.org
 [tennis kata]: http://codingdojo.org/kata/Tennis/
