@@ -33,14 +33,14 @@
 <p>Today’s scenario is really basic, so we can dive directly into the code. We start with the Person class in Java from the previous post:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
 
-    <span class="kw">private</span> <span class="dt">final</span> String  firstname;
-    <span class="kw">private</span> <span class="dt">final</span> String  lastname;
-    <span class="kw">private</span> <span class="dt">final</span> Integer age;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span>  firstname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span>  lastname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">Integer</span> age;
     <span class="kw">private</span> <span class="dt">final</span> Person  father;
 
-    <span class="kw">public</span> <span class="fu">Person</span>(String  myFirstname,
-                  String  myLastname, 
-                  Integer myAge,
+    <span class="kw">public</span> <span class="fu">Person</span>(<span class="bu">String</span>  myFirstname,
+                  <span class="bu">String</span>  myLastname, 
+                  <span class="bu">Integer</span> myAge,
                   Person  myFather) {
         <span class="kw">this</span>.<span class="fu">firstname</span> = myFirstname;
         <span class="kw">this</span>.<span class="fu">lastname</span>  = myLastname;
@@ -58,7 +58,7 @@
                      }</code></pre></div>
 <h2 id="painfull-equality-and-useful-shortcuts">Painfull equality and useful shortcuts</h2>
 <p>It is so boring to build equality that most Java IDE have a shortcut for it. Fortunately we have only one <code>equals</code> method to write and the class is quite short. Of course, we also have to provide an appropriate <code>hashCode</code> method, but as it doesn’t change anything to this example, its code is left to the reader. In general, there is no need to bind the implementation of <code>equals</code> and <code>hashCode</code>. It is often seen as mandatory for Java developer because both function are implemented in <code>Object</code>. But you may need to test equality without providing an hashing function, or the converse. So let’s continue with Java <code>equals</code> function:</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"> <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(Object o) {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"> <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">equals</span>(<span class="bu">Object</span> o) {
      <span class="kw">if</span> (<span class="kw">this</span> == o) <span class="kw">return</span> <span class="kw">true</span>;
      <span class="kw">if</span> (! (o instanceOf Person)) <span class="kw">return</span> <span class="kw">false</span>;
      Person other = (Person) other;

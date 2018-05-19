@@ -33,14 +33,14 @@
 <p>Back to our person data again. Suppose that finally the age of a person is now optional. But unfortunately we are still going to deal with it when it’s available. Yes, as usual dealing with non-mandatory elements sucks. So here are our starting point in Java:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
 
-    <span class="kw">private</span> <span class="dt">final</span> String  firstname;
-    <span class="kw">private</span> <span class="dt">final</span> String  lastname;
-    <span class="kw">private</span> <span class="dt">final</span> Integer age;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span>  firstname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span>  lastname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">Integer</span> age;
     <span class="kw">private</span> <span class="dt">final</span> Person  father;
 
-    <span class="kw">public</span> <span class="fu">Person</span>(String  myFirstname,
-                  String  myLastname, 
-                  Integer myAge,
+    <span class="kw">public</span> <span class="fu">Person</span>(<span class="bu">String</span>  myFirstname,
+                  <span class="bu">String</span>  myLastname, 
+                  <span class="bu">Integer</span> myAge,
                   Person  myFather) {
         <span class="kw">this</span>.<span class="fu">firstname</span> = myFirstname;
         <span class="kw">this</span>.<span class="fu">lastname</span>  = myLastname;
@@ -60,14 +60,14 @@
 <h2 id="running-out-of-the-null-hell">Running out of the null hell</h2>
 <p>There are so many optional values that we have a hard time with them, for example, here is the Java version:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> FamilyQuery {
-    <span class="kw">public</span> <span class="dt">static</span> Integer <span class="fu">fathersAgeAtBirth</span>(Person p) {
-        Integer currentAge = p.<span class="fu">getAge</span>();
+    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">Integer</span> <span class="fu">fathersAgeAtBirth</span>(Person p) {
+        <span class="bu">Integer</span> currentAge = p.<span class="fu">getAge</span>();
         <span class="kw">if</span> (currentAge == <span class="kw">null</span>)
             <span class="kw">return</span> <span class="kw">null</span>;
         Person father = p.<span class="fu">getFather</span>();
         <span class="kw">if</span> (father == <span class="kw">null</span>)
             <span class="kw">return</span> <span class="kw">null</span>;
-        Integer fathersAge = father.<span class="fu">getAge</span>();
+        <span class="bu">Integer</span> fathersAge = father.<span class="fu">getAge</span>();
         <span class="kw">if</span> (fathersAge == <span class="kw">null</span>)
             <span class="kw">return</span> <span class="kw">null</span>;
         <span class="kw">else</span>

@@ -35,11 +35,11 @@
 <p>Here is the scenario. We deal with people. A person has a first name, a last name and an age. Yes, welcome back to CS 101. Yes, it is stupid to store the age as an integer and not as a date, I never said my examples would be clever. At this stage neither the Haskell nor the Java version are complex. Here is the Java version:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
 
-    <span class="kw">private</span> <span class="dt">final</span> String firstname;
-    <span class="kw">private</span> <span class="dt">final</span> String lastname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> firstname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> lastname;
     <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span>    age;
 
-    <span class="kw">public</span> <span class="fu">Person</span>(String myFirstname, String myLastname, <span class="dt">int</span> myAge) {
+    <span class="kw">public</span> <span class="fu">Person</span>(<span class="bu">String</span> myFirstname, <span class="bu">String</span> myLastname, <span class="dt">int</span> myAge) {
         <span class="kw">this</span>.<span class="fu">firstname</span> = myFirstname;
         <span class="kw">this</span>.<span class="fu">lastname</span>  = myLastname;
         <span class="kw">this</span>.<span class="fu">age</span>       = myAge;
@@ -60,7 +60,7 @@
 <h2 id="check-fields-write-too-many-things">Check fields, write too many things</h2>
 <p>Let’s build our Java greeting class (we can as well add a <code>greet</code> function to the <code>Person</code> class but it doesn’t really match the single responsibility principle)! To do so I assume that you’ve added a <code>getFullname</code> function to the person class. I can leave it to you as an exercise, you’re allowed to find it insulting.</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Greetings {
-    <span class="kw">public</span> <span class="dt">static</span> String <span class="fu">greets</span>(Person myPerson) {
+    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">String</span> <span class="fu">greets</span>(Person myPerson) {
         <span class="kw">if</span> (<span class="fu">isIsaac</span>(myPerson) 
              <span class="kw">return</span> <span class="st">&quot;welcome home, Isaac&quot;</span>;
         <span class="kw">else</span> <span class="kw">if</span> (<span class="fu">isOverEighteen</span>(myPerson))

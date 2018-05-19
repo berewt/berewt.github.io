@@ -7,8 +7,282 @@
         <description><![CDATA[IT, Programming, boardgames and random thoughts]]></description>
         <atom:link href="http://nicolas.biri.name//feed.rss" rel="self"
                    type="application/rss+xml" />
-        <lastBuildDate>Sat, 20 Aug 2016 00:00:00 UT</lastBuildDate>
+        <lastBuildDate>Sat, 19 May 2018 00:00:00 UT</lastBuildDate>
         <item>
+    <title>Dependent types as tests</title>
+    <link>http://nicolas.biri.name//posts/2018-05-19-Dependent-types-as-tests.html</link>
+    <description><![CDATA[<div class="info">
+    Posted on May 19, 2018
+    
+        by Nicolas Biri
+    
+</div>
+
+<p>Types are not supposed to replace tests… in general. However, dependent types allow you to express tests as types, allowing you to run your tests automatically at compile times. Even better, you can express property tests and prove them rather than test them on a large subset of values.</p>
+<p>To be accurate, we’re not talking about tests here, rather of proofs. I’m using <em>tests</em> just because what we’re checking can be compare to what we check with usual tests. Please don’t mind if I don’t use the appropriate term in favor of a more informal terms, I just want to prove people that we can replace tests with a better alternative, with the appropriate language.</p>
+<p>This article illustrates this possibility through the <a href="http://codingdojo.org/kata/Tennis/">tennis kata</a>. Our objective, provide a way to compute and display a tennis score (of only one game) correctly, and prove that our code is right. Let’s see how “if it compiles, you can ship it” can be real.</p>
+<h1 id="the-tennis-kata-with-dependent-types">The tennis kata with dependent types</h1>
+<h1 id="types-types-types">Types, types, types</h1>
+<p>First, let’s write some idris to encode the score progression and scores display.</p>
+<p>To encode the score, we use the following rules. To win a game, a player must: - have scored at least four points; - <strong>and</strong> must be ahead by at least two points.</p>
+<p>We start by the obvious, we need two players:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Player</span> <span class="fu">=</span> <span class="dt">Player1</span> <span class="fu">|</span> <span class="dt">Player2</span></code></pre></div>
+<p>A classical way to represent score is to use two naturals. This encoding however, allows a lot of invalid combination. For example, 5-0 is not a valid score, as the previous score, 4-0, should already have led to the end of the game.</p>
+<p>A way to tackle this with dependent type is to embed in a score a proof that the game is not over. Let’s build a type that can prove that nobody has won yet:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Prove that the game is not over after a point</span>
+<span class="kw">data</span> <span class="dt">NotWinning</span> <span class="ot">:</span> (winnerScore<span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (loserScore<span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="co">||| Game is not over because the winning player is below 40</span>
+  <span class="dt">ThresholdNotMet</span> <span class="ot">:</span> <span class="dt">LTE</span> x <span class="dv">3</span> <span class="ot">-&gt;</span> <span class="dt">NotWinning</span> x y
+  <span class="co">||| Game is not over because we only reach deuce or advantage</span>
+  <span class="dt">OpponentTooClose</span> <span class="ot">:</span> <span class="dt">LTE</span> x (<span class="dt">S</span> y) <span class="ot">-&gt;</span> <span class="dt">NotWinning</span> x y</code></pre></div>
+<p>The first constructor is a proof that nobody has won because the winner of a point has not reached 4 points yet (they have less or equal to 3 points). The second constructor is a proof that the winner of a point is not 2 points ahead yet.</p>
+<p>Now that we have a type for our proofs, let’s write a decision procedure to build a proof or to prove the lack of proof that a game is over depending on a score:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Decision procedure to obtain a NotWinningProof</span>
+<span class="fu">notWinning</span> <span class="ot">:</span> (winnerScore <span class="ot">:</span> <span class="dt">Nat</span>)
+              <span class="ot">-&gt;</span> (loserScore <span class="ot">:</span> <span class="dt">Nat</span>)
+              <span class="ot">-&gt;</span> <span class="dt">Dec</span> (<span class="dt">NotWinning</span> winnerScore loserScore)
+notWinning winnerScore loserScore <span class="fu">=</span>
+  <span class="kw">case</span> isLTE winnerScore <span class="dv">3</span> <span class="kw">of</span>
+       (<span class="dt">Yes</span> prfT)    <span class="ot">=&gt;</span> <span class="dt">Yes</span> (<span class="dt">ThresholdNotMet</span> prfT)
+       (<span class="dt">No</span> contraT) <span class="ot">=&gt;</span> <span class="kw">case</span> isLTE winnerScore (<span class="dt">S</span> loserScore) <span class="kw">of</span>
+                            <span class="dt">Yes</span> prfO <span class="ot">=&gt;</span> <span class="dt">Yes</span> (<span class="dt">OpponentTooClose</span> prfO)
+                            <span class="dt">No</span> contraO <span class="ot">=&gt;</span> <span class="dt">No</span> (winningProof contraT contraO)
+  <span class="kw">where</span>
+    <span class="fu">winningProof</span> <span class="ot">:</span> (contraT <span class="ot">:</span> <span class="dt">Not</span> (<span class="dt">LTE</span> winnerScore <span class="dv">3</span>))
+                <span class="ot">-&gt;</span> (contraO <span class="ot">:</span> <span class="dt">Not</span> (<span class="dt">LTE</span> winnerScore (<span class="dt">S</span> loserScore)))
+                <span class="ot">-&gt;</span> <span class="dt">Not</span> (<span class="dt">NotWinning</span> winnerScore loserScore)
+    winningProof contraT contraO (<span class="dt">ThresholdNotMet</span> x) <span class="fu">=</span> contraT x
+    winningProof contraT contraO (<span class="dt">OpponentTooClose</span> x) <span class="fu">=</span> contraO x</code></pre></div>
+<p>We check each condition that are necessary to build one of our constructors. If one of the two condition is met, we are able to provide our proof, otherwise we use the two witnesses that our conditions aren’t met to build a proof that we can not build a witness that the game is not over (we have a winner).</p>
+<h2 id="score">Score</h2>
+<p>From there, we are able to define a type for the score of an ongoing game:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Score is built by stacking ball winners, along with the proof that the game is not over</span>
+<span class="kw">data</span> <span class="dt">Score</span> <span class="ot">:</span> <span class="dt">Nat</span> <span class="ot">-&gt;</span> <span class="dt">Nat</span> <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
+  <span class="dt">Start</span> <span class="ot">:</span> <span class="dt">Score</span> <span class="dv">0</span> <span class="dv">0</span>
+  <span class="dt">Player1Scores</span> <span class="ot">:</span> <span class="dt">Score</span> x y <span class="ot">-&gt;</span> {<span class="kw">auto</span> prf<span class="ot">:</span> <span class="dt">NotWinning</span> (<span class="dt">S</span> x) y} <span class="ot">-&gt;</span> <span class="dt">Score</span> (<span class="dt">S</span> x) y
+  <span class="dt">Player2Scores</span> <span class="ot">:</span> <span class="dt">Score</span> x y <span class="ot">-&gt;</span> {<span class="kw">auto</span> prf<span class="ot">:</span> <span class="dt">NotWinning</span> (<span class="dt">S</span> y) x} <span class="ot">-&gt;</span> <span class="dt">Score</span> x (<span class="dt">S</span> y)</code></pre></div>
+<p>Our score type does not exactly handle the score. It’s rather a list of points winners, tied with the proof that the game is not over.</p>
+<p>We’re almost ready to implement the function that allows a player to score a point. Before, we need a helper to compute the next score, given a winner and a player, we compute the hypothetical next score of this player (if the game is not over):</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">nextScore</span> <span class="ot">:</span> (winner <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> (pointsOwner <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> (points <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> <span class="dt">Nat</span>
+nextScore <span class="dt">Player1</span> <span class="dt">Player1</span> points <span class="fu">=</span> <span class="dt">S</span> points
+nextScore <span class="dt">Player1</span> <span class="dt">Player2</span> points <span class="fu">=</span> points
+nextScore <span class="dt">Player2</span> <span class="dt">Player1</span> points <span class="fu">=</span> points
+nextScore <span class="dt">Player2</span> <span class="dt">Player2</span> points <span class="fu">=</span> <span class="dt">S</span> points</code></pre></div>
+<p>And here we go with the scoring:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Add the result of a point to a score</span>
+<span class="fu">score</span> <span class="ot">:</span> (previousScore <span class="ot">:</span> <span class="dt">Score</span> p1Points p2Points)
+      <span class="ot">-&gt;</span> (p <span class="ot">:</span> <span class="dt">Player</span>)
+      <span class="ot">-&gt;</span> <span class="dt">Maybe</span> (<span class="dt">Score</span> (nextScore p <span class="dt">Player1</span> p1Points)
+                      (nextScore p <span class="dt">Player2</span> p2Points))
+score previousScore p {p1Points} {p2Points} <span class="fu">=</span>
+  <span class="kw">case</span> notWinning (winnerPoints p) (loserPoints p) <span class="kw">of</span>
+       <span class="dt">Yes</span> <span class="fu">_</span>      <span class="ot">=&gt;</span> pure (builder p)
+       <span class="dt">No</span>  contra <span class="ot">=&gt;</span> 
+  <span class="kw">where</span>
+    <span class="fu">winnerPoints</span> <span class="ot">:</span> <span class="dt">Player</span> <span class="ot">-&gt;</span> <span class="dt">Nat</span>
+    winnerPoints <span class="dt">Player1</span> <span class="fu">=</span> <span class="dt">S</span> p1Points
+    winnerPoints <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">S</span> p2Points
+    <span class="fu">loserPoints</span> <span class="ot">:</span> <span class="dt">Player</span> <span class="ot">-&gt;</span> <span class="dt">Nat</span>
+    loserPoints  <span class="dt">Player1</span> <span class="fu">=</span> p2Points
+    loserPoints  <span class="dt">Player2</span> <span class="fu">=</span> p1Points
+    <span class="fu">builder</span> <span class="ot">:</span> (p <span class="ot">:</span> <span class="dt">Player</span>)
+    <span class="ot">-&gt;</span> {<span class="kw">auto</span> prf <span class="ot">:</span> <span class="dt">NotWinning</span> (winnerPoints p) (loserPoints p)}
+           <span class="ot">-&gt;</span> <span class="dt">Score</span> (nextScore p <span class="dt">Player1</span> p1Points) (nextScore p <span class="dt">Player2</span> p2Points)
+    builder <span class="dt">Player1</span> <span class="fu">=</span> <span class="dt">Player1Scores</span> previousScore
+    builder <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">Player2Scores</span> previousScore</code></pre></div>
+<p>The <code>score</code> function, given the winner of a point, will either returns the next score or nothing, if the winner of the point won the game. The code almost entirely relies on the <code>notWinning</code> function, which provides either the proof needed to build the next score, or the proof that we have a winner.</p>
+<p>Then, we can replay a whole game quite easily with <code>foldlM</code>:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Replay a full list of balls, if the game ends, the remaining balls are discarded</span>
+<span class="fu">replay</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Player</span> <span class="ot">-&gt;</span>  <span class="dt">Either</span> <span class="dt">Player</span> (x&#39; <span class="fu">**</span> y&#39; <span class="fu">**</span> <span class="dt">Score</span> x&#39; y&#39;)
+replay <span class="fu">=</span> foldlM f (<span class="fu">_</span> <span class="fu">**</span> (<span class="fu">_</span> <span class="fu">**</span> <span class="dt">Start</span>))
+  <span class="kw">where</span>
+    <span class="fu">f</span> <span class="ot">:</span> (a <span class="fu">**</span> b <span class="fu">**</span> <span class="dt">Score</span> a b) <span class="ot">-&gt;</span> <span class="dt">Player</span> <span class="ot">-&gt;</span> <span class="dt">Either</span> <span class="dt">Player</span> (x&#39; <span class="fu">**</span> y&#39; <span class="fu">**</span> <span class="dt">Score</span> x&#39; y&#39;)
+    f (<span class="fu">_</span> <span class="fu">**</span> <span class="fu">_</span> <span class="fu">**</span> s) p <span class="fu">=</span> maybe (<span class="dt">Left</span> p)
+                              (pure <span class="fu">.</span> (<span class="fu">\</span>s&#39; <span class="ot">=&gt;</span> (<span class="fu">_</span> <span class="fu">**</span> <span class="fu">_</span> <span class="fu">**</span> s&#39;)))
+                              <span class="fu">$</span> score s p</code></pre></div>
+<p>The result of a replay is either a winner, or an existential type (or Σ-type) with the current score. The existential type is required since we do not know in advance what the score will be.</p>
+<h2 id="display">Display</h2>
+<p>We’re almost there, we just need a few facilities to display the score: We start by a helper to display points in the usual and weird tennis style. The points are announced only for the 3 first points of a player (before, the <em>deuce</em> and <em>advantage</em> part), thus we need a proof that we are less or equal to 3 to display the points:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayPoints</span> <span class="ot">:</span> <span class="dt">LTE</span> x <span class="dv">3</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
+displayPoints <span class="dt">LTEZero</span> <span class="fu">=</span> <span class="st">&quot;0&quot;</span>
+displayPoints (<span class="dt">LTESucc</span> <span class="dt">LTEZero</span>) <span class="fu">=</span> <span class="st">&quot;15&quot;</span>
+displayPoints (<span class="dt">LTESucc</span> (<span class="dt">LTESucc</span> <span class="dt">LTEZero</span>)) <span class="fu">=</span> <span class="st">&quot;30&quot;</span>
+displayPoints (<span class="dt">LTESucc</span> (<span class="dt">LTESucc</span> (<span class="dt">LTESucc</span> <span class="dt">LTEZero</span>))) <span class="fu">=</span> <span class="st">&quot;40&quot;</span></code></pre></div>
+<p>And we can know display the whole score, we start with the special cases and then the general one:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayScore</span> <span class="ot">:</span> <span class="dt">Score</span> x y <span class="ot">-&gt;</span> <span class="dt">String</span>
+displayScore {x <span class="fu">=</span> <span class="dt">Z</span>} {y <span class="fu">=</span> <span class="dt">Z</span>} <span class="fu">_</span> <span class="fu">=</span> <span class="st">&quot;love&quot;</span>
+displayScore {x <span class="fu">=</span> <span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> <span class="dt">Z</span>))} {y <span class="fu">=</span> <span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> <span class="dt">Z</span>))} <span class="fu">_</span> <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
+displayScore {x} {y} <span class="fu">_</span> <span class="fu">=</span> <span class="kw">case</span> (isLTE x <span class="dv">3</span>, isLTE y <span class="dv">3</span>) <span class="kw">of</span>
+  (<span class="dt">Yes</span> prfX,   <span class="dt">Yes</span> prfY)   <span class="ot">=&gt;</span> concat [displayPoints prfX
+                                     , <span class="st">&quot; - &quot;</span>
+                                     , displayPoints prfY
+                                     ]
+  <span class="fu">_</span>                        <span class="ot">=&gt;</span> <span class="kw">case</span> compare x y <span class="kw">of</span>
+                                   <span class="dt">LT</span> <span class="ot">=&gt;</span> <span class="st">&quot;advantage Player2&quot;</span>
+                                   <span class="dt">EQ</span> <span class="ot">=&gt;</span> <span class="st">&quot;deuce&quot;</span>
+                                   <span class="dt">GT</span> <span class="ot">=&gt;</span> <span class="st">&quot;advantage Player1&quot;</span></code></pre></div>
+<h1 id="tests">Tests</h1>
+<p>Isn’t this article supposed to be about testing? Well… here we are.</p>
+<h2 id="unit-testing">Unit testing</h2>
+<p>Let start with something simple. If we provide to <code>replay</code> an empty list of winner, the score must be unchanged. A usual way to test it in a language with dependent type would be something like:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| pseudocode, does not compile</span>
+<span class="fu">replayEmptyListGivesStart</span> <span class="ot">:</span> <span class="dt">IO</span> <span class="dt">Bool</span>
+replayEmptyListGivesStart <span class="fu">=</span> assertEqual (<span class="dt">Right</span> (<span class="dv">0</span> <span class="fu">**</span> <span class="dv">0</span> <span class="fu">**</span> <span class="dt">Start</span>)) (replay [])</code></pre></div>
+<p>Well, we can actually do better:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">replayEmptyListGivesStart</span> <span class="ot">:</span> <span class="dt">Right</span> (<span class="dv">0</span> <span class="fu">**</span> <span class="dv">0</span> <span class="fu">**</span> <span class="dt">Start</span>) <span class="fu">=</span> replay []
+replayEmptyListGivesStart <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>This is a compile time test. We have expressed here that <code>replayEmptyListGivesStart</code> is an element of the structural equality between <code>Right (0 ** 0 ** Start)</code> and <code>replay []</code>. We are even able to provide this element which is <code>Refl</code>. Behind the hood, the compiler will rewrite <code>replay []</code>, be able to reduce it <code>Right (0 ** 0 * Start)</code>. And as <code>Refl</code> is of type <code>a = a</code>, it’s a correct value for this type and our program compiles!</p>
+<p>We’ve just embedded in our program a <em>proof</em> that <code>Right (0 ** 0 ** Start) = replay []</code>. This proof will be run at each compilation, we can’t ship our code if this is not true anymore.</p>
+<p>What would happen if it is the case?</p>
+<p>Let’s try and change the type of <code>replayEmptyListGivesStart</code> with the following: <code>replayEmptyListGivesStart : Left Player1 = replay []</code></p>
+<p>We obtain this error message:</p>
+<pre><code>/Users/biri/Perso/katas/Tennis/TennisDT.idr:133:29-32:
+    |
+133 | replayEmptyListGivesStart = Refl
+    |                             ~~~~
+When checking right hand side of replayEmptyListGivesStart with expected type
+        Left Player1 = replay []
+
+Type mismatch between
+        Right (0 ** 0 ** Start) = Left Player1 (Expected type)
+and
+        x = x (Type of Refl)
+
+Specifically:
+        Type mismatch between
+                Left Player1Unification failure
+        and
+                Right (0 ** 0 ** Start)</code></pre>
+<p>The compiler complains that we provide an element of type <code>x = x</code> while it was able to compute <code>Left Player1 = Right (0 ** 0 ** Start)</code>. The output is quite precise about what went wrong here.</p>
+<p>Similarly, we can test some specific results of our display function:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayStartIsLove</span> <span class="ot">:</span> <span class="st">&quot;love&quot;</span> <span class="fu">=</span> displayScore <span class="dt">Start</span>
+displayStartIsLove <span class="fu">=</span> <span class="dt">Refl</span>
+
+<span class="fu">display1stWinnerGot15</span> <span class="ot">:</span> (s <span class="ot">:</span> <span class="dt">Score</span> <span class="dv">1</span> <span class="dv">0</span>) <span class="ot">-&gt;</span> <span class="st">&quot;15 - 0&quot;</span> <span class="fu">=</span> displayScore s
+display1stWinnerGot15 <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<h2 id="property-testing">Property testing</h2>
+<p>Let’s now test that our replay function got a love game right. A love game happens when a player won the 4 first points in a row, ending the game without leaving any point to their opponent.</p>
+<p>Let write a simple function to test this:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">testLoveGame</span> <span class="ot">:</span> <span class="dt">Left</span> p <span class="fu">=</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> replay (replicate <span class="dv">4</span> p)</code></pre></div>
+<p>Given a player, whoever it is, we can prove that this player won the game when he won the 4 first points A first try to implement this function might be:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">testLoveGame</span> <span class="ot">:</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> <span class="dt">Left</span> p <span class="fu">=</span> replay (replicate <span class="dv">4</span> p)
+testLoveGame p <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>Unfortunately, it doesn’t work. And I won’t provide you the error here, because it’s quite (very) verbose. The problem is that without knowing the value of <code>p</code> (the wining player), the compiler isn’t able to reduce the left term of the equality. Fortunately, splitting cases for the different values of <code>Player</code> is enough:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">testLoveGame</span> <span class="ot">:</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> <span class="dt">Left</span> p <span class="fu">=</span> replay (replicate <span class="dv">4</span> p)
+testLoveGame <span class="dt">Player1</span> <span class="fu">=</span> <span class="dt">Refl</span>
+testLoveGame <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>Knowing the value of <code>p</code>, the compiler is now able to reduce the left term up to <code>Left p</code>, and thus to typecheck.</p>
+<p>With the same strategy, we can check more advance properties, like ensuring that one player can’t win from deuce or that one player win if he scores two times after a deuce:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">testCantWinFromDeuce</span> <span class="ot">:</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> <span class="dt">True</span> <span class="fu">=</span> isRight (replay (take <span class="dv">11</span> <span class="fu">$</span> cycle [p, opponent p]))
+testCantWinFromDeuce <span class="dt">Player1</span> <span class="fu">=</span> <span class="dt">Refl</span>
+testCantWinFromDeuce <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">Refl</span>
+
+<span class="fu">gainWith2PointsFromDeuce</span> <span class="ot">:</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> <span class="dt">Left</span> p <span class="fu">=</span> replay ((take <span class="dv">10</span> <span class="fu">$</span> cycle [<span class="dt">Player1</span>, <span class="dt">Player2</span>]) <span class="fu">&lt;+&gt;</span> replicate <span class="dv">2</span> p)
+gainWith2PointsFromDeuce <span class="dt">Player1</span> <span class="fu">=</span> <span class="dt">Refl</span>
+gainWith2PointsFromDeuce <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<h2 id="property-testing-with-recursions">Property testing with recursions</h2>
+<p>In the last examples, we used a arbitrary number as a parameter for <code>take</code>. Unfortunately, for these examples, testing the property for every number of points is bit complex. To illustrate how we can prove things on natural, let’s move to the <code>display</code> function again.</p>
+<p>We will need a few helpers first, that are not in the base library:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">compareToSuccIsLT</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> <span class="dt">LT</span> <span class="fu">=</span> compare x (<span class="dt">S</span> x)
+compareToSuccIsLT <span class="dt">Z</span> <span class="fu">=</span> <span class="dt">Refl</span>
+compareToSuccIsLT (<span class="dt">S</span> k) <span class="fu">=</span> compareToSuccIsLT k
+
+<span class="fu">compareSameIsEq</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> <span class="dt">EQ</span> <span class="fu">=</span> compare x x
+compareSameIsEq <span class="dt">Z</span> <span class="fu">=</span> <span class="dt">Refl</span>
+compareSameIsEq (<span class="dt">S</span> k) <span class="fu">=</span> compareSameIsEq k
+
+<span class="fu">compareToPredIsGT</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> <span class="dt">GT</span> <span class="fu">=</span> compare (<span class="dt">S</span> x) x
+compareToPredIsGT <span class="dt">Z</span> <span class="fu">=</span> <span class="dt">Refl</span>
+compareToPredIsGT (<span class="dt">S</span> k) <span class="fu">=</span> compareToPredIsGT k
+
+<span class="dt">LTnotEQ</span> <span class="ot">:</span> (<span class="dt">LT</span> <span class="fu">=</span> <span class="dt">EQ</span>) <span class="ot">-&gt;</span> <span class="dt">Void</span>
+<span class="dt">LTnotEQ</span> <span class="dt">Refl</span> <span class="kw">impossible</span>
+
+<span class="dt">LTnotGT</span> <span class="ot">:</span> (<span class="dt">Prelude</span><span class="fu">.</span><span class="dt">Interfaces</span><span class="fu">.</span><span class="dt">LT</span> <span class="fu">=</span> <span class="dt">GT</span>) <span class="ot">-&gt;</span> <span class="dt">Void</span>
+<span class="dt">LTnotGT</span> <span class="dt">Refl</span> <span class="kw">impossible</span>
+
+<span class="dt">EQnotGT</span> <span class="ot">:</span> (<span class="dt">EQ</span> <span class="fu">=</span> <span class="dt">GT</span>) <span class="ot">-&gt;</span> <span class="dt">Void</span>
+<span class="dt">EQnotGT</span> <span class="dt">Refl</span> <span class="kw">impossible</span>
+
+<span class="dt">DecEq</span> <span class="dt">Ordering</span> <span class="kw">where</span>
+  decEq <span class="dt">LT</span> <span class="dt">LT</span> <span class="fu">=</span> <span class="dt">Yes</span> <span class="dt">Refl</span>
+  decEq <span class="dt">LT</span> <span class="dt">EQ</span> <span class="fu">=</span> <span class="dt">No</span> <span class="dt">LTnotEQ</span>
+  decEq <span class="dt">LT</span> <span class="dt">GT</span> <span class="fu">=</span> <span class="dt">No</span> <span class="dt">LTnotGT</span>
+  decEq <span class="dt">EQ</span> <span class="dt">LT</span> <span class="fu">=</span> <span class="dt">No</span> (negEqSym <span class="dt">LTnotEQ</span>)
+  decEq <span class="dt">EQ</span> <span class="dt">EQ</span> <span class="fu">=</span> <span class="dt">Yes</span> <span class="dt">Refl</span>
+  decEq <span class="dt">EQ</span> <span class="dt">GT</span> <span class="fu">=</span> <span class="dt">No</span> <span class="dt">EQnotGT</span>
+  decEq <span class="dt">GT</span> <span class="dt">LT</span> <span class="fu">=</span> <span class="dt">No</span> (negEqSym <span class="dt">LTnotGT</span>)
+  decEq <span class="dt">GT</span> <span class="dt">EQ</span> <span class="fu">=</span> <span class="dt">No</span> (negEqSym <span class="dt">EQnotGT</span>)
+  decEq <span class="dt">GT</span> <span class="dt">GT</span> <span class="fu">=</span> <span class="dt">Yes</span> <span class="dt">Refl</span></code></pre></div>
+<p>The helpers give us two things:</p>
+<ol style="list-style-type: decimal">
+<li>the result of a comparison of a natural with it’s predecessor, itself, its successor;</li>
+<li>a structural proof of equality/difference between two <code>Ordering</code></li>
+</ol>
+<p>With these helpers, we will prove the display of advantages and deuce when a player is at most one point ahead of their opponent and each player has at least scored 3 times. To do so, we must find an implementation for these 3 functions:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayDeuce</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
+<span class="fu">displayAdvantageP1</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dt">S</span> (<span class="dv">3</span> <span class="fu">+</span> x)) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;advantage Player1&quot;</span>
+<span class="fu">displayAdvantageP2</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dt">S</span> (<span class="dv">3</span> <span class="fu">+</span> x))) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;advantage Player2&quot;</span></code></pre></div>
+<p>I’m detailing the first one here, the two others follow a similar pattern and are left as exercises to the reader. If you look back at display, you can notice that we don’t use the value of the score, only it’s type is used to to compute the display. As a consequence, we don’t need to decompose score. Let’s try with what we’ve learn so far and decompose the first parameter:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayDeuce</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
+displayDeuce <span class="dt">Z</span> <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span>
+displayDeuce (<span class="dt">S</span> k) <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
+<p>Of course, we can’t decompose the parameter for all the possible naturals. So we use the decomposition for each possible constructors. Unfortunately, it’s not that easy. Here is the error we obtain with this try:</p>
+<pre><code>Type mismatch between
+        &quot;deuce&quot; = &quot;deuce&quot; (Type of Refl)
+and
+        case Prelude.Nat.Nat implementation of Prelude.Interfaces.Ord, method compare n
+                                                                                      n of
+          LT =&gt; &quot;advantage Player2&quot;
+          EQ =&gt; &quot;deuce&quot;
+          GT =&gt; &quot;advantage Player1&quot; =
+        &quot;deuce&quot; (Expected type)</code></pre>
+<p>The compiler is not able to reduce <code>compare</code>. Here is the tricky part. The solution is thus to match against the result of compare, with a <code>with</code> rule:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayDeuce</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
+displayDeuce <span class="dt">Z</span> <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span>
+displayDeuce (<span class="dt">S</span> k) s <span class="kw">with</span> (compare k k) <span class="kw">proof</span> p
+  displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">LT</span> <span class="fu">=</span> <span class="ot">?lt_case</span>
+  displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">EQ</span> <span class="fu">=</span> <span class="dt">Refl</span>
+  displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">GT</span> <span class="fu">=</span> <span class="ot">?gt_case</span></code></pre></div>
+<p>While we know that <code>compare k k</code> will always return <code>EQ</code>, the compiler has no way to figure it out. For the <code>EQ</code> case, knowing the result allows the compiler to achieve the reduction and we can conclude with <code>Refl</code>. The <code>LT</code> case and the <code>GT</code> case are symmetric. In both case, we have to prove that the case can’t happen.</p>
+<p>Here is the information we have for <code>?lt_case</code>:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris">  <span class="fu">k</span> <span class="ot">:</span> <span class="dt">Nat</span>
+  <span class="fu">s</span> <span class="ot">:</span> <span class="dt">Score</span> (<span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> k)))) (<span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> k))))
+  <span class="fu">p</span> <span class="ot">:</span> <span class="dt">LT</span> <span class="fu">=</span>
+      <span class="dt">Prelude</span><span class="fu">.</span><span class="dt">Nat</span><span class="fu">.</span><span class="dt">Nat</span> implementation <span class="kw">of</span> <span class="dt">Prelude</span><span class="fu">.</span><span class="dt">Interfaces</span><span class="fu">.</span><span class="dt">Ord</span>, method compare k
+                                                                               k
+<span class="co">--------------------------------------</span>
+<span class="fu">lt_Case</span> <span class="ot">:</span> <span class="st">&quot;advantage Player2&quot;</span> <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span></code></pre></div>
+<p>So we need to find an element of type <code>&quot;advantage Player2&quot; = &quot;deuce&quot;</code> with a context that contains one very interesting element: <code>p</code> that is a “proof” that <code>LT = compare k k</code></p>
+<p>When you want to prove that something is not possible, you basically want to obtain a value of type <code>Void</code> and then conclude with the <code>void</code> function, that can build any type out of <code>Void</code>. <code>Void</code> is the bottom type, the one that is uninhabited. We have already some element to build such type. <code>LTisNotEQ</code> that we have introduced earlier, is of type <code>Not (LT = EQ)</code>. This type is actually an alias for <code>LT = EQ -&gt; Void</code>. And with <code>p</code>, we’re almost there, we just need to replace <code>compare k k</code> with it’s true value, <code>EQ</code>, we’re just one rewriting rule away. With the same reasoning for the GT case we obtain the following code for <code>displayDeuce</code>:</p>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayDeuce</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
+displayDeuce <span class="dt">Z</span> <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span>
+displayDeuce (<span class="dt">S</span> k) s <span class="kw">with</span> (compare k k) <span class="kw">proof</span> p
+  displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">LT</span> <span class="fu">=</span> void (<span class="dt">LTnotEQ</span> (<span class="kw">rewrite</span> compareSameIsEq k <span class="kw">in</span> p))
+  displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">EQ</span> <span class="fu">=</span> <span class="dt">Refl</span>
+  displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">GT</span> <span class="fu">=</span> void (negEqSym <span class="dt">EQnotGT</span> (<span class="kw">rewrite</span> compareSameIsEq k <span class="kw">in</span> p))</code></pre></div>
+<p>And here we go, it compiles and we have proven that if each players has scored at least 3 points and have the same number of points, their score will be “deuce”.</p>
+<p>This short example also shows the limit of using types as tests. You’re doing more than testing, you are proving facts, which means that you must assist the compiler to find its way through the code to build the proof.</p>
+<h1 id="a-few-hints">A few hints</h1>
+<p>Let’s recap some of useful hint if you want to use types as tests:</p>
+<ol style="list-style-type: decimal">
+<li>Unit tests are the easiest, as most of the time, the compiler will be able to reduce the full expression if you provide all the required values.</li>
+<li>When you do property testing (proving actually), you almost always have to split cases for the variables, to ease the progression of the computer.</li>
+<li>When the compiler cannot reduce a value, help him with rewrite rules. Sometimes, it may be useful to tweak your test a bit to ease the reduction of a formula. For example, <code>(x : Nat) -&gt; (s : Score (3 + x) (3 + x)) -&gt; &quot;deuce&quot; = displayScore s</code> is easier to prove than <code>(x : Nat) -&gt; (s : Score (x + 3) (x + 3)) -&gt; &quot;deuce&quot; = displayScore s</code> because of the implementation of <code>(+)</code> for Natural.</li>
+<li>The error messages will help you to figure out where the compiler is stuck and what expression should be rewritten.</li>
+<li>If the compiler explores cases that are not possible help it to figure it out by producing a <code>Void</code> value.</li>
+</ol>
+<p>Hope it helps. Unit testing is usually as easy with types than with traditional test functions, property testing is usually harder, as it requires you to build a proof rather than just running the test on a limited set of values.</p>
+<p>Have fun coding.</p>
+<h1 id="acknowledgments">Acknowledgments</h1>
+<p>I would like to thanks the Lambdada community, who helped me to figure out how great the tests as type feature is, have heard the first version of my explanations and made some remarks to improve the code.</p>
+<p>This blog has no comments, for any question or remark, feel free to contact me on twitter (<span class="citation">[@BeRewt]</span>)</p>
+]]></description>
+    <pubDate>Sat, 19 May 2018 00:00:00 UT</pubDate>
+    <guid>http://nicolas.biri.name//posts/2018-05-19-Dependent-types-as-tests.html</guid>
+    <dc:creator>Nicolas Biri</dc:creator>
+</item>
+<item>
     <title>Le cas Facebook en détail</title>
     <link>http://nicolas.biri.name//posts/2016-08-20-Le-cas-Facebook-en-detail.html</link>
     <description><![CDATA[<div class="info">
@@ -289,95 +563,6 @@ eitherUnion <span class="fu">=</span> <span class="dt">MkIso</span> cast cast to
 ]]></description>
     <pubDate>Tue, 02 Aug 2016 00:00:00 UT</pubDate>
     <guid>http://nicolas.biri.name//posts/2016-08-02-union-type-in-idris-part-4.html</guid>
-    <dc:creator>Nicolas Biri</dc:creator>
-</item>
-<item>
-    <title>Union Type in Idris (Part 3)</title>
-    <link>http://nicolas.biri.name//posts/2016-07-28-union-type-in-idris-part-3.html</link>
-    <description><![CDATA[<div class="info">
-    Posted on July 28, 2016
-    
-        by Nicolas Biri
-    
-</div>
-
-<p>Go back to the <a href="http://nicolas.biri.name/posts/2016-07-26-union-type-in-idris-part-1.html">first part</a>.</p>
-<h1 id="some-are-better-than-others-union-is-better-than-sum">Some are better than others, Union is better than sum</h1>
-<p>At this point, we have a slightly less complex syntax than sum types (with some drawbacks, but I will detail them in another part), but did we have other benefits?</p>
-<p>Well, yes.</p>
-<p>Today, we are going to inverstigate how flexible union types are. More precisely, I will detail union type restrictions and generalisation.</p>
-<h1 id="shrink-my-union">Shrink my union</h1>
-<p>Let suppose that we have a variable <code>x</code> of type <code>Union [Nat, String, List String]</code> and the following repl session:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> the (<span class="dt">Maybe</span> <span class="dt">Nat</span>) x
-<span class="dt">Nothing</span> <span class="ot">:</span> <span class="dt">Maybe</span> <span class="dt">Nat</span></code></pre></div>
-<p>We know that <code>x</code> does not contain a <code>Nat</code>. Thus, <code>x</code> contains either a <code>String</code> or a <code>List String</code>. Well, we can explicitly express it with union types.</p>
-<p>Let’s compute the type of this reasoning. Given an union instance, we can either get a value of a type in this uion or we can restrict the union. Quite clear and easy to write:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">retract</span> <span class="ot">:</span> <span class="dt">Union</span> xs <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty xs}
-                   <span class="ot">-&gt;</span> <span class="dt">Either</span> (<span class="dt">Union</span> (dropElem xs p)) ty</code></pre></div>
-<p>The result type may require some explanations. The presence of <code>Either</code> and the right case (<code>ty</code>) is clear. The left case (<code>dropElem xs p</code>) is straightforward if we look at the <a href="http://www.idris-lang.org/docs/current/base_doc/docs/Data.List.html#Data.List.dropElem"><code>dropElem</code> documentation</a>: it removes the element pointed by <code>p</code> from the list.</p>
-<p>The implementation is almost as easy to write as the type:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">retract</span> <span class="ot">:</span> <span class="dt">Union</span> xs <span class="ot">-&gt;</span> {<span class="kw">auto</span> p<span class="ot">:</span> <span class="dt">Elem</span> ty xs}
-                  <span class="ot">-&gt;</span> <span class="dt">Either</span> (<span class="dt">Union</span> (dropElem xs p)) ty
-retract (<span class="dt">MemberHere</span> x) {p <span class="fu">=</span> <span class="dt">Here</span>} <span class="fu">=</span> <span class="dt">Right</span> x
-retract (<span class="dt">MemberHere</span> x) {p <span class="fu">=</span> (<span class="dt">There</span> <span class="fu">_</span>)} <span class="fu">=</span>
-  <span class="dt">Left</span> (<span class="dt">MemberHere</span> x)
-retract (<span class="dt">MemberThere</span> x) {p <span class="fu">=</span> <span class="dt">Here</span>} <span class="fu">=</span>
-  <span class="dt">Left</span> x
-retract (<span class="dt">MemberThere</span> x) {p <span class="fu">=</span> (<span class="dt">There</span> later)} <span class="fu">=</span>
-  either (<span class="dt">Left</span> <span class="fu">.</span> <span class="dt">MemberThere</span>)
-         <span class="dt">Right</span>
-         <span class="fu">$</span> retract x {p <span class="fu">=</span> later}</code></pre></div>
-<p>The 3 first cases are trivial, they can almost be completed automatically by Idris (I should talk about this really cool feature in a next post). The last case is a bit more complex. The idea is to <em>lift</em> the result of retract to the next step: on a right, propagate the found value, on a left, just buried it one step further.</p>
-<p>It’s time to see retract in action:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> member <span class="st">&quot;foo&quot;</span>
-<span class="fu">&gt;</span> the (<span class="dt">Either</span> <span class="fu">_</span> <span class="dt">Nat</span>) <span class="fu">$</span> retract x
-<span class="dt">Left</span> (<span class="dt">MemberHere</span> <span class="st">&quot;foo&quot;</span>) <span class="ot">:</span> <span class="dt">Either</span> (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="dt">Nat</span>
-<span class="fu">&gt;</span> the (<span class="dt">Either</span> <span class="fu">_</span> <span class="dt">String</span>) <span class="fu">$</span> retract x
-<span class="dt">Right</span> <span class="st">&quot;foo&quot;</span> <span class="ot">:</span> <span class="dt">Either</span> (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="dt">String</span></code></pre></div>
-<h1 id="enlarge-my-union">Enlarge my union!</h1>
-<p>Can we do the opposite of <code>retract</code>? If I have a member of <code>Union [Nat, List String]</code>, can we claim that we have a member of a broader union?</p>
-<p>Yes, we can <em>but</em> it is a bit more complex than the <code>retract</code> case. The main reason is that we have an infinity of target types for the result union.</p>
-<h2 id="identifying-the-broader-unions">Identifying the broader unions</h2>
-<p>The objective is to define a data type that contain a proof that an union is broader than another one. Or, by transitivity, that each element of a list of types is contained in another list. This is as simple as it sounds. I mean, really, if its sounds complicated to you, it will be complicated to read, if it sounds simple, it will be simple to read:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Sub</span> <span class="ot">:</span> <span class="dt">List</span> a <span class="ot">-&gt;</span> <span class="dt">List</span> a <span class="ot">-&gt;</span> <span class="dt">Type</span> <span class="kw">where</span>
-  <span class="dt">SubZ</span> <span class="ot">:</span> <span class="dt">Sub</span> [] ys
-  <span class="dt">SubK</span> <span class="ot">:</span> <span class="dt">Sub</span> xs ys <span class="ot">-&gt;</span>  <span class="dt">Elem</span> ty ys <span class="ot">-&gt;</span> <span class="dt">Sub</span> (ty<span class="ot">::</span>xs) ys</code></pre></div>
-<p>To build a <code>Sub</code> type, we must be able proof that each element of the first list are in the second one.</p>
-<h2 id="trying-to-generalize-union">Trying to <code>generalize</code> union</h2>
-<p>Now that we have a definition of <code>Sub</code>, we can type our <code>generalize</code> function more easily:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys}
-                           <span class="ot">-&gt;</span> <span class="dt">Union</span> ys</code></pre></div>
-<p>Given an union, if we have a proof that the list of type in the union is a subset of the list of type in the resulting union, we can generalize the union. Yes, it’s that <strong>easy</strong>.</p>
-<p>Things are getting more complex when we want to implement generalize. Let’s start with a naive implementation and see how it goes:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys}
-                           <span class="ot">-&gt;</span> <span class="dt">Union</span> ys
-generalize (<span class="dt">MemberHere</span> x) <span class="fu">=</span> member x
-generalize (<span class="dt">MemberThere</span> x) {s <span class="fu">=</span> (<span class="dt">SubK</span> y z)} <span class="fu">=</span>
-  generalize x {s<span class="fu">=</span>y}</code></pre></div>
-<p>If we have at <code>MemberHere</code>, <code>x</code> is the value of the union, and thus, must be put in the result union, and we use previously defined <code>member</code> to do so. If we haven’t find the value yet, we just restart one step further.</p>
-<p>This version reallly seemed ok to me. Unfortunately, it didn’t match the compiler expactations:</p>
-<pre><code>When checking right hand side of generalize with expected type
-        Union ys
-
-When checking argument p to function Data.UnionType.member:
-        Can&#39;t find a value of type
-                Elem ty ys</code></pre>
-<p>Almost there, the sole issue is that Idris wasn’t able to compute the new <em>location</em> of the value. Fortunately, this location is carried along by <code>Sub</code> and can be easily added:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">generalize</span> <span class="ot">:</span> (u<span class="ot">:</span> <span class="dt">Union</span> xs) <span class="ot">-&gt;</span> {<span class="kw">auto</span> s<span class="ot">:</span> <span class="dt">Sub</span> xs ys}
-                           <span class="ot">-&gt;</span> <span class="dt">Union</span> ys
-generalize (<span class="dt">MemberHere</span> x) {s <span class="fu">=</span> (<span class="dt">SubK</span> <span class="fu">_</span> z)} <span class="fu">=</span>
-  member x {p <span class="fu">=</span> z}
-generalize (<span class="dt">MemberThere</span> x) {s <span class="fu">=</span> (<span class="dt">SubK</span> y <span class="fu">_</span>)} <span class="fu">=</span>
-  generalize x {s<span class="fu">=</span>y}</code></pre></div>
-<p>And here we go:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">&gt;</span> <span class="ot">:</span><span class="kw">let</span> x <span class="fu">=</span> the (<span class="dt">Union</span> [<span class="dt">Nat</span>, <span class="dt">String</span>]) <span class="fu">$</span> member <span class="dv">2</span>
-<span class="fu">&gt;</span> the (<span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]) <span class="fu">$</span> generalize x
-<span class="dt">MemberThere</span> (<span class="dt">MemberHere</span> <span class="dv">2</span>) <span class="ot">:</span> <span class="dt">Union</span> [<span class="dt">String</span>, <span class="dt">Nat</span>, <span class="dt">List</span> <span class="dt">String</span>]</code></pre></div>
-<h1 id="part-3-is-over">Part 3 is over</h1>
-<p>That’s all for today.</p>
-]]></description>
-    <pubDate>Thu, 28 Jul 2016 00:00:00 UT</pubDate>
-    <guid>http://nicolas.biri.name//posts/2016-07-28-union-type-in-idris-part-3.html</guid>
     <dc:creator>Nicolas Biri</dc:creator>
 </item>
 

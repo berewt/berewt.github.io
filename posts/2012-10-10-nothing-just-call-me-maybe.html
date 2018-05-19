@@ -40,13 +40,13 @@
 <p>Suppose that given a person, we want to produce the list of its known ancestors’ name (the list order is up to you). How would you do that? Of course, this example is totally stupid, but it ilustrates a classical scenario of navigation between 0-1 cardinality properties, which happens quite frenquently in the real world. Here is how we represent a person in Java:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Person {
 
-    <span class="kw">private</span> <span class="dt">final</span> String firstname;
-    <span class="kw">private</span> <span class="dt">final</span> String lastname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> firstname;
+    <span class="kw">private</span> <span class="dt">final</span> <span class="bu">String</span> lastname;
     <span class="kw">private</span> <span class="dt">final</span> <span class="dt">int</span>    age;
     <span class="kw">private</span> <span class="dt">final</span> Person father;
 
-    <span class="kw">public</span> <span class="fu">Person</span>(String myFirstname,
-                  String myLastname, 
+    <span class="kw">public</span> <span class="fu">Person</span>(<span class="bu">String</span> myFirstname,
+                  <span class="bu">String</span> myLastname, 
                   <span class="dt">int</span> myAge,
                   Person myFather) {
         <span class="kw">this</span>.<span class="fu">firstname</span> = myFirstname;
@@ -69,8 +69,8 @@
 <h2 id="the-billion-dollars-mistake">The billion dollars mistake</h2>
 <p>Let’s start ith Java. We build a <code>Genealogy</code> class with an ancestor method, like so:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Genealogy {
-    <span class="kw">public</span> <span class="dt">static</span> List[Person] <span class="fu">ancestors</span>(Person myPerson) {
-       Collection&lt;Person&gt; result = <span class="kw">new</span> LinkedList&lt;Person&gt;();
+    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">List</span>[Person] <span class="fu">ancestors</span>(Person myPerson) {
+       <span class="bu">Collection</span>&lt;Person&gt; result = <span class="kw">new</span> <span class="bu">LinkedList</span>&lt;Person&gt;();
        Person father = p.<span class="fu">getFather</span>();
        <span class="kw">while</span> (father != <span class="kw">null</span>) {
            result.<span class="fu">add</span>(father);
@@ -80,8 +80,8 @@
 }</code></pre></div>
 <p>It looks pretty and neat. Mostly because the example is simple and because my solution is correct. Let’s try a faulty version:</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Genealogy {
-    <span class="kw">public</span> <span class="dt">static</span> List[Person] <span class="fu">ancestors</span>(Person myPerson) {
-       Collection&lt;Person&gt; result = <span class="kw">new</span> LinkedList&lt;Person&gt;();
+    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">List</span>[Person] <span class="fu">ancestors</span>(Person myPerson) {
+       <span class="bu">Collection</span>&lt;Person&gt; result = <span class="kw">new</span> <span class="bu">LinkedList</span>&lt;Person&gt;();
        Person father = myPerson;
        <span class="kw">do</span> {
            father = father.<span class="fu">getFather</span>(); 
