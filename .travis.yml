@@ -1,22 +1,28 @@
-language: haskell
+sudo: false
+language: generic
+
 branches:
   only:
     - source
 env:
   global:
     - secure: "eqnEuhunk5Xok1NUE8HB1YGtwn04ejzdAZAAjBuvsoC50nCyFbOZQsBjLyhMTkbtIyw8qm2sX0mzPf9O3siluSQup1f3QI23rY+TjNOlcDjQ0ATCtgpAzXDboa1iA08qOC5oP5mzqnq0U5T6kwkLh8pA36SQGkK+o9jlrRhJG4g="
+
 before_install:
-  - export PATH=/opt/ghc/7.10.2/bin:$PATH
+# Download and unpack the stack executable
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 
 addons:
   apt:
     sources:
     - hvr-ghc
     packages:
-    - ghc-7.10.2
+    - ghc-7.10.3
 
 install:
-  - cabal install hakyll
+  - stack --resolver "lts-6.35" install hakyll
   - ghc --make site.hs
 
 before_script:
