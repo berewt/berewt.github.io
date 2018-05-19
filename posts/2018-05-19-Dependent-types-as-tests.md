@@ -519,7 +519,6 @@ great the tests as type feature is, have heard the first version of my
 explanations and made some remarks to improve the code.
 
 This blog has no comments, for any question or remark, feel free to contact me
-on twitter ([@BeRewt])
+on [twitter](https://twitter.com/BeRewt).
 
 [tennis kata]: http://codingdojo.org/kata/Tennis/
-[@BeRewt]: https://twitter.com/BeRewt
