@@ -36,7 +36,11 @@
 <h1 id="the-tennis-kata-with-dependent-types">The tennis kata with dependent types</h1>
 <h1 id="types-types-types">Types, types, types</h1>
 <p>First, let’s write some idris to encode the score progression and scores display.</p>
-<p>To encode the score, we use the following rules. To win a game, a player must: - have scored at least four points; - <strong>and</strong> must be ahead by at least two points.</p>
+<p>To encode the score, we use the following rules. To win a game, a player must:</p>
+<ul>
+<li>have scored at least four points;</li>
+<li><strong>and</strong> must be ahead by at least two points.</li>
+</ul>
 <p>We start by the obvious, we need two players:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="kw">data</span> <span class="dt">Player</span> <span class="fu">=</span> <span class="dt">Player1</span> <span class="fu">|</span> <span class="dt">Player2</span></code></pre></div>
 <p>A classical way to represent score is to use two naturals. This encoding however, allows a lot of invalid combination. For example, 5-0 is not a valid score, as the previous score, 4-0, should already have led to the end of the game.</p>
