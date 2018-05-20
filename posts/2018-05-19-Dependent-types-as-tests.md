@@ -13,10 +13,10 @@ Even better, you can express property tests and prove them rather than test them
 on a large subset of values.
 
 To be accurate, we're not talking about tests here, rather of proofs. I'm using
-_tests_ just because what we're checking can be compare to what we check with
-usual tests.
+_tests_ just because what we're checking can be compared to what we usually
+check with usual tests.
 Please don't mind if I don't use the appropriate term in favor of a more
-informal terms, I just want to prove people that we can replace tests with a
+informal terms, I just want to prove to people that we can replace tests with a
 better alternative, with the appropriate language.
 
 This article illustrates this possibility through the [tennis kata].
@@ -90,8 +90,8 @@ notWinning winnerScore loserScore =
 
 We check each condition that are necessary to build one of our constructors.
 If one of the two condition is met, we are able to provide our proof, otherwise
-we use the two witnesses that our conditions aren't met to build a proof that we
-can not build a witness that the game is not over (we have a winner).
+we use the two witnesses that our conditions aren't met to prove that we cannot
+build a witness that the game is not over (i.e., we have a winner).
 
 ## Score
 
@@ -110,9 +110,9 @@ winners, tied with the proof that the game is not over.
 
 We're almost ready to implement the function that allows a player to score a
 point.
-Before, we need a helper to compute the next score, given a winner and a player,
-we compute the hypothetical next score of this player (if the game is not
-over):
+Before, we need a helper to compute the next score, given a point winner and a
+player, we compute the hypothetical next score of this player (if the game is
+not over):
 
 ```idris
 nextScore : (winner : Player) -> (pointsOwner : Player) -> (points : Nat) -> Nat
@@ -156,7 +156,7 @@ needed to build the next score, or the proof that we have a winner.
 Then, we can replay a whole game quite easily with `foldlM`:
 
 ```idris
-||| Replay a full list of balls, if the game ends, the remaining balls are discarded
+||| Replay a full list of points, if the game ends, the remaining points are discarded
 replay : List Player ->  Either Player (x' ** y' ** Score x' y')
 replay = foldlM f (_ ** (_ ** Start))
   where
@@ -173,7 +173,7 @@ advance what the score will be.
 ## Display
 
 We're almost there, we just need a few facilities to display the score:
-We start by a helper to display points in the usual and weird tennis style.
+We start with a helper that displays points in the usual and weird tennis style.
 The points are announced only for the 3 first points of a player (before, the
 *deuce* and *advantage* part), thus we need a proof that we are less or equal to
 3 to display the points:
@@ -186,7 +186,7 @@ displayPoints (LTESucc (LTESucc LTEZero)) = "30"
 displayPoints (LTESucc (LTESucc (LTESucc LTEZero))) = "40"
 ```
 
-And we can know display the whole score, we start with the special cases and
+And we can now display the whole score, starting with the special cases and
 then the general one:
 
 ```idris
@@ -210,9 +210,9 @@ Isn't this article supposed to be about testing? Well… here we are.
 
 ## Unit testing
 
-Let start with something simple. If we provide to `replay` an empty list of
-winner, the score must be unchanged.
-A usual way to test it in a language with dependent type would be something
+Let start with something simple. If we provide a way to `replay` an empty list
+of points, the score must be unchanged.
+A usual way to test it in a language without dependent type would be something
 like:
 
 ```idris
@@ -240,7 +240,7 @@ We've just embedded in our program a _proof_ that `Right (0 ** 0 ** Start) = rep
 This proof will be run at each compilation, we can't ship our code if this is
 not true anymore.
 
-What would happen if it is the case?
+What would happen if the proof didn't stand?
 
 Let's try and change the type of `replayEmptyListGivesStart` with the following:
 `replayEmptyListGivesStart : Left Player1 = replay []`
@@ -295,8 +295,8 @@ Let write a simple function to test this:
 testLoveGame : Left p = (p : Player) -> replay (replicate 4 p)
 ```
 
-Given a player, whoever it is, we can prove that this player won the game when
-he won the 4 first points
+Given any player, we can prove that this player won the game when
+he or she won the 4 first points
 A first try to implement this function might be:
 
 ```idris
@@ -320,7 +320,8 @@ Knowing the value of `p`, the compiler is now able to reduce the left term up to
 `Left p`, and thus to typecheck.
 
 With the same strategy, we can check more advance properties, like ensuring that
-one player can't win from deuce or that one player win if he scores two times
+one player can't win from deuce or that one player win if
+scores two times
 after a deuce:
 
 ```idris
@@ -397,10 +398,10 @@ displayAdvantageP2 : (x : Nat) -> (s : Score (3 + x) (S (3 + x))) -> displayScor
 
 I'm detailing the first one here, the two others follow a similar pattern and
 are left as exercises to the reader.
-If you look back at display, you can notice that we don't use the value of the
-score, only it's type is used to to compute the display.
+If you look back at `display`, you can notice that we don't use the value of the
+score, only its type is used to compute the display.
 As a consequence, we don't need to decompose score.
-Let's try with what we've learn so far and decompose the first parameter:
+Let's try with what we've learned so far and decompose the first parameter:
 
 ```idris
 displayDeuce : (x : Nat) -> (s : Score (3 + x) (3 + x)) -> displayScore s = "deuce"
@@ -425,7 +426,7 @@ and
 ```
 
 The compiler is not able to reduce `compare`. Here is the tricky part.
-The solution is thus to match against the result of compare, with a `with` rule:
+The solution is thus to match against the result of compare, using a `with` rule:
 
 ```idris
 displayDeuce : (x : Nat) -> (s : Score (3 + x) (3 + x)) -> displayScore s = "deuce"
@@ -480,7 +481,7 @@ displayDeuce (S k) s with (compare k k) proof p
   displayDeuce (S k) s | GT = void (negEqSym EQnotGT (rewrite compareSameIsEq k in p))
 ```
 
-And here we go, it compiles and we have proven that if each players has scored
+And here we go, it compiles and we have proven that if each player have scored
 at least 3 points and have the same number of points, their score will be
 "deuce".
 
@@ -495,20 +496,20 @@ Let's recap some of useful hint if you want to use types as tests:
 1. Unit tests are the easiest, as most of the time, the compiler will be able
    to reduce the full expression if you provide all the required values.
 2. When you do property testing (proving actually), you almost always have to
-split cases for the variables, to ease the progression of the computer.
+   split cases for the variables, to ease the progression of the computer.
 3. When the compiler cannot reduce a value, help him with rewrite rules.
    Sometimes, it may be useful to tweak your test a bit to ease the reduction of
    a formula.
    For example, `(x : Nat) -> (s : Score (3 + x) (3 + x)) -> "deuce" = displayScore s`
    is easier to prove than `(x : Nat) -> (s : Score (x + 3) (x + 3)) -> "deuce" = displayScore s`
    because of the implementation of `(+)` for Natural.
-4. The error messages will help you to figure out where the compiler is stuck and
-   what expression should be rewritten.
-5. If the compiler explores cases that are not possible help it to figure it out
-by producing a `Void` value.
+4. The error messages will help you figure out where the compiler is stuck and
+   what expressions should be rewritten.
+5. If the compiler explores cases that are not possible, help it figure it out
+   by producing a `Void` value.
 
-Hope it helps. Unit testing is usually as easy with types than with traditional
-test functions, property testing is usually harder, as it requires you to build
+I hope this helps. Unit testing is usually as easy with types than with traditional
+test functions, and property testing is usually harder, as it requires you to build
 a proof rather than just running the test on a limited set of values.
 
 Have fun coding.
