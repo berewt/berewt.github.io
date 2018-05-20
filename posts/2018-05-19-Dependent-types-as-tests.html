@@ -31,7 +31,7 @@
 </div>
 
 <p>Types are not supposed to replace tests… in general. However, dependent types allow you to express tests as types, allowing you to run your tests automatically at compile times. Even better, you can express property tests and prove them rather than test them on a large subset of values.</p>
-<p>To be accurate, we’re not talking about tests here, rather of proofs. I’m using <em>tests</em> just because what we’re checking can be compare to what we check with usual tests. Please don’t mind if I don’t use the appropriate term in favor of a more informal terms, I just want to prove people that we can replace tests with a better alternative, with the appropriate language.</p>
+<p>To be accurate, we’re not talking about tests here, rather of proofs. I’m using <em>tests</em> just because what we’re checking can be compared to what we usually check with usual tests. Please don’t mind if I don’t use the appropriate term in favor of a more informal terms, I just want to prove to people that we can replace tests with a better alternative, with the appropriate language.</p>
 <p>This article illustrates this possibility through the <a href="http://codingdojo.org/kata/Tennis/">tennis kata</a>. Our objective, provide a way to compute and display a tennis score (of only one game) correctly, and prove that our code is right. Let’s see how “if it compiles, you can ship it” can be real.</p>
 <h1 id="the-tennis-kata-with-dependent-types">The tennis kata with dependent types</h1>
 <h1 id="types-types-types">Types, types, types</h1>
@@ -69,7 +69,7 @@ notWinning winnerScore loserScore <span class="fu">=</span>
                 <span class="ot">-&gt;</span> <span class="dt">Not</span> (<span class="dt">NotWinning</span> winnerScore loserScore)
     winningProof contraT contraO (<span class="dt">ThresholdNotMet</span> x) <span class="fu">=</span> contraT x
     winningProof contraT contraO (<span class="dt">OpponentTooClose</span> x) <span class="fu">=</span> contraO x</code></pre></div>
-<p>We check each condition that are necessary to build one of our constructors. If one of the two condition is met, we are able to provide our proof, otherwise we use the two witnesses that our conditions aren’t met to build a proof that we can not build a witness that the game is not over (we have a winner).</p>
+<p>We check each condition that are necessary to build one of our constructors. If one of the two condition is met, we are able to provide our proof, otherwise we use the two witnesses that our conditions aren’t met to prove that we cannot build a witness that the game is not over (i.e., we have a winner).</p>
 <h2 id="score">Score</h2>
 <p>From there, we are able to define a type for the score of an ongoing game:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Score is built by stacking ball winners, along with the proof that the game is not over</span>
@@ -78,7 +78,7 @@ notWinning winnerScore loserScore <span class="fu">=</span>
   <span class="dt">Player1Scores</span> <span class="ot">:</span> <span class="dt">Score</span> x y <span class="ot">-&gt;</span> {<span class="kw">auto</span> prf<span class="ot">:</span> <span class="dt">NotWinning</span> (<span class="dt">S</span> x) y} <span class="ot">-&gt;</span> <span class="dt">Score</span> (<span class="dt">S</span> x) y
   <span class="dt">Player2Scores</span> <span class="ot">:</span> <span class="dt">Score</span> x y <span class="ot">-&gt;</span> {<span class="kw">auto</span> prf<span class="ot">:</span> <span class="dt">NotWinning</span> (<span class="dt">S</span> y) x} <span class="ot">-&gt;</span> <span class="dt">Score</span> x (<span class="dt">S</span> y)</code></pre></div>
 <p>Our score type does not exactly handle the score. It’s rather a list of points winners, tied with the proof that the game is not over.</p>
-<p>We’re almost ready to implement the function that allows a player to score a point. Before, we need a helper to compute the next score, given a winner and a player, we compute the hypothetical next score of this player (if the game is not over):</p>
+<p>We’re almost ready to implement the function that allows a player to score a point. Before, we need a helper to compute the next score, given a point winner and a player, we compute the hypothetical next score of this player (if the game is not over):</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">nextScore</span> <span class="ot">:</span> (winner <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> (pointsOwner <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> (points <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> <span class="dt">Nat</span>
 nextScore <span class="dt">Player1</span> <span class="dt">Player1</span> points <span class="fu">=</span> <span class="dt">S</span> points
 nextScore <span class="dt">Player1</span> <span class="dt">Player2</span> points <span class="fu">=</span> points
@@ -108,7 +108,7 @@ score previousScore p {p1Points} {p2Points} <span class="fu">=</span>
     builder <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">Player2Scores</span> previousScore</code></pre></div>
 <p>The <code>score</code> function, given the winner of a point, will either returns the next score or nothing, if the winner of the point won the game. The code almost entirely relies on the <code>notWinning</code> function, which provides either the proof needed to build the next score, or the proof that we have a winner.</p>
 <p>Then, we can replay a whole game quite easily with <code>foldlM</code>:</p>
-<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Replay a full list of balls, if the game ends, the remaining balls are discarded</span>
+<div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| Replay a full list of points, if the game ends, the remaining points are discarded</span>
 <span class="fu">replay</span> <span class="ot">:</span> <span class="dt">List</span> <span class="dt">Player</span> <span class="ot">-&gt;</span>  <span class="dt">Either</span> <span class="dt">Player</span> (x' <span class="fu">**</span> y' <span class="fu">**</span> <span class="dt">Score</span> x' y')
 replay <span class="fu">=</span> foldlM f (<span class="fu">_</span> <span class="fu">**</span> (<span class="fu">_</span> <span class="fu">**</span> <span class="dt">Start</span>))
   <span class="kw">where</span>
@@ -118,13 +118,13 @@ replay <span class="fu">=</span> foldlM f (<span class="fu">_</span> <span class
                               <span class="fu">$</span> score s p</code></pre></div>
 <p>The result of a replay is either a winner, or an existential type (or Σ-type) with the current score. The existential type is required since we do not know in advance what the score will be.</p>
 <h2 id="display">Display</h2>
-<p>We’re almost there, we just need a few facilities to display the score: We start by a helper to display points in the usual and weird tennis style. The points are announced only for the 3 first points of a player (before, the <em>deuce</em> and <em>advantage</em> part), thus we need a proof that we are less or equal to 3 to display the points:</p>
+<p>We’re almost there, we just need a few facilities to display the score: We start with a helper that displays points in the usual and weird tennis style. The points are announced only for the 3 first points of a player (before, the <em>deuce</em> and <em>advantage</em> part), thus we need a proof that we are less or equal to 3 to display the points:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayPoints</span> <span class="ot">:</span> <span class="dt">LTE</span> x <span class="dv">3</span> <span class="ot">-&gt;</span> <span class="dt">String</span>
 displayPoints <span class="dt">LTEZero</span> <span class="fu">=</span> <span class="st">&quot;0&quot;</span>
 displayPoints (<span class="dt">LTESucc</span> <span class="dt">LTEZero</span>) <span class="fu">=</span> <span class="st">&quot;15&quot;</span>
 displayPoints (<span class="dt">LTESucc</span> (<span class="dt">LTESucc</span> <span class="dt">LTEZero</span>)) <span class="fu">=</span> <span class="st">&quot;30&quot;</span>
 displayPoints (<span class="dt">LTESucc</span> (<span class="dt">LTESucc</span> (<span class="dt">LTESucc</span> <span class="dt">LTEZero</span>))) <span class="fu">=</span> <span class="st">&quot;40&quot;</span></code></pre></div>
-<p>And we can know display the whole score, we start with the special cases and then the general one:</p>
+<p>And we can now display the whole score, starting with the special cases and then the general one:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayScore</span> <span class="ot">:</span> <span class="dt">Score</span> x y <span class="ot">-&gt;</span> <span class="dt">String</span>
 displayScore {x <span class="fu">=</span> <span class="dt">Z</span>} {y <span class="fu">=</span> <span class="dt">Z</span>} <span class="fu">_</span> <span class="fu">=</span> <span class="st">&quot;love&quot;</span>
 displayScore {x <span class="fu">=</span> <span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> <span class="dt">Z</span>))} {y <span class="fu">=</span> <span class="dt">S</span> (<span class="dt">S</span> (<span class="dt">S</span> <span class="dt">Z</span>))} <span class="fu">_</span> <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
@@ -140,7 +140,7 @@ displayScore {x} {y} <span class="fu">_</span> <span class="fu">=</span> <span c
 <h1 id="tests">Tests</h1>
 <p>Isn’t this article supposed to be about testing? Well… here we are.</p>
 <h2 id="unit-testing">Unit testing</h2>
-<p>Let start with something simple. If we provide to <code>replay</code> an empty list of winner, the score must be unchanged. A usual way to test it in a language with dependent type would be something like:</p>
+<p>Let start with something simple. If we provide a way to <code>replay</code> an empty list of points, the score must be unchanged. A usual way to test it in a language without dependent type would be something like:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="co">||| pseudocode, does not compile</span>
 <span class="fu">replayEmptyListGivesStart</span> <span class="ot">:</span> <span class="dt">IO</span> <span class="dt">Bool</span>
 replayEmptyListGivesStart <span class="fu">=</span> assertEqual (<span class="dt">Right</span> (<span class="dv">0</span> <span class="fu">**</span> <span class="dv">0</span> <span class="fu">**</span> <span class="dt">Start</span>)) (replay [])</code></pre></div>
@@ -149,7 +149,7 @@ replayEmptyListGivesStart <span class="fu">=</span> assertEqual (<span class="dt
 replayEmptyListGivesStart <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
 <p>This is a compile time test. We have expressed here that <code>replayEmptyListGivesStart</code> is an element of the structural equality between <code>Right (0 ** 0 ** Start)</code> and <code>replay []</code>. We are even able to provide this element which is <code>Refl</code>. Behind the hood, the compiler will rewrite <code>replay []</code>, be able to reduce it <code>Right (0 ** 0 * Start)</code>. And as <code>Refl</code> is of type <code>a = a</code>, it’s a correct value for this type and our program compiles!</p>
 <p>We’ve just embedded in our program a <em>proof</em> that <code>Right (0 ** 0 ** Start) = replay []</code>. This proof will be run at each compilation, we can’t ship our code if this is not true anymore.</p>
-<p>What would happen if it is the case?</p>
+<p>What would happen if the proof didn’t stand?</p>
 <p>Let’s try and change the type of <code>replayEmptyListGivesStart</code> with the following: <code>replayEmptyListGivesStart : Left Player1 = replay []</code></p>
 <p>We obtain this error message:</p>
 <pre><code>/Users/biri/Perso/katas/Tennis/TennisDT.idr:133:29-32:
@@ -180,7 +180,7 @@ display1stWinnerGot15 <span class="fu">_</span> <span class="fu">=</span> <span 
 <p>Let’s now test that our replay function got a love game right. A love game happens when a player won the 4 first points in a row, ending the game without leaving any point to their opponent.</p>
 <p>Let write a simple function to test this:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">testLoveGame</span> <span class="ot">:</span> <span class="dt">Left</span> p <span class="fu">=</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> replay (replicate <span class="dv">4</span> p)</code></pre></div>
-<p>Given a player, whoever it is, we can prove that this player won the game when he won the 4 first points A first try to implement this function might be:</p>
+<p>Given any player, we can prove that this player won the game when he or she won the 4 first points A first try to implement this function might be:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">testLoveGame</span> <span class="ot">:</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> <span class="dt">Left</span> p <span class="fu">=</span> replay (replicate <span class="dv">4</span> p)
 testLoveGame p <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
 <p>Unfortunately, it doesn’t work. And I won’t provide you the error here, because it’s quite (very) verbose. The problem is that without knowing the value of <code>p</code> (the wining player), the compiler isn’t able to reduce the left term of the equality. Fortunately, splitting cases for the different values of <code>Player</code> is enough:</p>
@@ -188,7 +188,7 @@ testLoveGame p <span class="fu">=</span> <span class="dt">Refl</span></code></pr
 testLoveGame <span class="dt">Player1</span> <span class="fu">=</span> <span class="dt">Refl</span>
 testLoveGame <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
 <p>Knowing the value of <code>p</code>, the compiler is now able to reduce the left term up to <code>Left p</code>, and thus to typecheck.</p>
-<p>With the same strategy, we can check more advance properties, like ensuring that one player can’t win from deuce or that one player win if he scores two times after a deuce:</p>
+<p>With the same strategy, we can check more advance properties, like ensuring that one player can’t win from deuce or that one player win if scores two times after a deuce:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">testCantWinFromDeuce</span> <span class="ot">:</span> (p <span class="ot">:</span> <span class="dt">Player</span>) <span class="ot">-&gt;</span> <span class="dt">True</span> <span class="fu">=</span> isRight (replay (take <span class="dv">11</span> <span class="fu">$</span> cycle [p, opponent p]))
 testCantWinFromDeuce <span class="dt">Player1</span> <span class="fu">=</span> <span class="dt">Refl</span>
 testCantWinFromDeuce <span class="dt">Player2</span> <span class="fu">=</span> <span class="dt">Refl</span>
@@ -239,7 +239,7 @@ compareToPredIsGT (<span class="dt">S</span> k) <span class="fu">=</span> compar
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayDeuce</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
 <span class="fu">displayAdvantageP1</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dt">S</span> (<span class="dv">3</span> <span class="fu">+</span> x)) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;advantage Player1&quot;</span>
 <span class="fu">displayAdvantageP2</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dt">S</span> (<span class="dv">3</span> <span class="fu">+</span> x))) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;advantage Player2&quot;</span></code></pre></div>
-<p>I’m detailing the first one here, the two others follow a similar pattern and are left as exercises to the reader. If you look back at display, you can notice that we don’t use the value of the score, only it’s type is used to to compute the display. As a consequence, we don’t need to decompose score. Let’s try with what we’ve learn so far and decompose the first parameter:</p>
+<p>I’m detailing the first one here, the two others follow a similar pattern and are left as exercises to the reader. If you look back at <code>display</code>, you can notice that we don’t use the value of the score, only its type is used to compute the display. As a consequence, we don’t need to decompose score. Let’s try with what we’ve learned so far and decompose the first parameter:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayDeuce</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
 displayDeuce <span class="dt">Z</span> <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span>
 displayDeuce (<span class="dt">S</span> k) <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span></code></pre></div>
@@ -253,7 +253,7 @@ and
           EQ =&gt; &quot;deuce&quot;
           GT =&gt; &quot;advantage Player1&quot; =
         &quot;deuce&quot; (Expected type)</code></pre>
-<p>The compiler is not able to reduce <code>compare</code>. Here is the tricky part. The solution is thus to match against the result of compare, with a <code>with</code> rule:</p>
+<p>The compiler is not able to reduce <code>compare</code>. Here is the tricky part. The solution is thus to match against the result of compare, using a <code>with</code> rule:</p>
 <div class="sourceCode"><pre class="sourceCode idris"><code class="sourceCode idris"><span class="fu">displayDeuce</span> <span class="ot">:</span> (x <span class="ot">:</span> <span class="dt">Nat</span>) <span class="ot">-&gt;</span> (s <span class="ot">:</span> <span class="dt">Score</span> (<span class="dv">3</span> <span class="fu">+</span> x) (<span class="dv">3</span> <span class="fu">+</span> x)) <span class="ot">-&gt;</span> displayScore s <span class="fu">=</span> <span class="st">&quot;deuce&quot;</span>
 displayDeuce <span class="dt">Z</span> <span class="fu">_</span> <span class="fu">=</span> <span class="dt">Refl</span>
 displayDeuce (<span class="dt">S</span> k) s <span class="kw">with</span> (compare k k) <span class="kw">proof</span> p
@@ -277,7 +277,7 @@ displayDeuce (<span class="dt">S</span> k) s <span class="kw">with</span> (compa
   displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">LT</span> <span class="fu">=</span> void (<span class="dt">LTnotEQ</span> (<span class="kw">rewrite</span> compareSameIsEq k <span class="kw">in</span> p))
   displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">EQ</span> <span class="fu">=</span> <span class="dt">Refl</span>
   displayDeuce (<span class="dt">S</span> k) s <span class="fu">|</span> <span class="dt">GT</span> <span class="fu">=</span> void (negEqSym <span class="dt">EQnotGT</span> (<span class="kw">rewrite</span> compareSameIsEq k <span class="kw">in</span> p))</code></pre></div>
-<p>And here we go, it compiles and we have proven that if each players has scored at least 3 points and have the same number of points, their score will be “deuce”.</p>
+<p>And here we go, it compiles and we have proven that if each player have scored at least 3 points and have the same number of points, their score will be “deuce”.</p>
 <p>This short example also shows the limit of using types as tests. You’re doing more than testing, you are proving facts, which means that you must assist the compiler to find its way through the code to build the proof.</p>
 <h1 id="a-few-hints">A few hints</h1>
 <p>Let’s recap some of useful hint if you want to use types as tests:</p>
@@ -285,10 +285,10 @@ displayDeuce (<span class="dt">S</span> k) s <span class="kw">with</span> (compa
 <li>Unit tests are the easiest, as most of the time, the compiler will be able to reduce the full expression if you provide all the required values.</li>
 <li>When you do property testing (proving actually), you almost always have to split cases for the variables, to ease the progression of the computer.</li>
 <li>When the compiler cannot reduce a value, help him with rewrite rules. Sometimes, it may be useful to tweak your test a bit to ease the reduction of a formula. For example, <code>(x : Nat) -&gt; (s : Score (3 + x) (3 + x)) -&gt; &quot;deuce&quot; = displayScore s</code> is easier to prove than <code>(x : Nat) -&gt; (s : Score (x + 3) (x + 3)) -&gt; &quot;deuce&quot; = displayScore s</code> because of the implementation of <code>(+)</code> for Natural.</li>
-<li>The error messages will help you to figure out where the compiler is stuck and what expression should be rewritten.</li>
-<li>If the compiler explores cases that are not possible help it to figure it out by producing a <code>Void</code> value.</li>
+<li>The error messages will help you figure out where the compiler is stuck and what expressions should be rewritten.</li>
+<li>If the compiler explores cases that are not possible, help it figure it out by producing a <code>Void</code> value.</li>
 </ol>
-<p>Hope it helps. Unit testing is usually as easy with types than with traditional test functions, property testing is usually harder, as it requires you to build a proof rather than just running the test on a limited set of values.</p>
+<p>I hope this helps. Unit testing is usually as easy with types than with traditional test functions, and property testing is usually harder, as it requires you to build a proof rather than just running the test on a limited set of values.</p>
 <p>Have fun coding.</p>
 <h1 id="acknowledgments">Acknowledgments</h1>
 <p>I would like to thanks the <a href="http://lambdada.org">Lambdada</a> community, who helped me to figure out how great the tests as type feature is, have heard the first version of my explanations and made some remarks to improve the code.</p>
