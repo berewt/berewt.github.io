@@ -24,6 +24,8 @@ Our objective, provide a way to compute and display a tennis score (of only
 one game) correctly, and prove that our code is right.
 Let's see how "if it compiles, you can ship it" can be real.
 
+The code used in this article is available as [a gist].
+
 # The tennis kata with dependent types
 
 # Types, types, types
@@ -523,5 +525,6 @@ explanations and made some remarks to improve the code.
 This blog has no comments, for any question or remark, feel free to contact me
 on [twitter](https://twitter.com/BeRewt).
 
-[Lambdada]: http://lambdada.org
 [tennis kata]: http://codingdojo.org/kata/Tennis/
+[a gist]: https://gist.github.com/berewt/c131ad538c0bc0989835f7d7cd3e48f8
+[Lambdada]: http://lambdada.org
