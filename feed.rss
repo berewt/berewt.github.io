@@ -21,6 +21,7 @@
 <p>Types are not supposed to replace tests… in general. However, dependent types allow you to express tests as types, allowing you to run your tests automatically at compile times. Even better, you can express property tests and prove them rather than test them on a large subset of values.</p>
 <p>To be accurate, we’re not talking about tests here, rather of proofs. I’m using <em>tests</em> just because what we’re checking can be compared to what we usually check with usual tests. Please don’t mind if I don’t use the appropriate term in favor of a more informal terms, I just want to prove to people that we can replace tests with a better alternative, with the appropriate language.</p>
 <p>This article illustrates this possibility through the <a href="http://codingdojo.org/kata/Tennis/">tennis kata</a>. Our objective, provide a way to compute and display a tennis score (of only one game) correctly, and prove that our code is right. Let’s see how “if it compiles, you can ship it” can be real.</p>
+<p>The code used in this article is available as <a href="https://gist.github.com/berewt/c131ad538c0bc0989835f7d7cd3e48f8">a gist</a>.</p>
 <h1 id="the-tennis-kata-with-dependent-types">The tennis kata with dependent types</h1>
 <h1 id="types-types-types">Types, types, types</h1>
 <p>First, let’s write some idris to encode the score progression and scores display.</p>
